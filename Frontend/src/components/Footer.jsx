@@ -1,0 +1,107 @@
+import { Link } from 'react-router-dom'
+import { Rocket, Bell } from 'lucide-react'
+import logo from '../assets/focusentrixclear.png'
+
+export default function Footer() {
+  return (
+    <footer className="border-t border-[#1a1030] bg-[#0a0a0f] px-10 py-10">
+      {/*3 column section */}
+      <div className="grid grid-cols-3 divide-x divide-[#1a1030] mb-8">
+
+        {/* Left area*/}
+        <div className="flex items-start gap-4 pr-10">
+          <div className="bg-[#9b59f5] rounded-full p-3 flex-shrink-0 mt-1">
+            <Rocket className="text-white w-5 h-5" />
+          </div>
+          <div className="flex flex-col gap-3">
+            <div>
+              <p className="text-white font-bold text-base leading-snug">Planning to improve<br />your focus?</p>
+              <p className="text-[#8a7aaa] text-sm mt-1">Start building your focus journey with Focusentrix.</p>
+            </div>
+            <Link
+              to="/signup"
+              className="inline-flex items-center gap-2 bg-[#9b59f5] hover:bg-[#7c3de0] text-white font-semibold px-5 py-2.5 rounded-lg transition-colors duration-200 text-sm w-fit"
+            >
+              Get Started <span>›</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Logo. Center area*/}
+        <div className="flex flex-col items-center justify-center gap-2 px-10">
+          <div className="flex items-center gap-2">
+            <img src={logo} alt="Focusentrix logo" className="w-20 h-20 object-contain" />
+            <span className="text-white font-black text-xl tracking-wide uppercase">Focusentrix</span>
+          </div>
+          <p className="text-[#9b59f5] text-sm font-medium text-center leading-snug mt-1">
+            Stay locked in. Work<br />smarter. Achieve more.
+          </p>
+        </div>
+
+        {/* social media icons and links. Right area*/}
+        <div className="flex items-start gap-4 pl-10">
+          <div className="bg-[#9b59f5] rounded-full p-3 flex-shrink-0 mt-1">
+            <Bell className="text-white w-5 h-5" />
+            </div>
+          <div className="flex flex-col gap-3">
+            <div>
+              <p className="text-white font-bold text-base leading-snug">Don't miss out on<br />updates</p>
+              <p className="text-[#8a7aaa] text-sm mt-1">Follow Focusentrix on social media.</p>
+            </div>
+            <div className="flex items-center gap-2">
+
+              {/*add linkedin link here*/}
+              <a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#1e1535] hover:bg-[#9b59f5] border border-[#3d2060] hover:border-[#9b59f5] rounded-lg p-2 transition-colors duration-200"
+              >
+                <svg className="text-white w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+                  <rect x="2" y="9" width="4" height="12"/>
+                  <circle cx="4" cy="4" r="2"/>
+                </svg>
+              </a>
+
+              {/* add youTube link here*/}
+              <a
+                href="https://youtube.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#1e1535] hover:bg-[#9b59f5] border border-[#3d2060] hover:border-[#9b59f5] rounded-lg p-2 transition-colors duration-200"
+              >
+                <svg className="text-white w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M23 7s-.3-2-1.2-2.7c-1.1-1.2-2.4-1.2-3-1.3C16.6 3 12 3 12 3s-4.6 0-6.8.1c-.6.1-1.9.1-3 1.3C1.3 5 1 7 1 7S.7 9.1.7 11.3v2c0 2.1.3 4.3.3 4.3s.3 2 1.2 2.7c1.1 1.2 2.6 1.1 3.3 1.2C7.6 21.7 12 21.7 12 21.7s4.6 0 6.8-.2c.6-.1 1.9-.1 3-1.3.9-.7 1.2-2.7 1.2-2.7s.3-2.1.3-4.3v-2C23.3 9.1 23 7 23 7zM9.7 15.5v-7l8.1 3.5-8.1 3.5z"/>
+                </svg>
+              </a>
+
+              {/*add instagram link here*/}
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#1e1535] hover:bg-[#9b59f5] border border-[#3d2060] hover:border-[#9b59f5] rounded-lg p-2 transition-colors duration-200"
+              >
+                <svg className="text-white w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                  <circle cx="12" cy="12" r="4"/>
+                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+                </svg>
+              </a>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* copyright bottom*/}
+      <div className="border-t border-[#1a1030] pt-6 text-center">
+        <p className="text-[#5a4a7a] text-sm">
+          © 2026 FOCUSENTRIX. All rights reserved.
+        </p>
+      </div>
+    </footer>
+  )
+}
