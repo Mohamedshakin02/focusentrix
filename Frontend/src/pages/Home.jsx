@@ -198,7 +198,7 @@ export default function Home() {
             {/* right column*/}
           <div className="relative flex items-center justify-center">
             {/*glow behind logo*/}
-            <div className="absolute w-72 h-72 rounded-full bg-[#4a1a90] opacity-20 blur-3xl" />
+            <div className="absolute w-100 h-100 rounded-full bg-[#4a1a90] opacity-20 blur-3xl" />
             <div className="relative flex flex-col gap-1">
                 {/*the top row of cards*/}
               <div className="flex gap-50 justify-center">
@@ -206,15 +206,16 @@ export default function Home() {
                 <HeroFeatureCard icon={Bell} title="Instant Smart Alerts" />
               </div>
 
-              {/* center logo*/}
-              <div className="flex justify-center py-4">
+              {/* center logo with d
+              ashed orbit ring */}
+              <div className="flex justify-center py-4 relative items-center">
+                <div className="absolute w-100 h-100 rounded-full border border-dashed border-[#3d2060] opacity-100" />
                 <img 
                     src={logo}
                     alt="Focusentrix logo"
                     className="w-100 h-100 object-contain"
                 />
               </div>
-
               {/*the bottom row of cards */}
               <div className="flex gap-50 justify-center">
                 <HeroFeatureCard icon={Target} title="Session Goal Setting" />
