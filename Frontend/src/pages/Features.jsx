@@ -1,16 +1,16 @@
 import logo from '../assets/focusentrixclear.png'
-import { Webcam, Bell, BarChart2, Target, CheckSquare } from 'lucide-react'
+import { Webcam, Bell, BellRing, BarChart2, Target, CheckSquare, User } from 'lucide-react'
 import Footer from '../components/Footer'
 
 
-// FeatureRow
+// featurerow
 // each feature is its own card
-// left: icon + title + description
-// right: a unique visual widget per card
+// left has icon + title + description
+// right has a unique visual widget per card
 function FeatureRow({ icon: Icon, title, description, widget }) {
   return (
     <div className="flex items-center justify-between bg-[#0e0b1e] border border-[#1e1535] rounded-2xl px-10 py-8 gap-12">
-      {/* left: icon, title, description */}
+      {/* left has icon, title, description */}
       <div className="flex items-start gap-6 flex-1">
         <div className="bg-[#1e1040] rounded-2xl p-4 flex-shrink-0">
           <Icon className="text-[#9b59f5] w-7 h-7" />
@@ -21,7 +21,7 @@ function FeatureRow({ icon: Icon, title, description, widget }) {
         </div>
       </div>
 
-      {/* right: unique visual widget */}
+      {/* right has unique visual widget */}
       <div className="flex-shrink-0">
         {widget}
       </div>
@@ -33,20 +33,20 @@ function FeatureRow({ icon: Icon, title, description, widget }) {
 function CameraWidget() {
   return (
     <div className="relative w-56 h-32 flex items-center justify-center">
-      {/* Camera scan frame corners */}
+      {/* webcam scan frame corners */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="w-40 h-28 relative">
           <div className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-[#9b59f5]" />
           <div className="absolute top-0 right-0 w-5 h-5 border-t-2 border-r-2 border-[#9b59f5]" />
           <div className="absolute bottom-0 left-0 w-5 h-5 border-b-2 border-l-2 border-[#9b59f5]" />
           <div className="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2 border-[#9b59f5]" />
-          {/* Camera icon in center */}
+          {/* webcam icon in center */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <Webcam className="text-[#9b59f5] w-10 h-10 opacity-80" />
+            <User className="text-[#9b59f5] w-10 h-10 opacity-80" />
           </div>
         </div>
       </div>
-      {/* Live badge */}
+      {/* live badge */}
       <div className="absolute bottom-0 right-0 flex items-center gap-1.5 bg-[#13102a] border border-[#2a1a40] rounded-full px-3 py-1.5">
         <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
         <span className="text-white text-xs font-medium">Live Monitoring</span>
@@ -64,7 +64,7 @@ function BellWidget() {
       <div className="relative flex items-center justify-center">
         <div className="absolute w-16 h-16 rounded-full border border-[#9b59f5] opacity-20 animate-ping" />
         <div className="absolute w-24 h-24 rounded-full border border-[#9b59f5] opacity-10 animate-ping" style={{ animationDelay: '0.3s' }} />
-        <Bell className="text-[#9b59f5] w-12 h-12 relative z-10" />
+        <BellRing className="text-[#9b59f5] w-12 h-12 relative z-10" />
       </div>
       {/* stay focused tag/badge */}
       <div className="absolute bottom-0 right-0 flex items-center gap-1.5 bg-[#13102a] border border-[#2a1a40] rounded-full px-3 py-1.5">
