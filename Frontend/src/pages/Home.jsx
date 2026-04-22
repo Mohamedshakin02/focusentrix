@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import logo from '../assets/focusentrixclear.png'
-import { Webcam, Bell, Target, Music, CheckSquare, BarChart2, UserPlus, Rocket, ClipboardList } from 'lucide-react'
+import { Webcam, Bell, Target, Music, CheckSquare, BarChart2, UserPlus, Rocket, ClipboardList, ChevronRight} from 'lucide-react'
+
 import { useState } from 'react' //used for the monthly/yearly function in the price section
 import Footer from '../components/Footer'
 
@@ -20,7 +21,7 @@ function HeroFeatureCard({ icon: Icon, title }) {
 function OfferItem({ icon: Icon, title, description }) {
   return (
     <div className="flex items-start gap-4 bg-[#13102a] border border-[#2a1a40] rounded-xl px-6 py-5 hover:border-[#9b59f5] transition-colors duration-200 cursor-pointer group">
-      
+
       {/* icon container */}
       <div className="bg-[#1e1535] rounded-lg p-3 flex-shrink-0">
         <Icon className="text-[#9b59f5] w-5 h-5" />
@@ -43,7 +44,7 @@ function OfferItem({ icon: Icon, title, description }) {
 function StepCard({ number, icon: Icon, title, description }) {
   return (
     <div className="flex flex-col items-center text-center gap-3">
-        {/* step number*/}
+      {/* step number*/}
       <div className="w-12 h-12 rounded-full border-2 border-[#9b59f5] flex items-center justify-center text-[#9b59f5] font-bold text-sm">
         {number}
       </div>
@@ -60,7 +61,7 @@ function StepCard({ number, icon: Icon, title, description }) {
 //user is able to switch between them based on the isYearly prop
 function PricingCard({ plan, monthlyPrice, yearlyPrice, period, features, cta, highlighted, isYearly }) {
 
-    //shows the yearly or monthly prices depening on the toggle state
+  //shows the yearly or monthly prices depening on the toggle state
   const price = isYearly ? yearlyPrice : monthlyPrice
 
   return (
@@ -116,20 +117,20 @@ function PricingCard({ plan, monthlyPrice, yearlyPrice, period, features, cta, h
 // sections here are HERO, What we offer, Getting started, Pricing, and footer
 export default function Home() {
 
-    // controls the pricing whether it shows monthly or yearly rate
-    const [isYearly, setIsYearly] = useState(false)
+  // controls the pricing whether it shows monthly or yearly rate
+  const [isYearly, setIsYearly] = useState(false)
 
 
-    // features we offer. Can add more data and it will adjust as needed
+  // features we offer. Can add more data and it will adjust as needed
   const offers = [
-    { icon: Webcam,      title: 'Real-time camera monitoring', description: 'Detects focus loss during sessions using live camera analysis.' },
-    { icon: Bell,        title: 'Instant distraction alerts',  description: 'Audio and visual alerts snap you back to focus before you lose momentum.' },
-    { icon: BarChart2,   title: 'Focus analytics',             description: 'Track your focus score, session history, and distraction patterns over time.' },
-    { icon: Target,      title: 'Session goal setting',        description: 'Set focus goals for each session and track your streaks and achievements.' },
-    { icon: CheckSquare, title: 'Habit tracking',              description: 'Build better daily focus habits with weekly reports and progress insights.' },
-    ]
+    { icon: Webcam, title: 'Real-time camera monitoring', description: 'Detects focus loss during sessions using live camera analysis.' },
+    { icon: Bell, title: 'Instant distraction alerts', description: 'Audio and visual alerts snap you back to focus before you lose momentum.' },
+    { icon: BarChart2, title: 'Focus analytics', description: 'Track your focus score, session history, and distraction patterns over time.' },
+    { icon: Target, title: 'Session goal setting', description: 'Set focus goals for each session and track your streaks and achievements.' },
+    { icon: CheckSquare, title: 'Habit tracking', description: 'Build better daily focus habits with weekly reports and progress insights.' },
+  ]
 
-    //getting started step by step guide. Can add more steps as needed
+  //getting started step by step guide. Can add more steps as needed
   const steps = [
     { number: '01', icon: UserPlus, title: 'Create Account', description: 'Sign up free in under 60 seconds. No credit card needed for the free plan.' },
     { number: '02', icon: ClipboardList, title: 'Set Your Task', description: "Enter what you're working on and set a target focus duration for your session." },
@@ -140,33 +141,33 @@ export default function Home() {
   //plans pricing and  features unlocked
   const plans = [
     {
-        plan: 'Free', 
-        monthlyPrice: '$0', 
-        yearlyPrice: '$0',
-        period: 'forever',
-        features: ['Basic focus metrics', 'Session timer', 'Session history', 'Distraction alerts', 'Focus analytics'],
-        cta: 'Get started', 
-        highlighted: false,
+      plan: 'Free',
+      monthlyPrice: '$0',
+      yearlyPrice: '$0',
+      period: 'forever',
+      features: ['Basic focus metrics', 'Session timer', 'Session history', 'Distraction alerts', 'Focus analytics'],
+      cta: 'Get started',
+      highlighted: false,
     },
     {
-        plan: 'Pro', 
-        monthlyPrice: '$12', 
-        yearlyPrice: '$10',
-        period: 'per month',
-        features: ['Everything in Free', 'Unlimited sessions', 'Camera monitoring', 'Detailed analytics', 'Focus goals', 'Priority support', 'Streak features'],
-        cta: 'Upgrade to Pro', 
-        highlighted: true, //this plan gets the most popular badge with the purple ring
+      plan: 'Pro',
+      monthlyPrice: '$12',
+      yearlyPrice: '$10',
+      period: 'per month',
+      features: ['Everything in Free', 'Unlimited sessions', 'Camera monitoring', 'Detailed analytics', 'Focus goals', 'Priority support', 'Streak features'],
+      cta: 'Upgrade to Pro',
+      highlighted: true, //this plan gets the most popular badge with the purple ring
     },
     {
-        plan: 'Team', 
-        monthlyPrice: '$29', 
-        yearlyPrice: '$23',
-        period: 'per month',
-        features: ['Everything in Pro', 'Up to 10 members', 'Team dashboard', 'Admin controls', 'Priority support', 'Custom reports'],
-        cta: 'Contact sales', 
-        highlighted: false,
+      plan: 'Team',
+      monthlyPrice: '$29',
+      yearlyPrice: '$23',
+      period: 'per month',
+      features: ['Everything in Pro', 'Up to 10 members', 'Team dashboard', 'Admin controls', 'Priority support', 'Custom reports'],
+      cta: 'Contact sales',
+      highlighted: false,
     },
-    ]
+  ]
 
 
   return (
@@ -177,7 +178,7 @@ export default function Home() {
       <section className="w-full px-30 pt-20 pb-24">
         <div className="grid grid-cols-2 gap-12 items-center">
 
-            {/* left column*/}
+          {/* left column*/}
           <div className="flex flex-col gap-6">
             <h1 className="text-6xl font-black leading-tight">
               Stay locked in.<br />
@@ -189,18 +190,25 @@ export default function Home() {
               and keep you in the zone so every session counts.
             </p>
             <div>
-              <button className="inline-flex items-center gap-2 bg-[#9b59f5] hover:bg-[#7c3de0] text-white font-semibold px-7 py-4 rounded-xl transition-colors duration-200 text-base">
-                Get Started <span>›</span>
-              </button>
+              <Link
+                to="/contact"
+                className="inline-flex items-center gap-2 text-white font-semibold px-5 py-2.5 rounded-xl text-md no-underline
+                    bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
+                    shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)]
+                    hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]
+                    transition-all duration-300"
+              >
+                Get Started <ChevronRight className="w-4 h-4 mt-0.5 font-bold" />
+              </Link>
             </div>
           </div>
 
-            {/* right column*/}
+          {/* right column*/}
           <div className="relative flex items-center justify-center">
             {/*glow behind logo*/}
             <div className="absolute w-100 h-100 rounded-full bg-[#4a1a90] opacity-20 blur-3xl" />
             <div className="relative flex flex-col gap-1">
-                {/*the top row of cards*/}
+              {/*the top row of cards*/}
               <div className="flex gap-50 justify-center">
                 <HeroFeatureCard icon={Webcam} title="Real-Time Monitoring" />
                 <HeroFeatureCard icon={Bell} title="Instant Smart Alerts" />
@@ -210,10 +218,10 @@ export default function Home() {
               ashed orbit ring */}
               <div className="flex justify-center py-4 relative items-center">
                 <div className="absolute w-100 h-100 rounded-full border border-dashed border-[#3d2060] opacity-100" />
-                <img 
-                    src={logo}
-                    alt="Focusentrix logo"
-                    className="w-100 h-100 object-contain"
+                <img
+                  src={logo}
+                  alt="Focusentrix logo"
+                  className="w-100 h-100 object-contain"
                 />
               </div>
               {/*the bottom row of cards */}
@@ -269,48 +277,48 @@ export default function Home() {
       {/* PRICING  
         Three tiers of pricing that can be toggled monthly/yearly
         Toggle state is managed by the isYearly useState hook*/}
-        <section className="py-24 border-t border-[#1a1030]">
+      <section className="py-24 border-t border-[#1a1030]">
         <div className="w-full px-10">
-            <div className="text-center mb-12">
+          <div className="text-center mb-12">
             <h2 className="text-4xl font-black mb-2">Pricing</h2>
             <p className="text-[#9b59f5] text-lg font-medium mb-6">Simple, transparent plans</p>
 
             {/* toggle */}
             <div className="inline-flex items-center gap-3 bg-[#13102a] border border-[#2a1a40] rounded-full px-5 py-2">
-                <span className={`text-sm font-medium transition-colors ${!isYearly ? 'text-white' : 'text-[#8a7aaa]'}`}>
+              <span className={`text-sm font-medium transition-colors ${!isYearly ? 'text-white' : 'text-[#8a7aaa]'}`}>
                 Monthly
-                </span>
+              </span>
 
-                {/* Clicking flips isYearly*/}
-                <div 
+              {/* Clicking flips isYearly*/}
+              <div
                 onClick={() => setIsYearly(!isYearly)}
                 className="w-11 h-6 bg-[#9b59f5] rounded-full relative cursor-pointer transition-all duration-300"
-                >
+              >
 
                 {/* sliding dot that moves between monthly and yearly*/}
                 <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300
-                    ${isYearly ? 'right-1' : 'left-1'}`} 
+                    ${isYearly ? 'right-1' : 'left-1'}`}
                 />
-                </div>
+              </div>
 
-                <span className={`text-sm transition-colors ${isYearly ? 'text-white' : 'text-[#8a7aaa]'}`}>
+              <span className={`text-sm transition-colors ${isYearly ? 'text-white' : 'text-[#8a7aaa]'}`}>
                 Yearly
-                </span>
-                <span className="bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Save 20%</span>
+              </span>
+              <span className="bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Save 20%</span>
             </div>
-            </div>
+          </div>
 
-            {/* pricing cards rendered from the planes array*/}
-            <div className="grid grid-cols-3 gap-6">
+          {/* pricing cards rendered from the planes array*/}
+          <div className="grid grid-cols-3 gap-6">
             {plans.map((p, i) => (
-                <PricingCard key={i} {...p} isYearly={isYearly} />
+              <PricingCard key={i} {...p} isYearly={isYearly} />
             ))}
-            </div>
+          </div>
         </div>
-        </section>
+      </section>
 
-        {/* footer import from components*/}
-        <Footer />
+      {/* footer import from components*/}
+      <Footer />
     </div>
   )
 }
