@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import logo from '../assets/focusentrixclear.png'
-import { Webcam, Bell, Target, Music, CheckSquare, BarChart2, UserPlus, Rocket, ClipboardList, ChevronRight} from 'lucide-react'
+import { Webcam, Bell, Target, Music, CheckSquare, BarChart2, UserPlus, Rocket, ClipboardList, ChevronRight } from 'lucide-react'
+import bg from "../assets/feature-bg.png";
 
 import { useState } from 'react' //used for the monthly/yearly function in the price section
 import Footer from '../components/Footer'
@@ -9,34 +10,77 @@ import Footer from '../components/Footer'
 // small cards that are displayed around the focusentrix logo in the hero section
 function HeroFeatureCard({ icon: Icon, title }) {
   return (
-    <div className="flex items-center gap-3 bg-[#1a1025] border border-[#3d2060] rounded-xl px-4 py-3 w-52 h-20">
-      <Icon className="text-[#9b59f5] w-6 h-6 flex-shrink-0" />
-      <span className="text-white text-sm font-medium leading-tight">{title}</span>
+    <div className="
+      flex items-center gap-2 sm:gap-3
+      bg-[#1a1025] border border-[#3d2060]
+      rounded-xl px-3 py-2 sm:px-4 sm:py-3
+      w-36 sm:w-44 md:w-52 h-14 sm:h-18 md:h-20
+    ">
+
+      {/* icon container */}
+      <div className="bg-[#1e1040] rounded-lg p-2 sm:p-3 flex-shrink-0">
+        <Icon className="text-[#9b59f5] w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+      </div>
+
+      {/* text */}
+      <span className="
+        text-white font-semibold leading-tight
+        text-xs sm:text-sm md:text-base
+      ">
+        {title}
+      </span>
+
     </div>
   )
 }
 
 // single row of what we offer in the "what we offer" section
 // shows an icon, title, and a short descprtion. Has a hover effect
-function OfferItem({ icon: Icon, title, description }) {
+
+function OfferItem({ icon: Icon, title, description, index }) {
+  const [open, setOpen] = useState(index === 0); // first item open by default
+
   return (
-    <div className="flex items-start gap-4 bg-[#13102a] border border-[#2a1a40] rounded-xl px-6 py-5 hover:border-[#9b59f5] transition-colors duration-200 cursor-pointer group">
+    <div className="bg-[#13102a] border border-[#2a1a40] rounded-xl px-6 py-5 transition-all duration-300">
 
-      {/* icon container */}
-      <div className="bg-[#1e1535] rounded-lg p-3 flex-shrink-0">
-        <Icon className="text-[#9b59f5] w-5 h-5" />
+      {/* header */}
+      <div
+        className="flex items-center gap-4 cursor-pointer"
+        onClick={() => setOpen(!open)}
+      >
+
+        {/* icon */}
+        <div className="bg-[#1e1535] rounded-lg p-3 flex-shrink-0">
+          <Icon className="text-[#9b59f5] w-5 h-5" />
+        </div>
+
+        {/* title */}
+        <div className="flex-1">
+          <h3 className="text-white font-semibold text-md">
+            {title}
+          </h3>
+        </div>
+
+        {/* toggle */}
+        <span
+          className={`text-xl transition-transform duration-300 ${open ? "rotate-45 text-[#9b59f5]" : "text-[#5a4a7a]"
+            }`}
+        >
+          +
+        </span>
       </div>
 
-      {/* text content*/}
-      <div className="flex-1">
-        <h3 className="text-white font-semibold text-base mb-1">{title}</h3>
-        <p className="text-[#8a7aaa] text-sm leading-relaxed">{description}</p>
+      {/* animated content */}
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${open ? "max-h-40 opacity-100 mt-3" : "max-h-0 opacity-0"
+          }`}
+      >
+        <p className="text-[#8a7aaa] text-sm leading-relaxed pl-14">
+          {description}
+        </p>
       </div>
-
-      {/* hover effect*/}
-      <span className="text-[#5a4a7a] group-hover:text-[#9b59f5] text-xl mt-1 transition-colors duration-200">+</span>
     </div>
-  )
+  );
 }
 
 //this is for the "Getting started" section. 
@@ -171,28 +215,28 @@ export default function Home() {
 
 
   return (
-    <div className="bg-[#0a0a0f] min-h-screen text-white">
+    <div className="bg-[#0a0a0f] min-h-screen text-white container mx-auto px-4 sm:px-6 lg:px-30">
 
       {/* HERO section, 2 column layout
         Left area has Headline, Right area has the logo surrounded by the 4 feature cards.*/}
-      <section className="w-full px-30 pt-20 pb-24">
-        <div className="grid grid-cols-2 gap-12 items-center">
+      <section className="">
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 lg:gap-12 items-center">
 
           {/* left column*/}
-          <div className="flex flex-col gap-6">
-            <h1 className="text-6xl font-black leading-tight">
+          <div className="order-2 lg:order-1 flex flex-col">
+            <h1 className="text-5xl xl:text-7xl font-black leading-14 xl:leading-18">
               Stay locked in.<br />
               Work smarter.<br />
               <span className="text-[#9b59f5]">Achieve more.</span>
             </h1>
-            <p className="text-[#8a7aaa] text-lg leading-relaxed max-w-md">
+            <p className="text-[#8a7aaa] text-lg xl:text-xl mt-3 font-medium leading-relaxed max-w-md">
               Focusentrix uses real time camera monitoring to detect distractions
               and keep you in the zone so every session counts.
             </p>
             <div>
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-2 text-white font-semibold px-5 py-2.5 rounded-xl text-md no-underline
+                className="inline-flex items-center mt-10 text-white font-semibold px-5 py-2.5 rounded-lg text-md no-underline
                     bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
                     shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)]
                     hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]
@@ -204,34 +248,41 @@ export default function Home() {
           </div>
 
           {/* right column*/}
-          <div className="relative flex items-center justify-center">
-            {/*glow behind logo*/}
-            <div className="absolute w-100 h-100 rounded-full bg-[#4a1a90] opacity-20 blur-3xl" />
-            <div className="relative flex flex-col gap-1">
-              {/*the top row of cards*/}
-              <div className="flex gap-50 justify-center">
+          <div className="order-1 lg:order-2 relative flex items-center justify-center py-16 lg:py-25 xl:pr-15">
+
+            <div className="absolute w-[220px] h-[220px] lg:w-[30vw] lg:h-[30vw] xl:w-[60vw] xl:h-[60vw] max-w-[500px] max-h-[500px] rounded-full bg-[#4a1a90] opacity-30 blur-3xl" />
+
+
+            <div className="relative w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] lg:w-[30vw] lg:h-[30vw] xl:w-[70vw] xl:h-[70vw] max-w-[400px] max-h-[400px] flex items-center justify-center">
+
+
+              <div className="absolute w-full h-full rounded-full border border-dashed border-[#3d2060]" />
+
+
+              <img
+                src={logo}
+                alt="Focusentrix logo"
+                className="w-32 h-32 sm:w-40 sm:h-40 xl:w-80 xl:h-80 object-contain z-10"
+              />
+
+              <div className="absolute top-0 left-0 -translate-x-1/3 -translate-y-1/4">
                 <HeroFeatureCard icon={Webcam} title="Real-Time Monitoring" />
+              </div>
+
+              <div className="absolute top-0 right-0 translate-x-1/3 -translate-y-1/4">
                 <HeroFeatureCard icon={Bell} title="Instant Smart Alerts" />
               </div>
 
-              {/* center logo with d
-              ashed orbit ring */}
-              <div className="flex justify-center py-4 relative items-center">
-                <div className="absolute w-100 h-100 rounded-full border border-dashed border-[#3d2060] opacity-100" />
-                <img
-                  src={logo}
-                  alt="Focusentrix logo"
-                  className="w-100 h-100 object-contain"
-                />
-              </div>
-              {/*the bottom row of cards */}
-              <div className="flex gap-50 justify-center">
+              <div className="absolute bottom-0 left-0 -translate-x-1/3 translate-y-1/4">
                 <HeroFeatureCard icon={Target} title="Session Goal Setting" />
-                <HeroFeatureCard icon={Music} title="Backgroundd Music" />
               </div>
+
+              <div className="absolute bottom-0 right-0 translate-x-1/3 translate-y-1/4">
+                <HeroFeatureCard icon={BarChart2} title="Focus Analytics" />
+              </div>
+
             </div>
           </div>
-
         </div>
       </section>
 
@@ -242,18 +293,45 @@ export default function Home() {
           <div className="grid grid-cols-2 gap-16 items-start">
 
             {/*Left column, heading and descriptions */}
-            <div className="flex flex-col gap-5">
-              <p className="text-[#9b59f5] text-sm font-semibold tracking-widest uppercase">What we offer</p>
-              <h2 className="text-4xl font-black leading-snug">Everything You Need<br />to Stay in the Zone</h2>
-              <div className="w-12 h-1 bg-[#9b59f5] rounded-full" />
-              <p className="text-[#8a7aaa] text-base leading-relaxed">
-                Five core capabilities designed to detect, analyze, and improve your focus all in real time.
-              </p>
+
+            <div
+              className="relative flex flex-col gap-5 p-6 pt-0 rounded-2xl bg-cover bg-left h-[500px] overflow-hidden"
+              style={{ backgroundImage: `url(${bg})` }}
+            >
+              <div className="pointer-events-none absolute top-0 left-0 w-full h-3/5 bg-gradient-to-b from-[#0a0a0f] to-transparent blur-xl" />
+
+              <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#000] to-transparent blur-xl" />
+
+              <div className="pointer-events-none absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#0a0a0f] to-transparent blur-xl" />
+
+              <div className="relative z-10">
+
+                <p className="text-[#9b59f5] text-sm font-semibold tracking-widest uppercase">
+                  What we offer
+                </p>
+
+                <h2 className="text-4xl mt-2 font-black leading-snug">
+                  Everything You Need<br />to Stay in the Zone
+                </h2>
+
+                <div className="w-12 h-1 bg-[#9b59f5] rounded-full mt-3 mb-7" />
+
+                <p className="text-[#9b95a7] text-md font-semibold leading-relaxed">
+                  Five core capabilities designed to detect, analyze, and improve your focus all in real time.
+                </p>
+              </div>
+
             </div>
 
             {/* right, list of offer items. These are rendered from the offers array*/}
             <div className="flex flex-col gap-3">
-              {offers.map((o, i) => <OfferItem key={i} {...o} />)}
+              {offers.map((o, i) => (
+                <OfferItem
+                  key={i}
+                  index={i}
+                  {...o}
+                />
+              ))}
             </div>
           </div>
         </div>

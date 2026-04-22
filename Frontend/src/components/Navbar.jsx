@@ -36,7 +36,7 @@ export default function Navbar() {
               <Link
                 key={to}
                 to={to}
-                className={`relative text-sm font-medium no-underline pb-2 transition-colors duration-200
+                className={`relative text-md font-medium no-underline pb-2 transition-colors duration-200
     ${isActive ? 'text-white' : 'text-[#8a7aaa] hover:text-white'}
     
     after:content-[''] after:absolute after:left-0 after:bottom-0
@@ -59,7 +59,7 @@ export default function Navbar() {
         {/* get started link*/}
         <Link
           to="/contact"
-          className="inline-flex items-center gap-2 text-white font-semibold px-5 py-2.5 rounded-xl text-sm no-underline
+          className="inline-flex items-center gap-2 text-white font-semibold px-5 py-2.5 rounded-lg text-md no-underline
                     bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
                     shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)]
                     hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]
