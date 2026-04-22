@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import logo from '../assets/focusentrixclear.png'
-import { Camera, Bell, Target, Music, CheckSquare, BarChart2, UserPlus, Rocket, ClipboardList } from 'lucide-react'
+import { Webcam, Bell, Target, Music, CheckSquare, BarChart2, UserPlus, Rocket, ClipboardList } from 'lucide-react'
 import { useState } from 'react' //used for the monthly/yearly function in the price section
 import Footer from '../components/Footer'
 
@@ -122,7 +122,7 @@ export default function Home() {
 
     // features we offer. Can add more data and it will adjust as needed
   const offers = [
-    { icon: Camera,      title: 'Real-time camera monitoring', description: 'Detects focus loss during sessions using live camera analysis.' },
+    { icon: Webcam,      title: 'Real-time camera monitoring', description: 'Detects focus loss during sessions using live camera analysis.' },
     { icon: Bell,        title: 'Instant distraction alerts',  description: 'Audio and visual alerts snap you back to focus before you lose momentum.' },
     { icon: BarChart2,   title: 'Focus analytics',             description: 'Track your focus score, session history, and distraction patterns over time.' },
     { icon: Target,      title: 'Session goal setting',        description: 'Set focus goals for each session and track your streaks and achievements.' },
@@ -133,7 +133,7 @@ export default function Home() {
   const steps = [
     { number: '01', icon: UserPlus, title: 'Create Account', description: 'Sign up free in under 60 seconds. No credit card needed for the free plan.' },
     { number: '02', icon: ClipboardList, title: 'Set Your Task', description: "Enter what you're working on and set a target focus duration for your session." },
-    { number: '03', icon: Camera, title: 'Enable Camera', description: "Allow camera access. Focusentrix monitors your attention — data stays private on your device." },
+    { number: '03', icon: Webcam, title: 'Enable Camera', description: "Allow camera access. Focusentrix monitors your attention — data stays private on your device." },
     { number: '04', icon: Rocket, title: 'Start & Stay Focused', description: 'Get real-time alerts when you lose focus. Build your streak and earn achievements.' },
   ]
 
@@ -202,7 +202,7 @@ export default function Home() {
             <div className="relative flex flex-col gap-1">
                 {/*the top row of cards*/}
               <div className="flex gap-50 justify-center">
-                <HeroFeatureCard icon={Camera} title="Real-Time Monitoring" />
+                <HeroFeatureCard icon={Webcam} title="Real-Time Monitoring" />
                 <HeroFeatureCard icon={Bell} title="Instant Smart Alerts" />
               </div>
 
