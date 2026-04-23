@@ -6,6 +6,7 @@ import Pricing from './pages/Pricing'
 import FAQs from './pages/FAQs'
 import AboutUs from './pages/AboutUs'
 import Contact from './pages/Contact'
+import Auth from './pages/Auth'
 
 
 
@@ -20,6 +21,7 @@ function App() {
         <Route path="/faqs" element={<FAQs />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/auth" element={<Auth />} />
       </Routes>
     </BrowserRouter>
   )

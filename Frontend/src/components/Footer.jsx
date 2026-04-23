@@ -19,10 +19,8 @@ export default function Footer() {
               <p className="text-[#8a7aaa] text-md mt-1">Start building your focus journey with Focusentrix.</p>
             </div>
             <Link
-              to="/signup"
-              className="inline-flex items-center gap-2 bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
-                    shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)]
-                    hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)] text-white font-semibold px-5 py-2.5 rounded-lg transition-colors duration-200 text-sm w-fit"
+              to="/auth"
+              className="inline-flex items-center gap-2 bg-[#9b59f5] hover:bg-[#7c3de0] text-white font-semibold px-5 py-2.5 rounded-lg transition-colors duration-200 text-sm w-fit"
             >
               Get Started <span>›</span>
             </Link>

@@ -75,7 +75,7 @@ export default function Navbar() {
 
             {/* Desktop Button */}
             <Link
-              to="/contact"
+              to="/auth"
               className="hidden lg:inline-flex items-center gap-2 text-white font-semibold px-5 py-2.5 rounded-lg text-md no-underline
                 bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
                 shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)]
@@ -130,7 +130,7 @@ export default function Navbar() {
 
         {/* get started link */}
         <Link
-          to="/contact"
+          to="/auth"
           onClick={() => setMenuOpen(false)}
           className="mt-auto text-center text-white font-semibold py-3 rounded-lg
             bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]"
