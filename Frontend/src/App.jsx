@@ -5,6 +5,7 @@ import Features from './pages/Features'
 import Pricing from './pages/Pricing'
 import FAQs from './pages/FAQs'
 import AboutUs from './pages/AboutUs'
+import Contact from './pages/Contact'
 
 
 
@@ -18,7 +19,7 @@ function App() {
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/faqs" element={<FAQs />} />
         <Route path="/about" element={<AboutUs />} />
-        
+        <Route path="/contact" element={<Contact />} />
       </Routes>
     </BrowserRouter>
   )
