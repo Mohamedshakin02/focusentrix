@@ -357,7 +357,7 @@ export default function Home() {
       {/* PRICING  
         Three tiers of pricing that can be toggled monthly/yearly
         Toggle state is managed by the isYearly useState hook*/}
-      <section className="py-18 pb-0 xl:py-24 border-t border-[#1a1030]">
+      <section className="py-18 pb-0 xl:py-24 xl:pb-0 border-t border-[#1a1030]">
         <div className="px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-black mb-2">Pricing</h2>
@@ -400,7 +400,7 @@ export default function Home() {
       </section>
 
       {/* footer import from components*/}
-      <div className='py-18 pb-0 xl:py-24'>
+      <div className='py-18 pb-0 xl:py-24 xl:pb-0'>
         <Footer />
       </div>
     </div>

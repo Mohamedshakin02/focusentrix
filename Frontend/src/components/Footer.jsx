@@ -4,7 +4,7 @@ import logo from '../assets/focusentrixclear.png'
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[#1a1030] bg-[#0a0a0f] px-10 py-10">
+    <footer className="border-t border-[#1a1030] bg-[#0a0a0f] px-10 py-10 pb-7">
       {/*3 column section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-0 lg:divide-x lg:divide-[#1a1030] mb-8">
 
