@@ -147,7 +147,7 @@ function PricingCard({ plan, monthlyPrice, yearlyPrice, period, features, cta, h
 
       <button className={`w-full py-3 rounded-xl font-semibold text-sm transition-all duration-200
         ${highlighted
-          ? ' text-white bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0] hover:cursor-pointer'
+          ? ' text-white bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0] hover:cursor-pointer hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]'
           : 'bg-transparent border border-[#3d2060] text-white hover:border-[#9b59f5] hover:cursor-pointer'
         }`}>
         {cta}
