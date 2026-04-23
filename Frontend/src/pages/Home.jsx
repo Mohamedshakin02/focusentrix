@@ -220,7 +220,7 @@ export default function Home() {
       {/* HERO section, 2 column layout
         Left area has Headline, Right area has the logo surrounded by the 4 feature cards.*/}
       <section className="px-4">
-        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 lg:gap-12 items-center">
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 lg:gap-12 items-center pb-18 lg:pb-0">
 
           {/* left column*/}
           <div className="order-2 lg:order-1 flex flex-col">
@@ -288,8 +288,8 @@ export default function Home() {
 
       {/* WHAT WE OFFER, two column layout
         Left has heading, right has the list of items */}
-      <section className="border-t border-[#1a1030] py-18 pb-0 xl:py-24">
-        <div className="px-4">
+      <section className="border-t border-[#1a1030] py-18 xl:py-24">
+        <div className="px-4 pb-18 lg:pb-0">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
 
             {/*Left column, heading and descriptions */}
@@ -299,9 +299,9 @@ export default function Home() {
               style={{ backgroundImage: `url(${bg})` }}
             >
               <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#0a0a0f] to-transparent" />
-  <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0a0a0f] to-transparent" />
-  <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#0a0a0f] to-transparent" />
-  <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#0a0a0f] to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0a0a0f] to-transparent" />
+              <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#0a0a0f] to-transparent" />
+              <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#0a0a0f] to-transparent" />
 
               <div className="pointer-events-none absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#0a0a0f] to-transparent blur-xl" />
 
@@ -339,8 +339,8 @@ export default function Home() {
       </section>
 
       {/* GETTING STARTED, four column grid of steps card that guides the user */}
-      <section className="py-18 pb-0 xl:py-24 border-t border-[#1a1030]">
-        <div className="px-4">
+      <section className="py-18 xl:py-24 border-t border-[#1a1030]">
+        <div className="px-4 pb-18 lg:pb-0">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-black mb-2">Getting Started</h2>
             <p className="text-[#9b59f5] text-lg font-semibold">Up and Running in 4 Simple Steps</p>
