@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Mail } from 'lucide-react'
 import Footer from '../components/Footer'
 import logo from '../assets/focusentrixclear.png'
+import emailjs from '@emailjs/browser'
 
 
 export default function Contact() {
@@ -14,14 +15,38 @@ export default function Contact() {
     message: '',
   })
 
+  // tracks submission status to show feedback to the user
+  const [status, setStatus] = useState(null) // null or 'sending' or'success' or 'error'
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // will handle form submission logic here
-    console.log(form)
+    setStatus('sending')
+
+    // emailJS sends the form data to the company email
+    emailjs.send(
+      'service_nieiirt',    // emailJS service ID
+      'template_ko1puwg',   // emailJS template ID
+      {
+        first_name: form.firstName,
+        last_name:  form.lastName,
+        email:      form.email,
+        subject:    form.subject,
+        message:    form.message,
+      },
+      '7ah4dji86rBxRVB81'     // emailJS public key
+    )
+    .then(() => {
+      setStatus('success')
+      // reset form after successful submission
+      setForm({ firstName: '', lastName: '', email: '', subject: '', message: '' })
+    })
+    .catch(() => {
+      setStatus('error')
+    })
   }
 
   return (
@@ -119,6 +144,7 @@ export default function Contact() {
                       placeholder="First Name"
                       value={form.firstName}
                       onChange={handleChange}
+                      required
                       className="bg-[#0e0b1e] border border-[#2a1a40] rounded-xl px-4 py-3 text-white text-sm placeholder-[#3d2060] focus:outline-none focus:border-[#9b59f5] transition-colors duration-200"
                     />
                   </div>
@@ -130,6 +156,7 @@ export default function Contact() {
                       placeholder="Last Name"
                       value={form.lastName}
                       onChange={handleChange}
+                      required
                       className="bg-[#0e0b1e] border border-[#2a1a40] rounded-xl px-4 py-3 text-white text-sm placeholder-[#3d2060] focus:outline-none focus:border-[#9b59f5] transition-colors duration-200"
                     />
                   </div>
@@ -144,6 +171,7 @@ export default function Contact() {
                     placeholder="Email Address"
                     value={form.email}
                     onChange={handleChange}
+                    required
                     className="bg-[#0e0b1e] border border-[#2a1a40] rounded-xl px-4 py-3 text-white text-sm placeholder-[#3d2060] focus:outline-none focus:border-[#9b59f5] transition-colors duration-200"
                   />
                 </div>
@@ -157,6 +185,7 @@ export default function Contact() {
                     placeholder="Subject"
                     value={form.subject}
                     onChange={handleChange}
+                    required
                     className="bg-[#0e0b1e] border border-[#2a1a40] rounded-xl px-4 py-3 text-white text-sm placeholder-[#3d2060] focus:outline-none focus:border-[#9b59f5] transition-colors duration-200"
                   />
                 </div>
@@ -170,16 +199,26 @@ export default function Contact() {
                     value={form.message}
                     onChange={handleChange}
                     rows={5}
+                    required
                     className="bg-[#0e0b1e] border border-[#2a1a40] rounded-xl px-4 py-3 text-white text-sm placeholder-[#3d2060] focus:outline-none focus:border-[#9b59f5] transition-colors duration-200 resize-none"
                   />
                 </div>
 
-                {/* submit button */}
+                {/* success or error message shown after submission */}
+                {status === 'success' && (
+                  <p className="text-green-400 text-sm text-center">Message sent! We'll get back to you within 24 hours.</p>
+                )}
+                {status === 'error' && (
+                  <p className="text-red-400 text-sm text-center">Something went wrong. Please try again or email us directly.</p>
+                )}
+
+                {/* submit button shows "Sending..." while in progress */}
                 <button
                   type="submit"
-                  className="w-full bg-[#9b59f5] hover:bg-[#7c3de0] text-white font-semibold py-3.5 rounded-xl transition-colors duration-200 text-sm flex items-center justify-center gap-2 mt-2"
+                  disabled={status === 'sending'}
+                  className="w-full bg-[#9b59f5] hover:bg-[#7c3de0] disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-colors duration-200 text-sm flex items-center justify-center gap-2 mt-2"
                 >
-                  Send Message <span>→</span>
+                  {status === 'sending' ? 'Sending...' : <> Send Message <span>→</span> </>}
                 </button>
 
               </form>
