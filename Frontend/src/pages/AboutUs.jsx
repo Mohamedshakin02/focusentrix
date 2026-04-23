@@ -79,7 +79,7 @@ export default function AboutUs() {
           <div>
             <span className="text-[#9b59f5] text-md font-semibold tracking-widest uppercase">About Us</span>
 
-            <h1 className="text-5xl sm:text-6xl font-black mt-2">
+            <h1 className="text-4xl sm:text-6xl font-black mt-2">
               Who <span className="text-[#9b59f5]">We Are</span>
             </h1>
 
@@ -87,7 +87,7 @@ export default function AboutUs() {
               Built by Students, Built for Everyone
             </p>
 
-            <p className="text-[#8a7aaa] text-lg font-semibold leading-relaxed max-w-md mt-5">
+            <p className="text-[#8a7aaa] text-lg font-medium leading-relaxed max-w-md mt-5">
               Focusentrix Creative Studios is an innovative technology
               startup dedicated to improving productivity in the digital age.
               We believe focus is the new competitive advantage.

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronDown, ChevronUp, ShieldCheck } from 'lucide-react'
+import { ChevronDown, ChevronUp, ShieldCheck, ChevronRight } from 'lucide-react'
 import Footer from '../components/Footer'
 
 
@@ -22,7 +22,7 @@ function FAQItem({ number, question, answer, isOpen, onToggle }) {
           <div className="w-8 h-8 rounded-lg bg-[#1e1040] flex items-center justify-center flex-shrink-0">
             <span className="text-[#9b59f5] text-xs font-bold">{number}</span>
           </div>
-          <span className="text-white font-semibold text-base">{question}</span>
+          <span className="text-white text-md font-semibold">{question}</span>
         </div>
 
         {/* chevron arrow toggle */}
@@ -36,11 +36,18 @@ function FAQItem({ number, question, answer, isOpen, onToggle }) {
 
       {/* answer
       only shown when open */}
-      {isOpen && (
-        <p className="text-[#8a7aaa] text-sm leading-relaxed mt-4 ml-12">
+      <div
+        className={`
+                overflow-hidden transition-all duration-300 ease-in-out
+                ${isOpen ? "max-h-40 opacity-100 mt-4" : "max-h-0 opacity-0 mt-0"}
+                `}
+      >
+
+        <p className="text-[#8a7aaa] text-md font-medium leading-relaxed ml-12">
           {answer}
         </p>
-      )}
+
+      </div>
     </div>
   )
 }
@@ -88,20 +95,20 @@ export default function FAQs() {
   ]
 
   return (
-    <div className="bg-[#0a0a0f] min-h-screen text-white">
+    <div className="bg-[#0a0a0f] min-h-screen text-white container mx-auto px-4 sm:px-6 lg:px-30">
 
       {/* HERO section
           full width heading with label, title and paragraph text.
       ──────────────────────────────────────────────── */}
-      <section className="w-full px-30 pt-20 pb-12">
+      <section className="w-full px-4 pt-12 pb-12">
         <div className="inline-block px-1 py-1 mb-1">
-          <span className="text-[#9b59f5] text-base font-semibold tracking-widest uppercase">FAQ's</span>
+          <span className="text-[#9b59f5] text-md font-semibold tracking-widest uppercase">FAQ's</span>
         </div>
-        <h1 className="text-6xl font-black leading-tight mb-3">
+        <h1 className="text-4xl sm:text-6xl font-black leading-tight mt-2">
           Got <span className="text-[#9b59f5]">Questions?</span>
         </h1>
-        <p className="text-white font-semibold text-lg mb-2">Everything You Need to Know About Focusentrix</p>
-        <p className="text-[#8a7aaa] text-base leading-relaxed max-w-lg">
+        <p className="text-white font-semibold text-lg mt-2">Everything You Need to Know About Focusentrix</p>
+        <p className="text-[#8a7aaa] text-lg font-medium leading-relaxed max-w-lg mt-5">
           Clear answers to help you understand how our system works
           and improves your focus in real time.
         </p>
@@ -111,7 +118,7 @@ export default function FAQs() {
           stretches across the page.
           adjust width here
       */}
-      <section className="w-full px-30 pb-10">
+      <section className="px-4 pb-10">
         <div className="flex flex-col gap-3">
           {faqs.map((faq, i) => (
             <FAQItem
@@ -129,8 +136,8 @@ export default function FAQs() {
       {/* cards below FAQs side by side
           "privacy" card on the left, "still need help" on the right.
         */}
-      <section className="w-full px-30 pb-24">
-        <div className="grid grid-cols-2 gap-6">
+      <section className="px-4 pb-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
           {/* privacy card */}
           <div className="bg-[#0e0b1e] border border-[#1e1535] rounded-2xl p-8 flex flex-col gap-5">
@@ -147,7 +154,7 @@ export default function FAQs() {
                 'Your data never leaves your device',
                 '100% private and secure',
               ].map((item, i) => (
-                <li key={i} className="flex items-center gap-3 pl-3 text-[#8a7aaa] text-sm">
+                <li key={i} className="flex items-center gap-3 pl-3 text-[#8a7aaa] text-md">
                   <div className="w-5 h-5 rounded-full border border-[#9b59f5] flex items-center justify-center flex-shrink-0">
                     <span className="text-[#9b59f5] text-[9px]">✓</span>
                   </div>
@@ -161,23 +168,31 @@ export default function FAQs() {
           <div className="bg-[#0e0b1e] border border-[#1e1535] rounded-2xl p-8 flex flex-col justify-between">
             <div className="flex flex-col gap-2">
               <h3 className="text-white font-bold text-xl">Still need help?</h3>
-              <p className="text-[#8a7aaa] text-sm leading-relaxed">
+              <p className="text-[#8a7aaa] text-md leading-relaxed">
                 Can't find the answer you're looking for? We're here to help.
               </p>
             </div>
             <Link
               to="/contact"
-              className="inline-flex items-center gap-2 bg-[#9b59f5] hover:bg-[#7c3de0] text-white font-semibold px-5 py-3 rounded-xl transition-colors duration-200 text-sm w-fit mt-6"
+              className="inline-flex items-center gap-2 text-white font-semibold px-5 py-3 rounded-xl text-sm w-fit mt-6
+                        bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
+                        shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)]
+                        hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]
+                        transition-all duration-300"
             >
-              Contact Support <span>›</span>
+
+              Contact Support <ChevronRight className="w-4 h-4 mb-0.5 font-bold" />
+
             </Link>
           </div>
 
         </div>
       </section>
 
-      {/* footer */}
-      <Footer />
+      {/* FOOTER */}
+      <div className="py-18 pb-0 px-4">
+        <Footer />
+      </div>
 
     </div>
   )

@@ -203,7 +203,7 @@ export default function Home() {
       highlighted: true, //this plan gets the most popular badge with the purple ring
     },
     {
-      plan: 'Team',
+      plan: 'Enterprise',
       monthlyPrice: '$29',
       yearlyPrice: '$23',
       period: 'per month',
