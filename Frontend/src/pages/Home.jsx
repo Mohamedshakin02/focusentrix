@@ -298,9 +298,10 @@ export default function Home() {
               className="relative flex flex-col gap-5 p-6 pt-0 pl-0 bg-cover bg-left lg:h-[500px] overflow-hidden"
               style={{ backgroundImage: `url(${bg})` }}
             >
-              <div className="pointer-events-none absolute top-0 left-0 w-full h-3/5 bg-gradient-to-b from-[#0a0a0f] to-transparent blur-xl" />
-
-              <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#000] to-transparent blur-xl" />
+              <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#0a0a0f] to-transparent" />
+  <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0a0a0f] to-transparent" />
+  <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#0a0a0f] to-transparent" />
+  <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#0a0a0f] to-transparent" />
 
               <div className="pointer-events-none absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#0a0a0f] to-transparent blur-xl" />
 
