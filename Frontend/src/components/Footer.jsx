@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Rocket, Bell } from 'lucide-react'
+import { Rocket, Bell, ChevronRight } from 'lucide-react'
 import logo from '../assets/focusentrixclear.png'
 
 export default function Footer() {
@@ -15,12 +15,14 @@ export default function Footer() {
           </div>
           <div className="flex flex-col gap-3">
             <div>
-              <p className="text-white font-bold text-lg lg:text-base leading-snug">Planning to improve<br />your focus?</p>
-              <p className="text-[#8a7aaa] text-md lg:text-sm mt-1">Start building your focus journey with Focusentrix.</p>
+              <p className="text-white font-bold text-lg leading-snug">Planning to improve<br />your focus?</p>
+              <p className="text-[#8a7aaa] text-md mt-1">Start building your focus journey with Focusentrix.</p>
             </div>
             <Link
               to="/signup"
-              className="inline-flex items-center gap-2 bg-[#9b59f5] hover:bg-[#7c3de0] text-white font-semibold px-5 py-2.5 rounded-lg transition-colors duration-200 text-sm w-fit"
+              className="inline-flex items-center gap-2 bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
+                    shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)]
+                    hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)] text-white font-semibold px-5 py-2.5 rounded-lg transition-colors duration-200 text-sm w-fit"
             >
               Get Started <span>›</span>
             </Link>
@@ -45,8 +47,8 @@ export default function Footer() {
             </div>
           <div className="flex flex-col gap-3">
             <div>
-              <p className="text-white font-bold text-lg lg:text-base leading-snug">Don't miss out on<br />updates</p>
-              <p className="text-[#8a7aaa] text-md lg:text-sm mt-1">Follow Focusentrix on social media.</p>
+              <p className="text-white font-bold text-lg leading-snug">Don't miss out on<br />updates</p>
+              <p className="text-[#8a7aaa] text-md mt-1">Follow Focusentrix on social media.</p>
             </div>
             <div className="flex items-center gap-2">
 

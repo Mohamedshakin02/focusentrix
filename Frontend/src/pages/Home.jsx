@@ -147,8 +147,8 @@ function PricingCard({ plan, monthlyPrice, yearlyPrice, period, features, cta, h
 
       <button className={`w-full py-3 rounded-xl font-semibold text-sm transition-all duration-200
         ${highlighted
-          ? 'bg-[#9b59f5] text-white hover:bg-[#7c3de0]'
-          : 'bg-transparent border border-[#3d2060] text-white hover:border-[#9b59f5]'
+          ? ' text-white bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0] hover:cursor-pointer'
+          : 'bg-transparent border border-[#3d2060] text-white hover:border-[#9b59f5] hover:cursor-pointer'
         }`}>
         {cta}
       </button>
@@ -374,7 +374,9 @@ export default function Home() {
               {/* Clicking flips isYearly*/}
               <div
                 onClick={() => setIsYearly(!isYearly)}
-                className="w-11 h-6 bg-[#9b59f5] rounded-full relative cursor-pointer transition-all duration-300"
+                className="w-11 h-6 bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
+                    shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)]
+                    hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)] rounded-full relative cursor-pointer transition-all duration-300"
               >
 
                 {/* sliding dot that moves between monthly and yearly*/}
