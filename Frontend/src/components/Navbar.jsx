@@ -23,7 +23,12 @@ export default function Navbar() {
   return (
     <>
       {/* navbar container  */}
-      <nav className="sticky top-0 py-2 z-50 bg-[#000] backdrop-blur-md border-b border-[#1a1030]">
+      <nav className="relative sticky top-0 py-2 z-50 bg-[#0a0a0f] backdrop-blur-md">
+
+        {/* glowing border bottom effect */}
+        <div className="pointer-events-none absolute bottom-0 left-0 w-full h-[2px]">
+          <div className="w-full h-full bg-gradient-to-r from-transparent via-[#9b59f5] to-transparent opacity-80 blur-[1px]" />
+        </div>
 
         <div className="relative w-full px-4 sm:px-6 lg:px-30 h-16 flex items-center justify-between">
 
