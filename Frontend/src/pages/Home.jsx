@@ -14,18 +14,18 @@ function HeroFeatureCard({ icon: Icon, title }) {
       flex items-center gap-2 sm:gap-3
       bg-[#1a1025] border border-[#3d2060]
       rounded-xl px-3 py-2 sm:px-4 sm:py-3
-      w-36 sm:w-44 md:w-52 h-14 sm:h-18 md:h-20
+      w-36 sm:w-44 lg:w-53 h-14 sm:h-18 md:h-20
     ">
 
       {/* icon container */}
       <div className="bg-[#1e1040] rounded-lg p-2 sm:p-3 flex-shrink-0">
-        <Icon className="text-[#9b59f5] w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+        <Icon className="text-[#9b59f5] w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
       </div>
 
       {/* text */}
       <span className="
         text-white font-semibold leading-tight
-        text-xs sm:text-sm md:text-base
+        text-xs sm:text-sm lg:text-base
       ">
         {title}
       </span>
@@ -56,7 +56,7 @@ function OfferItem({ icon: Icon, title, description, index }) {
 
         {/* title */}
         <div className="flex-1">
-          <h3 className="text-white font-semibold text-md">
+          <h3 className="text-white font-semibold text-lg">
             {title}
           </h3>
         </div>
@@ -75,7 +75,7 @@ function OfferItem({ icon: Icon, title, description, index }) {
         className={`overflow-hidden transition-all duration-300 ease-in-out ${open ? "max-h-40 opacity-100 mt-3" : "max-h-0 opacity-0"
           }`}
       >
-        <p className="text-[#8a7aaa] text-sm leading-relaxed pl-14">
+        <p className="text-[#8a7aaa] text-md leading-relaxed pl-14">
           {description}
         </p>
       </div>
@@ -89,14 +89,14 @@ function StepCard({ number, icon: Icon, title, description }) {
   return (
     <div className="flex flex-col items-center text-center gap-3">
       {/* step number*/}
-      <div className="w-12 h-12 rounded-full border-2 border-[#9b59f5] flex items-center justify-center text-[#9b59f5] font-bold text-sm">
+      <div className="w-12 h-12 rounded-full border-2 border-[#9b59f5] flex items-center justify-center text-[#9b59f5] font-bold text-md">
         {number}
       </div>
 
       {/* step icon*/}
-      <Icon className="text-[#9b59f5] w-8 h-8" />
-      <h3 className="text-white font-bold text-base">{title}</h3>
-      <p className="text-[#8a7aaa] text-sm leading-relaxed">{description}</p>
+      <Icon className="text-[#9b59f5] w-12 h-12 mt-3" />
+      <h3 className="text-white font-bold text-md">{title}</h3>
+      <p className="text-[#8a7aaa] text-sm font-medium leading-relaxed">{description}</p>
     </div>
   )
 }
@@ -219,7 +219,7 @@ export default function Home() {
 
       {/* HERO section, 2 column layout
         Left area has Headline, Right area has the logo surrounded by the 4 feature cards.*/}
-      <section className="">
+      <section className="px-4">
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 lg:gap-12 items-center">
 
           {/* left column*/}
@@ -288,14 +288,14 @@ export default function Home() {
 
       {/* WHAT WE OFFER, two column layout
         Left has heading, right has the list of items */}
-      <section className="border-t border-[#1a1030] py-24">
-        <div className="w-full px-30">
-          <div className="grid grid-cols-2 gap-16 items-start">
+      <section className="border-t border-[#1a1030] py-18 pb-0 xl:py-24">
+        <div className="px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
 
             {/*Left column, heading and descriptions */}
 
             <div
-              className="relative flex flex-col gap-5 p-6 pt-0 rounded-2xl bg-cover bg-left h-[500px] overflow-hidden"
+              className="relative flex flex-col gap-5 p-6 pt-0 pl-0 bg-cover bg-left lg:h-[500px] overflow-hidden"
               style={{ backgroundImage: `url(${bg})` }}
             >
               <div className="pointer-events-none absolute top-0 left-0 w-full h-3/5 bg-gradient-to-b from-[#0a0a0f] to-transparent blur-xl" />
@@ -306,7 +306,7 @@ export default function Home() {
 
               <div className="relative z-10">
 
-                <p className="text-[#9b59f5] text-sm font-semibold tracking-widest uppercase">
+                <p className="text-[#9b59f5] text-md font-semibold tracking-widest uppercase">
                   What we offer
                 </p>
 
@@ -316,7 +316,7 @@ export default function Home() {
 
                 <div className="w-12 h-1 bg-[#9b59f5] rounded-full mt-3 mb-7" />
 
-                <p className="text-[#9b95a7] text-md font-semibold leading-relaxed">
+                <p className="text-[#9b95a7] text-lg font-semibold leading-relaxed">
                   Five core capabilities designed to detect, analyze, and improve your focus all in real time.
                 </p>
               </div>
@@ -338,15 +338,17 @@ export default function Home() {
       </section>
 
       {/* GETTING STARTED, four column grid of steps card that guides the user */}
-      <section className="py-24 border-t border-[#1a1030]">
-        <div className="w-full px-30">
+      <section className="py-18 pb-0 xl:py-24 border-t border-[#1a1030]">
+        <div className="px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-black mb-3">Getting Started</h2>
-            <p className="text-[#9b59f5] text-lg font-medium">Up and Running in 4 Simple Steps</p>
+            <h2 className="text-4xl font-black mb-2">Getting Started</h2>
+            <p className="text-[#9b59f5] text-lg font-semibold">Up and Running in 4 Simple Steps</p>
+
+            <div className="w-12 h-1 bg-[#9b59f5] rounded-full mt-3 mb-7 mx-auto" />
           </div>
 
           {/* steps cards rendered from the steps array*/}
-          <div className="grid grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 px-10">
             {steps.map((s, i) => <StepCard key={i} {...s} />)}
           </div>
         </div>
@@ -355,11 +357,13 @@ export default function Home() {
       {/* PRICING  
         Three tiers of pricing that can be toggled monthly/yearly
         Toggle state is managed by the isYearly useState hook*/}
-      <section className="py-24 border-t border-[#1a1030]">
-        <div className="w-full px-10">
+      <section className="py-18 pb-0 xl:py-24 border-t border-[#1a1030]">
+        <div className="px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-black mb-2">Pricing</h2>
-            <p className="text-[#9b59f5] text-lg font-medium mb-6">Simple, transparent plans</p>
+            <p className="text-[#9b59f5] text-lg font-semibold mb-6">Simple, transparent plans</p>
+
+            <div className="w-12 h-1 bg-[#9b59f5] rounded-full mt-3 mb-7 mx-auto" />
 
             {/* toggle */}
             <div className="inline-flex items-center gap-3 bg-[#13102a] border border-[#2a1a40] rounded-full px-5 py-2">
@@ -387,7 +391,7 @@ export default function Home() {
           </div>
 
           {/* pricing cards rendered from the planes array*/}
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {plans.map((p, i) => (
               <PricingCard key={i} {...p} isYearly={isYearly} />
             ))}
@@ -396,7 +400,9 @@ export default function Home() {
       </section>
 
       {/* footer import from components*/}
-      <Footer />
+      <div className='py-18 pb-0 xl:py-24'>
+        <Footer />
+      </div>
     </div>
   )
 }
