@@ -94,16 +94,22 @@ export default function AboutUs() {
             </p>
           </div>
 
-          {/*right logo with glow*/}
-          <div className="relative hidden lg:flex items-center justify-center">
-            <div className="absolute w-[300px] h-[300px] rounded-full bg-[#4a1a90] opacity-30 blur-3xl" />
-            <div className="absolute w-[320px] h-[320px] rounded-full border border-dashed border-[#3d2060]" />
+          {/* right section logo with glow */}
+          <div className="relative flex items-center justify-center lg:pt-10 xl:pr-15">
+            {/* glow behind logo */}
+            <div className="absolute w-[220px] h-[220px] lg:w-[30vw] lg:h-[30vw] xl:w-[60vw] xl:h-[60vw] max-w-[500px] max-h-[500px] rounded-full bg-[#4a1a90] opacity-30 blur-3xl" />
 
-            <img
-              src={logo}
-              alt="Focusentrix logo"
-              className="relative w-40 h-40 xl:w-72 xl:h-72 object-contain"
-            />
+            {/* dashed orbit ring around logo */}
+            <div className="absolute w-100 h-100 rounded-full border border-dashed border-[#3d2060] opacity-100" />
+
+            {/* logo on the right*/}
+            <div className="relative w-100 h-100 flex items-center justify-center">
+              <img
+                src={logo}
+                alt="Focusentrix logo"
+                className="w-32 h-32 sm:w-40 sm:h-40 xl:w-80 xl:h-80 object-contain"
+              />
+            </div>
           </div>
 
         </div>

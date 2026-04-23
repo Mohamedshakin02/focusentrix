@@ -250,12 +250,13 @@ export default function Home() {
           {/* right column*/}
           <div className="order-1 lg:order-2 relative flex items-center justify-center py-16 lg:py-25 xl:pr-15">
 
+            {/* right section logo with glow */}
             <div className="absolute w-[220px] h-[220px] lg:w-[30vw] lg:h-[30vw] xl:w-[60vw] xl:h-[60vw] max-w-[500px] max-h-[500px] rounded-full bg-[#4a1a90] opacity-30 blur-3xl" />
 
-
+            {/* image container */}
             <div className="relative w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] lg:w-[30vw] lg:h-[30vw] xl:w-[70vw] xl:h-[70vw] max-w-[400px] max-h-[400px] flex items-center justify-center">
 
-
+              {/* dashed orbit ring around logo */}
               <div className="absolute w-full h-full rounded-full border border-dashed border-[#3d2060]" />
 
 
