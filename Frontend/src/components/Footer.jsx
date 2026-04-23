@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Rocket, Bell, ChevronRight } from 'lucide-react'
-import logo from '../assets/focusentrixclear.png'
+import logo from '../assets/focusentrixclear2.png'
 
 export default function Footer() {
   return (
@@ -17,14 +17,14 @@ export default function Footer() {
           <div className="flex flex-col gap-3">
             <div>
               <p className="text-white font-bold text-lg leading-snug">Planning to improve<br />your focus?</p>
-              <p className="text-[#8a7aaa] text-md mt-1">Start building your focus journey with Focusentrix.</p>
+              <p className="text-[#8a7aaa] text-md mt-2">Start building your focus journey with Focusentrix.</p>
             </div>
             <Link
               to="/auth"
               className="inline-flex items-center gap-2 bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
                         shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)]
                         hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]
-                        transition-all duration-300 text-white font-semibold px-5 py-2.5 rounded-lg transition-colors duration-200 text-sm w-fit"
+                        transition-all duration-300 text-white font-semibold px-5 py-2.5 rounded-lg transition-colors duration-200 text-sm w-fit mt-3"
             >
               Get Started <span>›</span>
             </Link>
@@ -32,10 +32,9 @@ export default function Footer() {
         </div>
 
         {/* Logo. Center area*/}
-        <div className="flex flex-col lg:items-center lg:justify-center gap-2 px-0 lg:px-10 order-1 lg:order-2">
+        <div className="flex flex-col lg:items-center gap-2 px-0 lg:px-10 order-1 lg:order-2">
           <div className="flex items-center gap-2">
-            <img src={logo} alt="Focusentrix logo" className="w-20 h-20 object-contain" />
-            <span className="text-white font-black text-4xl lg:text-xl tracking-wide uppercase">Focusentrix</span>
+            <img src={logo} alt="Focusentrix logo" className="w-auto h-20 object-contain" />
           </div>
           <p className="text-[#9b59f5] text-xl lg:text-sm font-medium lg:text-center leading-snug mt-1">
             Stay locked in. Work<br />smarter. Achieve more.
@@ -51,7 +50,7 @@ export default function Footer() {
           <div className="flex flex-col gap-3">
             <div>
               <p className="text-white font-bold text-lg leading-snug">Don't miss out on<br />updates</p>
-              <p className="text-[#8a7aaa] text-md mt-1">Follow Focusentrix on social media.</p>
+              <p className="text-[#8a7aaa] text-md mt-2">Follow Focusentrix on social media.</p>
             </div>
             <div className="flex items-center gap-2">
 

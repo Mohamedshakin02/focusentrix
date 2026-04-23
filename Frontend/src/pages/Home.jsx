@@ -289,7 +289,7 @@ export default function Home() {
       {/* WHAT WE OFFER, two column layout
         Left has heading, right has the list of items */}
       <section className="border-t border-[#1a1030] py-18 xl:py-24">
-        <div className="px-4 pb-18 lg:pb-0">
+        <div className="px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
 
             {/*Left column, heading and descriptions */}
@@ -340,7 +340,7 @@ export default function Home() {
 
       {/* GETTING STARTED, four column grid of steps card that guides the user */}
       <section className="py-18 xl:py-24 border-t border-[#1a1030]">
-        <div className="px-4 pb-18 lg:pb-0">
+        <div className="px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-black mb-2">Getting Started</h2>
             <p className="text-[#9b59f5] text-lg font-semibold">Up and Running in 4 Simple Steps</p>

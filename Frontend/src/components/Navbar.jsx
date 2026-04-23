@@ -1,4 +1,4 @@
-import logo from '../assets/focusentrixclear.png'
+import logo from '../assets/focusentrixclear2.png'
 import { Link, useLocation } from 'react-router-dom'
 import { ChevronRight, Menu, X } from 'lucide-react'
 import { useState } from 'react'
@@ -41,8 +41,7 @@ export default function Navbar() {
                         flex items-center gap-3 no-underline
                         "
           >
-            <img src={logo} alt="Focusentrix logo" className="w-10 h-10 object-contain" />
-            <span className="text-white font-black text-lg tracking-widest">FOCUSENTRIX</span>
+            <img src={logo} alt="Focusentrix logo" className="w-auto h-10 object-contain" />
           </Link>
 
           {/* Desktop Menu */}
