@@ -10,7 +10,8 @@ export default function Footer() {
 
         {/* Left area*/}
         <div className="flex items-start gap-4 pr-0 lg:pr-10 order-2 lg:order-1">
-          <div className="bg-[#9b59f5] rounded-full p-3 flex-shrink-0 mt-1">
+          <div className="bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
+                          shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)] rounded-full p-3 flex-shrink-0 mt-1">
             <Rocket className="text-white w-5 h-5" />
           </div>
           <div className="flex flex-col gap-3">
@@ -20,7 +21,10 @@ export default function Footer() {
             </div>
             <Link
               to="/auth"
-              className="inline-flex items-center gap-2 bg-[#9b59f5] hover:bg-[#7c3de0] text-white font-semibold px-5 py-2.5 rounded-lg transition-colors duration-200 text-sm w-fit"
+              className="inline-flex items-center gap-2 bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
+                        shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)]
+                        hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]
+                        transition-all duration-300 text-white font-semibold px-5 py-2.5 rounded-lg transition-colors duration-200 text-sm w-fit"
             >
               Get Started <span>›</span>
             </Link>
@@ -40,9 +44,10 @@ export default function Footer() {
 
         {/* social media icons and links. Right area*/}
         <div className="flex items-start gap-4 pl-0 lg:pl-10 order-3 lg:order-3">
-          <div className="bg-[#9b59f5] rounded-full p-3 flex-shrink-0 mt-1">
+          <div className="bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
+                          shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)] rounded-full p-3 flex-shrink-0 mt-1">
             <Bell className="text-white w-5 h-5" />
-            </div>
+          </div>
           <div className="flex flex-col gap-3">
             <div>
               <p className="text-white font-bold text-lg leading-snug">Don't miss out on<br />updates</p>
@@ -58,9 +63,9 @@ export default function Footer() {
                 className="bg-[#1e1535] hover:bg-[#9b59f5] border border-[#3d2060] hover:border-[#9b59f5] rounded-lg p-2 transition-colors duration-200"
               >
                 <svg className="text-white w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
-                  <rect x="2" y="9" width="4" height="12"/>
-                  <circle cx="4" cy="4" r="2"/>
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                  <rect x="2" y="9" width="4" height="12" />
+                  <circle cx="4" cy="4" r="2" />
                 </svg>
               </a>
 
@@ -72,7 +77,7 @@ export default function Footer() {
                 className="bg-[#1e1535] hover:bg-[#9b59f5] border border-[#3d2060] hover:border-[#9b59f5] rounded-lg p-2 transition-colors duration-200"
               >
                 <svg className="text-white w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M23 7s-.3-2-1.2-2.7c-1.1-1.2-2.4-1.2-3-1.3C16.6 3 12 3 12 3s-4.6 0-6.8.1c-.6.1-1.9.1-3 1.3C1.3 5 1 7 1 7S.7 9.1.7 11.3v2c0 2.1.3 4.3.3 4.3s.3 2 1.2 2.7c1.1 1.2 2.6 1.1 3.3 1.2C7.6 21.7 12 21.7 12 21.7s4.6 0 6.8-.2c.6-.1 1.9-.1 3-1.3.9-.7 1.2-2.7 1.2-2.7s.3-2.1.3-4.3v-2C23.3 9.1 23 7 23 7zM9.7 15.5v-7l8.1 3.5-8.1 3.5z"/>
+                  <path d="M23 7s-.3-2-1.2-2.7c-1.1-1.2-2.4-1.2-3-1.3C16.6 3 12 3 12 3s-4.6 0-6.8.1c-.6.1-1.9.1-3 1.3C1.3 5 1 7 1 7S.7 9.1.7 11.3v2c0 2.1.3 4.3.3 4.3s.3 2 1.2 2.7c1.1 1.2 2.6 1.1 3.3 1.2C7.6 21.7 12 21.7 12 21.7s4.6 0 6.8-.2c.6-.1 1.9-.1 3-1.3.9-.7 1.2-2.7 1.2-2.7s.3-2.1.3-4.3v-2C23.3 9.1 23 7 23 7zM9.7 15.5v-7l8.1 3.5-8.1 3.5z" />
                 </svg>
               </a>
 
@@ -84,9 +89,9 @@ export default function Footer() {
                 className="bg-[#1e1535] hover:bg-[#9b59f5] border border-[#3d2060] hover:border-[#9b59f5] rounded-lg p-2 transition-colors duration-200"
               >
                 <svg className="text-white w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                  <circle cx="12" cy="12" r="4"/>
-                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                  <circle cx="12" cy="12" r="4" />
+                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
                 </svg>
               </a>
 
