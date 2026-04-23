@@ -44,7 +44,7 @@ function MissionCard({ icon: Icon, title, children }) {
 export default function AboutUs() {
   const team = [
     { name: 'Mohamed Elmustafa', role: 'Founder and Developer' },
-    { name: 'Mohamed Shakin', role: 'Developer' },
+    { name: 'Mohamed Shakin', role: 'Developer and Designer' },
     { name: 'Maryam Manzoor', role: 'Marketing' },
     { name: 'Najam Tahir', role: 'Designer' },
     { name: 'Anshara', role: 'Marketing' },
