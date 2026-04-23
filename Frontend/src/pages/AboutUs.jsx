@@ -95,7 +95,7 @@ export default function AboutUs() {
           </div>
 
           {/* right section logo with glow */}
-          <div className="relative flex items-center justify-center lg:pt-10 xl:pr-15">
+          <div className="relative hidden lg:flex items-center justify-center lg:pt-10 xl:pr-15">
             {/* glow behind logo */}
             <div className="absolute w-[220px] h-[220px] lg:w-[30vw] lg:h-[30vw] xl:w-[60vw] xl:h-[60vw] max-w-[500px] max-h-[500px] rounded-full bg-[#4a1a90] opacity-30 blur-3xl" />
 
@@ -199,7 +199,7 @@ export default function AboutUs() {
       </section>
 
       {/* FOOTER */}
-      <div className="py-18 pb-0">
+      <div className="py-18 pb-0 px-4">
         <Footer />
       </div>
 

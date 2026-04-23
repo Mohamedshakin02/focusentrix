@@ -404,7 +404,7 @@ export default function Home() {
       </section>
 
       {/* footer import from components*/}
-      <div className='py-18 pb-0 xl:pb-0'>
+      <div className='py-18 pb-0 xl:pb-0 px-4'>
         <Footer />
       </div>
     </div>

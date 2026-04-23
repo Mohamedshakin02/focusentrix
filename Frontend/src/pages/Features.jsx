@@ -3,26 +3,48 @@ import { Webcam, Bell, BellRing, BarChart2, Target, CheckSquare, User } from 'lu
 import Footer from '../components/Footer'
 
 
-// featurerow
+// feature row
 // each feature is its own card
 // left has icon + title + description
 // right has a unique visual widget per card
 function FeatureRow({ icon: Icon, title, description, widget }) {
   return (
-    <div className="flex items-center justify-between bg-[#0e0b1e] border border-[#1e1535] rounded-2xl px-10 py-8 gap-12">
+    <div
+      className="
+        flex flex-col
+        xl:flex-row
+
+        bg-[#0e0b1e] border border-[#1e1535]
+        rounded-2xl px-6 lg:px-10 py-6 lg:py-8
+        gap-6 xl:gap-12
+      "
+    >
+      
       {/* left has icon, title, description */}
-      <div className="flex items-start gap-6 flex-1">
-        <div className="bg-[#1e1040] rounded-2xl p-4 flex-shrink-0">
-          <Icon className="text-[#9b59f5] w-7 h-7" />
+      <div className="w-full xl:w-[60%] flex items-start gap-5 min-w-0">
+        <div className="bg-[#1e1040] rounded-2xl p-3 lg:p-4 flex-shrink-0">
+          <Icon className="text-[#9b59f5] w-6 h-6 lg:w-7 lg:h-7" />
         </div>
-        <div>
-          <h3 className="text-white font-bold text-xl mb-2">{title}</h3>
-          <p className="text-[#8a7aaa] text-sm leading-relaxed max-w-xs">{description}</p>
+
+        <div className="min-w-0">
+          <h3 className="text-white font-bold text-lg xl:text-xl mb-3">
+            {title}
+          </h3>
+
+          <p className="text-[#8a7aaa] text-md xl:text-md font-medium leading-relaxed">
+            {description}
+          </p>
         </div>
       </div>
 
       {/* right has unique visual widget */}
-      <div className="flex-shrink-0">
+      <div
+        className="
+          w-full xl:w-[40%]
+          flex justify-center xl:justify-end
+          flex-shrink-0
+        "
+      >
         {widget}
       </div>
     </div>
@@ -47,7 +69,7 @@ function CameraWidget() {
         </div>
       </div>
       {/* live badge */}
-      <div className="absolute bottom-0 right-0 flex items-center gap-1.5 bg-[#13102a] border border-[#2a1a40] rounded-full px-3 py-1.5">
+      <div className="absolute bottom-0 right-0 flex items-center gap-1.5 bg-[#13102a] border border-[#08050b] rounded-full px-3 py-1.5">
         <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
         <span className="text-white text-xs font-medium">Live Monitoring</span>
       </div>
@@ -158,7 +180,7 @@ function GoalWidget() {
 // habit tracking widget
 function HabitWidget() {
   const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
-  const done  = [true, true, true, true, true, false, false]
+  const done = [true, true, true, true, true, false, false]
 
   return (
     <div className="w-56 h-32 bg-[#13102a] border border-[#2a1a40] rounded-2xl p-4 flex flex-col justify-between">
@@ -219,33 +241,32 @@ export default function Features() {
   ]
 
 
-  //hero code
   return (
-    <div className="bg-[#0a0a0f] min-h-screen text-white">
+    <div className="bg-[#0a0a0f] min-h-screen text-white container mx-auto px-4 sm:px-6 lg:px-30">
 
-      {/* hero section
+      {/* main section of the page
           two-column: left has label + heading + description,
           right has the Focusentrix logo with glow.
         */}
-      <section className="w-full px-30 pt-20 pb-16">
-        <div className="grid grid-cols-2 gap-12 items-center">
+      <section className="w-full pt-12 pb-16 px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
           {/* left heading */}
-          <div className="flex flex-col gap-5">
-            <p className="text-[#9b59f5] text-m font-semibold tracking-widest uppercase">Features</p>
-            <h1 className="text-5xl font-black leading-tight">
+          <div className="flex flex-col">
+            <p className="text-[#9b59f5] text-md font-semibold tracking-widest uppercase">Features</p>
+            <h1 className="text-5xl sm:text-6xl font-black leading-tight mt-2">
               Everything You Need<br />to Stay in the Zone
             </h1>
-            <p className="text-[#8a7aaa] text-base leading-relaxed max-w-sm">
+            <p className="text-[#8a7aaa] text-lg font-semibold leading-relaxed max-w-sm mt-5">
               Five core capabilities designed to detect, analyze,
               and improve your focus all in real time.
             </p>
           </div>
 
           {/* right section logo with glow */}
-          <div className="relative flex items-center justify-center">
+          <div className="relative hidden lg:flex items-center justify-center lg:pt-10 xl:pr-15">
             {/* glow behind logo */}
-            <div className="absolute w-120 h-120 rounded-full bg-[#4a1a90] opacity-20 blur-3xl" />
+            <div className="absolute w-[220px] h-[220px] lg:w-[30vw] lg:h-[30vw] xl:w-[60vw] xl:h-[60vw] max-w-[500px] max-h-[500px] rounded-full bg-[#4a1a90] opacity-30 blur-3xl" />
 
             {/* dashed orbit ring around logo */}
             <div className="absolute w-100 h-100 rounded-full border border-dashed border-[#3d2060] opacity-100" />
@@ -255,7 +276,7 @@ export default function Features() {
               <img
                 src={logo}
                 alt="Focusentrix logo"
-                className="w-100 h-100 object-contain"
+                className="w-32 h-32 sm:w-40 sm:h-40 xl:w-80 xl:h-80 object-contain"
               />
             </div>
           </div>
@@ -267,14 +288,16 @@ export default function Features() {
           one card per feature. Each has icon+text on the left
           and a uniqu widget on the right.
         */}
-      <section className="w-full px-30 pb-24 grid grid-cols-2 gap-4">
+      <section className="w-full pb-0 grid grid-cols-1 md:grid-cols-2 gap-4 px-4">
         {features.map((f, i) => (
           <FeatureRow key={i} {...f} />
         ))}
       </section>
 
-      {/*FOOTER*/}
-      <Footer />
+      {/* FOOTER */}
+      <div className="py-18 pb-0 px-4">
+        <Footer />
+      </div>
 
     </div>
   )
