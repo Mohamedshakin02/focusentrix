@@ -403,7 +403,7 @@ export default function Home() {
       </section>
 
       {/* footer import from components*/}
-      <div className='py-18 pb-0 xl:py-24 xl:pb-0'>
+      <div className='py-18 pb-0 xl:pb-0'>
         <Footer />
       </div>
     </div>

@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-0 lg:divide-x lg:divide-[#1a1030] mb-8">
 
         {/* Left area*/}
-        <div className="flex items-start gap-4 pr-0 lg:pr-10 order-2 lg:order-1">
+        <div className="flex items-start gap-4 pr-0 lg:pr-10 order-2 lg:order-1 mb-2 lg:mb-0 ">
           <div className="bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
                           shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)] rounded-full p-3 flex-shrink-0 mt-1">
             <Rocket className="text-white w-5 h-5" />
@@ -32,7 +32,7 @@ export default function Footer() {
         </div>
 
         {/* Logo. Center area*/}
-        <div className="flex flex-col lg:items-center gap-2 px-0 lg:px-10 order-1 lg:order-2">
+        <div className="flex flex-col lg:items-center gap-2 px-0 lg:px-10 mb-6 lg:mb-0 order-1 lg:order-2">
           <div className="flex items-center gap-2">
             <img src={logo} alt="Focusentrix logo" className="w-auto h-20 object-contain" />
           </div>
