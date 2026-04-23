@@ -6,17 +6,17 @@ export default function Footer() {
   return (
     <footer className="border-t border-[#1a1030] bg-[#0a0a0f] px-10 py-10">
       {/*3 column section */}
-      <div className="grid grid-cols-3 divide-x divide-[#1a1030] mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-0 lg:divide-x lg:divide-[#1a1030] mb-8">
 
         {/* Left area*/}
-        <div className="flex items-start gap-4 pr-10">
+        <div className="flex items-start gap-4 pr-0 lg:pr-10 order-2 lg:order-1">
           <div className="bg-[#9b59f5] rounded-full p-3 flex-shrink-0 mt-1">
             <Rocket className="text-white w-5 h-5" />
           </div>
           <div className="flex flex-col gap-3">
             <div>
-              <p className="text-white font-bold text-base leading-snug">Planning to improve<br />your focus?</p>
-              <p className="text-[#8a7aaa] text-sm mt-1">Start building your focus journey with Focusentrix.</p>
+              <p className="text-white font-bold text-lg lg:text-base leading-snug">Planning to improve<br />your focus?</p>
+              <p className="text-[#8a7aaa] text-md lg:text-sm mt-1">Start building your focus journey with Focusentrix.</p>
             </div>
             <Link
               to="/signup"
@@ -28,25 +28,25 @@ export default function Footer() {
         </div>
 
         {/* Logo. Center area*/}
-        <div className="flex flex-col items-center justify-center gap-2 px-10">
+        <div className="flex flex-col lg:items-center lg:justify-center gap-2 px-0 lg:px-10 order-1 lg:order-2">
           <div className="flex items-center gap-2">
             <img src={logo} alt="Focusentrix logo" className="w-20 h-20 object-contain" />
-            <span className="text-white font-black text-xl tracking-wide uppercase">Focusentrix</span>
+            <span className="text-white font-black text-4xl lg:text-xl tracking-wide uppercase">Focusentrix</span>
           </div>
-          <p className="text-[#9b59f5] text-sm font-medium text-center leading-snug mt-1">
+          <p className="text-[#9b59f5] text-xl lg:text-sm font-medium lg:text-center leading-snug mt-1">
             Stay locked in. Work<br />smarter. Achieve more.
           </p>
         </div>
 
         {/* social media icons and links. Right area*/}
-        <div className="flex items-start gap-4 pl-10">
+        <div className="flex items-start gap-4 pl-0 lg:pl-10 order-3 lg:order-3">
           <div className="bg-[#9b59f5] rounded-full p-3 flex-shrink-0 mt-1">
             <Bell className="text-white w-5 h-5" />
             </div>
           <div className="flex flex-col gap-3">
             <div>
-              <p className="text-white font-bold text-base leading-snug">Don't miss out on<br />updates</p>
-              <p className="text-[#8a7aaa] text-sm mt-1">Follow Focusentrix on social media.</p>
+              <p className="text-white font-bold text-lg lg:text-base leading-snug">Don't miss out on<br />updates</p>
+              <p className="text-[#8a7aaa] text-md lg:text-sm mt-1">Follow Focusentrix on social media.</p>
             </div>
             <div className="flex items-center gap-2">
 
@@ -98,7 +98,7 @@ export default function Footer() {
 
       {/* copyright bottom*/}
       <div className="border-t border-[#1a1030] pt-6 text-center">
-        <p className="text-[#5a4a7a] text-sm">
+        <p className="text-[#5a4a7a] text-md font-medium lg:font-normal lg:text-sm">
           © 2026 FOCUSENTRIX. All rights reserved.
         </p>
       </div>
