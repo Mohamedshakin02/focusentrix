@@ -97,7 +97,16 @@ export default function Pricing() {
       {/* PRICING  
         Three tiers of pricing that can be toggled monthly/yearly
         Toggle state is managed by the isYearly useState hook*/}
-      <section className="border-t border-[#1a1030]">
+      <section className="relative border-t border-[#1a1030]">
+
+        {/* glowing effect */}
+        <div className="
+                        pointer-events-none absolute top-0 left-1/2 -translate-x-1/2
+                        w-[50vw] h-[50vw]
+                        lg:w-[300px] lg:h-[300px]
+                        bg-[#9b59f5] opacity-20 lg:opacity-15 blur-[90px] sm:blur-[110px] lg:blur-[120px]
+        " />
+
         <div className="w-full px-4 pt-12 pb-0">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-black mb-2">Pricing</h2>
@@ -116,7 +125,7 @@ export default function Pricing() {
                 onClick={() => setIsYearly(!isYearly)}
                 className="w-11 h-6 bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
                     shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)]
-                    hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)] rounded-full relative cursor-pointer transition-all duration-300"
+                    rounded-full relative cursor-pointer transition-all duration-300"
               >
 
                 {/* sliding dot that moves between monthly and yearly*/}
