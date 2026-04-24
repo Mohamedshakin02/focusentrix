@@ -1,6 +1,7 @@
 import logo from '../assets/focusentrixclear.png'
 import { Webcam, Bell, BellRing, BarChart2, Target, CheckSquare, User } from 'lucide-react'
 import Footer from '../components/Footer'
+import Navbar from '../components/Navbar'
 
 
 // feature row
@@ -19,7 +20,7 @@ function FeatureRow({ icon: Icon, title, description, widget }) {
         gap-6 xl:gap-12
       "
     >
-      
+
       {/* left has icon, title, description */}
       <div className="w-full xl:w-[60%] flex items-start gap-5 min-w-0">
         <div className="bg-[#1e1040] rounded-2xl p-3 lg:p-4 flex-shrink-0">
@@ -242,67 +243,71 @@ export default function Features() {
 
 
   return (
-    <div className="bg-[#0a0a0f] min-h-screen text-white container mx-auto px-4 sm:px-6 lg:px-30">
+    <>
+      <Navbar />
 
-      {/* main section of the page
+      <div className="bg-[#0a0a0f] min-h-screen text-white container mx-auto px-4 sm:px-6 lg:px-30">
+
+        {/* main section of the page
           two-column: left has label + heading + description,
           right has the Focusentrix logo with glow.
         */}
-      <section className="relative w-full pt-12 pb-16 px-4">
+        <section className="relative w-full pt-12 pb-16 px-4">
 
-        {/* glowing effect */}
-        <div className="pointer-events-none absolute -top-20 -left-20 w-[300px] h-[300px] bg-[#9b59f5] opacity-20 blur-[140px] block lg:hidden" />
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* glowing effect */}
+          <div className="pointer-events-none absolute -top-20 -left-20 w-[300px] h-[300px] bg-[#9b59f5] opacity-20 blur-[140px] block lg:hidden" />
 
-          {/* left heading */}
-          <div className="flex flex-col">
-            <p className="text-[#9b59f5] text-md font-semibold tracking-widest uppercase">Features</p>
-            <h1 className="text-4xl xl:text-5xl font-black leading-tight mt-2">
-              Everything You Need<br />to Stay in the Zone
-            </h1>
-            <p className="text-[#8a7aaa] text-lg font-medium leading-relaxed max-w-sm mt-5">
-              Five core capabilities designed to detect, analyze,
-              and improve your focus all in real time.
-            </p>
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
-          {/* right section logo with glow */}
-          <div className="relative hidden lg:flex items-center justify-center lg:pt-10 xl:pr-15">
-            {/* glow behind logo */}
-            <div className="absolute w-[220px] h-[220px] lg:w-[30vw] lg:h-[30vw] xl:w-[60vw] xl:h-[60vw] max-w-[500px] max-h-[500px] rounded-full bg-[#4a1a90] opacity-30 blur-3xl" />
-
-            {/* dashed orbit ring around logo */}
-            <div className="absolute w-100 h-100 rounded-full border border-dashed border-[#3d2060] opacity-100" />
-
-            {/* logo on the right*/}
-            <div className="relative w-100 h-100 flex items-center justify-center">
-              <img
-                src={logo}
-                alt="Focusentrix logo"
-                className="w-32 h-32 sm:w-40 sm:h-40 xl:w-80 xl:h-80 object-contain"
-              />
+            {/* left heading */}
+            <div className="flex flex-col">
+              <p className="text-[#9b59f5] text-md font-semibold tracking-widest uppercase">Features</p>
+              <h1 className="text-4xl xl:text-5xl font-black leading-tight mt-2">
+                Everything You Need<br />to Stay in the Zone
+              </h1>
+              <p className="text-[#8a7aaa] text-lg font-medium leading-relaxed max-w-sm mt-5">
+                Five core capabilities designed to detect, analyze,
+                and improve your focus all in real time.
+              </p>
             </div>
+
+            {/* right section logo with glow */}
+            <div className="relative hidden lg:flex items-center justify-center lg:pt-10 xl:pr-15">
+              {/* glow behind logo */}
+              <div className="absolute w-[220px] h-[220px] lg:w-[30vw] lg:h-[30vw] xl:w-[60vw] xl:h-[60vw] max-w-[500px] max-h-[500px] rounded-full bg-[#4a1a90] opacity-30 blur-3xl" />
+
+              {/* dashed orbit ring around logo */}
+              <div className="absolute w-100 h-100 rounded-full border border-dashed border-[#3d2060] opacity-100" />
+
+              {/* logo on the right*/}
+              <div className="relative w-100 h-100 flex items-center justify-center">
+                <img
+                  src={logo}
+                  alt="Focusentrix logo"
+                  className="w-32 h-32 sm:w-40 sm:h-40 xl:w-80 xl:h-80 object-contain"
+                />
+              </div>
+            </div>
+
           </div>
+        </section>
 
-        </div>
-      </section>
-
-      {/* FEATURE ROWS
+        {/* FEATURE ROWS
           one card per feature. Each has icon+text on the left
           and a uniqu widget on the right.
         */}
-      <section className="w-full pb-0 grid grid-cols-1 md:grid-cols-2 gap-4 px-4">
-        {features.map((f, i) => (
-          <FeatureRow key={i} {...f} />
-        ))}
-      </section>
+        <section className="w-full pb-0 grid grid-cols-1 md:grid-cols-2 gap-4 px-4">
+          {features.map((f, i) => (
+            <FeatureRow key={i} {...f} />
+          ))}
+        </section>
 
-      {/* FOOTER */}
-      <div className="py-18 pb-0 px-4">
-        <Footer />
+        {/* FOOTER */}
+        <div className="py-18 pb-0 px-4">
+          <Footer />
+        </div>
+
       </div>
-
-    </div>
+    </>
   )
 }

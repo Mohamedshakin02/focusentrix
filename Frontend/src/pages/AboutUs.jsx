@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import logo from '../assets/focusentrixclear.png'
 import { Target, Eye, Users, BarChart2, User } from 'lucide-react'
 import Footer from '../components/Footer'
+import Navbar from '../components/Navbar'
 
 // teamMemberCard
 // shows a team member with picture, name, and role
@@ -65,148 +66,152 @@ export default function AboutUs() {
   ]
 
   return (
-    <div className="bg-[#0a0a0f] min-h-screen text-white container mx-auto px-4 sm:px-6 lg:px-30">
+    <>
+      <Navbar />
+      
+      <div className="bg-[#0a0a0f] min-h-screen text-white container mx-auto px-4 sm:px-6 lg:px-30">
 
-      {/* hero header
+        {/* hero header
           two columns left has label, heading and paragraph
           right has the logo with glow
       */}
 
-      <section className="relative w-full pt-12 pb-16 px-4">
+        <section className="relative w-full pt-12 pb-16 px-4">
 
-        {/* glowing effect */}
-        <div className="pointer-events-none absolute -top-20 -left-20 w-[300px] h-[300px] bg-[#9b59f5] opacity-20 blur-[140px] block lg:hidden" />
+          {/* glowing effect */}
+          <div className="pointer-events-none absolute -top-20 -left-20 w-[300px] h-[300px] bg-[#9b59f5] opacity-20 blur-[140px] block lg:hidden" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
-          {/* left heading*/}
-          <div>
-            <span className="text-[#9b59f5] text-md font-semibold tracking-widest uppercase">About Us</span>
+            {/* left heading*/}
+            <div>
+              <span className="text-[#9b59f5] text-md font-semibold tracking-widest uppercase">About Us</span>
 
-            <h1 className="text-4xl sm:text-6xl font-black mt-2">
-              Who <span className="text-[#9b59f5]">We Are</span>
-            </h1>
+              <h1 className="text-4xl sm:text-6xl font-black mt-2">
+                Who <span className="text-[#9b59f5]">We Are</span>
+              </h1>
 
-            <p className="text-[#9b59f5] font-bold text-lg mt-2">
-              Built by Students, Built for Everyone
-            </p>
+              <p className="text-[#9b59f5] font-bold text-lg mt-2">
+                Built by Students, Built for Everyone
+              </p>
 
-            <p className="text-[#8a7aaa] text-lg font-medium leading-relaxed max-w-md mt-5">
-              Focusentrix Creative Studios is an innovative technology
-              startup dedicated to improving productivity in the digital age.
-              We believe focus is the new competitive advantage.
-            </p>
-          </div>
-
-          {/* right section logo with glow */}
-          <div className="relative hidden lg:flex items-center justify-center lg:pt-10 xl:pr-15">
-            {/* glow behind logo */}
-            <div className="absolute w-[220px] h-[220px] lg:w-[30vw] lg:h-[30vw] xl:w-[60vw] xl:h-[60vw] max-w-[500px] max-h-[500px] rounded-full bg-[#4a1a90] opacity-30 blur-3xl" />
-
-            {/* dashed orbit ring around logo */}
-            <div className="absolute w-100 h-100 rounded-full border border-dashed border-[#3d2060] opacity-100" />
-
-            {/* logo on the right*/}
-            <div className="relative w-100 h-100 flex items-center justify-center">
-              <img
-                src={logo}
-                alt="Focusentrix logo"
-                className="w-32 h-32 sm:w-40 sm:h-40 xl:w-80 xl:h-80 object-contain"
-              />
+              <p className="text-[#8a7aaa] text-lg font-medium leading-relaxed max-w-md mt-5">
+                Focusentrix Creative Studios is an innovative technology
+                startup dedicated to improving productivity in the digital age.
+                We believe focus is the new competitive advantage.
+              </p>
             </div>
+
+            {/* right section logo with glow */}
+            <div className="relative hidden lg:flex items-center justify-center lg:pt-10 xl:pr-15">
+              {/* glow behind logo */}
+              <div className="absolute w-[220px] h-[220px] lg:w-[30vw] lg:h-[30vw] xl:w-[60vw] xl:h-[60vw] max-w-[500px] max-h-[500px] rounded-full bg-[#4a1a90] opacity-30 blur-3xl" />
+
+              {/* dashed orbit ring around logo */}
+              <div className="absolute w-100 h-100 rounded-full border border-dashed border-[#3d2060] opacity-100" />
+
+              {/* logo on the right*/}
+              <div className="relative w-100 h-100 flex items-center justify-center">
+                <img
+                  src={logo}
+                  alt="Focusentrix logo"
+                  className="w-32 h-32 sm:w-40 sm:h-40 xl:w-80 xl:h-80 object-contain"
+                />
+              </div>
+            </div>
+
           </div>
+        </section>
 
-        </div>
-      </section>
-
-      {/*main section of the page
+        {/*main section of the page
           two column layout
           left has our mission, vision, and who We Serve cards
           right has team grid and Market Insights
       */}
-      <section className="w-full lg:mt-5 pb-0 px-4">
+        <section className="w-full lg:mt-5 pb-0 px-4">
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-          {/* Mission Card */}
-          <div className="order-1">
-            <MissionCard icon={Target} title="Our Mission">
-              To help every student, developer, and creator do their deepest work by building a platform
-              that fights distraction intelligently and gives you the data to understand your own focus patterns.
-            </MissionCard>
-          </div>
-
-          {/* Team (spans 2 rows on desktop) Card*/}
-          <div className="order-4 lg:order-2 bg-[#0e0b1e] border border-[#1e1535] rounded-2xl p-6 lg:row-span-2">
-            <div className="flex items-center gap-2 mb-5">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#9b59f5]" />
-              <h3 className="text-white font-bold text-base">Our Team — Focusentrix Creative Studios</h3>
+            {/* Mission Card */}
+            <div className="order-1">
+              <MissionCard icon={Target} title="Our Mission">
+                To help every student, developer, and creator do their deepest work by building a platform
+                that fights distraction intelligently and gives you the data to understand your own focus patterns.
+              </MissionCard>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {team.map((member, i) => (
-                <TeamMemberCard key={i} {...member} />
-              ))}
-            </div>
-          </div>
+            {/* Team (spans 2 rows on desktop) Card*/}
+            <div className="order-4 lg:order-2 bg-[#0e0b1e] border border-[#1e1535] rounded-2xl p-6 lg:row-span-2">
+              <div className="flex items-center gap-2 mb-5">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#9b59f5]" />
+                <h3 className="text-white font-bold text-base">Our Team — Focusentrix Creative Studios</h3>
+              </div>
 
-          {/* Vision Card*/}
-          <div className="order-2 lg:order-3">
-            <MissionCard icon={Eye} title="Our Vision">
-              To help every student, developer, and creator do their deepest work by building a platform
-              that fights distraction intelligently and gives you the data to understand your own focus patterns.
-            </MissionCard>
-          </div>
-
-          {/* Who We Serve Card*/}
-          <div className="order-3 lg:order-4 bg-[#0e0b1e] border border-[#1e1535] rounded-2xl p-6 flex items-start gap-4">
-            <div className="bg-[#1e1040] rounded-xl p-3 flex-shrink-0">
-              <Users className="text-[#9b59f5] w-6 h-6" />
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {team.map((member, i) => (
+                  <TeamMemberCard key={i} {...member} />
+                ))}
+              </div>
             </div>
 
-            <div>
-              <h3 className="text-[#9b59f5] font-bold text-base mb-3">Who We Serve</h3>
-              <ul className="flex flex-col gap-2">
-                {served.map((item, i) => (
-                  <li key={i} className="flex items-center gap-2 text-[#8a7aaa] text-md">
-                    <div className="w-4 h-4 rounded-full border border-[#9b59f5] flex items-center justify-center">
-                      <span className="text-[#9b59f5] text-[8px]">✓</span>
-                    </div>
+            {/* Vision Card*/}
+            <div className="order-2 lg:order-3">
+              <MissionCard icon={Eye} title="Our Vision">
+                To help every student, developer, and creator do their deepest work by building a platform
+                that fights distraction intelligently and gives you the data to understand your own focus patterns.
+              </MissionCard>
+            </div>
+
+            {/* Who We Serve Card*/}
+            <div className="order-3 lg:order-4 bg-[#0e0b1e] border border-[#1e1535] rounded-2xl p-6 flex items-start gap-4">
+              <div className="bg-[#1e1040] rounded-xl p-3 flex-shrink-0">
+                <Users className="text-[#9b59f5] w-6 h-6" />
+              </div>
+
+              <div>
+                <h3 className="text-[#9b59f5] font-bold text-base mb-3">Who We Serve</h3>
+                <ul className="flex flex-col gap-2">
+                  {served.map((item, i) => (
+                    <li key={i} className="flex items-center gap-2 text-[#8a7aaa] text-md">
+                      <div className="w-4 h-4 rounded-full border border-[#9b59f5] flex items-center justify-center">
+                        <span className="text-[#9b59f5] text-[8px]">✓</span>
+                      </div>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Market Insights Card*/}
+            <div className="order-5 bg-[#0e0b1e] border border-[#1e1535] rounded-2xl p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="bg-[#1e1040] rounded-xl p-3 flex-shrink-0">
+                  <BarChart2 className="text-[#9b59f5] w-5 h-5" />
+                </div>
+                <h3 className="text-[#9b59f5] font-bold text-md">Market Insights</h3>
+              </div>
+
+              <ul className="flex flex-col gap-3">
+                {insights.map((item, i) => (
+                  <li key={i} className="flex items-start gap-4 text-[#8a7aaa] text-md">
+                    <span className="text-[#9b59f5] mt-0.5 ml-2">•</span>
                     {item}
                   </li>
                 ))}
               </ul>
             </div>
+
           </div>
 
-          {/* Market Insights Card*/}
-          <div className="order-5 bg-[#0e0b1e] border border-[#1e1535] rounded-2xl p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="bg-[#1e1040] rounded-xl p-3 flex-shrink-0">
-                <BarChart2 className="text-[#9b59f5] w-5 h-5" />
-              </div>
-              <h3 className="text-[#9b59f5] font-bold text-md">Market Insights</h3>
-            </div>
+        </section>
 
-            <ul className="flex flex-col gap-3">
-              {insights.map((item, i) => (
-                <li key={i} className="flex items-start gap-4 text-[#8a7aaa] text-md">
-                  <span className="text-[#9b59f5] mt-0.5 ml-2">•</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-
+        {/* FOOTER */}
+        <div className="py-18 pb-0 px-4">
+          <Footer />
         </div>
 
-      </section>
-
-      {/* FOOTER */}
-      <div className="py-18 pb-0 px-4">
-        <Footer />
       </div>
-
-    </div>
+    </>
   )
 }

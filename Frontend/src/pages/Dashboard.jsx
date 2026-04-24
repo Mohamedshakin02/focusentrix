@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { User, AlertTriangle, SkipBack, SkipForward, Pause, Play, Volume2, Plus, Flame, X, Settings } from 'lucide-react'
 import Footer from '../components/Footer'
+import Navbar from '../components/Navbar'
 //once music is chosen import from the assets/music and add them to the array instead of the placeholders
 
 
@@ -14,7 +15,7 @@ const tracks = [
 ]
 
 
-// stat cards at the top of camera mointoring.
+// stat cards at the top of camera monitoring.
 function StatCard({ label, value, sub, badge, icon, iconColor }) {
   return (
     <div className="bg-[#0e0b1e] border border-[#1e1535] rounded-2xl px-5 py-4 flex flex-col gap-1 flex-1">
@@ -175,6 +176,9 @@ export default function Dashboard() {
   const donedays = [true, true, true, true, true, false, false]
 
   return (
+    <>
+    <Navbar />
+    
     <div className="bg-[#0a0a0f] min-h-screen text-white">
 
       {/* hidden audio element. controlled via refs */}
@@ -426,5 +430,6 @@ export default function Dashboard() {
 
       <Footer />
     </div>
+    </>
   )
 }

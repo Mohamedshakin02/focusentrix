@@ -5,6 +5,7 @@ import bg from "../assets/feature-bg.png";
 
 import { useState } from 'react' //used for the monthly/yearly function in the price section
 import Footer from '../components/Footer'
+import Navbar from '../components/Navbar'
 
 
 // small cards that are displayed around the focusentrix logo in the hero section
@@ -215,6 +216,9 @@ export default function Home() {
 
 
   return (
+    <>
+    <Navbar />
+    
     <div className="bg-[#0a0a0f] min-h-screen text-white container mx-auto px-4 sm:px-6 lg:px-30">
 
       {/* HERO section, 2 column layout
@@ -429,5 +433,6 @@ export default function Home() {
         <Footer />
       </div>
     </div>
+    </>
   )
 }

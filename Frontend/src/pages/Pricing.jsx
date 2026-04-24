@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Footer from '../components/Footer'
+import Navbar from '../components/Navbar'
 
 //pricing tier card which accepts both monthly and yearly prices.
 //user is able to switch between them based on the isYearly prop
@@ -92,68 +93,72 @@ export default function Pricing() {
   ]
 
   return (
-    <div className="bg-[#0a0a0f] min-h-screen text-white container mx-auto px-4 sm:px-6 lg:px-30">
+    <>
+      <Navbar />
+      
+      <div className="bg-[#0a0a0f] min-h-screen text-white container mx-auto px-4 sm:px-6 lg:px-30">
 
-      {/* PRICING  
+        {/* PRICING  
         Three tiers of pricing that can be toggled monthly/yearly
         Toggle state is managed by the isYearly useState hook*/}
-      <section className="relative border-t border-[#1a1030]">
+        <section className="relative border-t border-[#1a1030]">
 
-        {/* glowing effect */}
-        <div className="
+          {/* glowing effect */}
+          <div className="
                         pointer-events-none absolute top-0 left-1/2 -translate-x-1/2
                         w-[50vw] h-[50vw]
                         lg:w-[300px] lg:h-[300px]
                         bg-[#9b59f5] opacity-20 lg:opacity-15 blur-[90px] sm:blur-[110px] lg:blur-[120px]
         " />
 
-        <div className="w-full px-4 pt-12 pb-0">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-black mb-2">Pricing</h2>
-            <p className="text-[#9b59f5] text-lg font-semibold mb-6">Simple, transparent plans</p>
+          <div className="w-full px-4 pt-12 pb-0">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-black mb-2">Pricing</h2>
+              <p className="text-[#9b59f5] text-lg font-semibold mb-6">Simple, transparent plans</p>
 
-            <div className="w-12 h-1 bg-[#9b59f5] rounded-full mt-3 mb-7 mx-auto" />
+              <div className="w-12 h-1 bg-[#9b59f5] rounded-full mt-3 mb-7 mx-auto" />
 
-            {/* toggle */}
-            <div className="inline-flex items-center gap-3 bg-[#13102a] border border-[#2a1a40] rounded-full px-5 py-2">
-              <span className={`text-sm font-medium transition-colors ${!isYearly ? 'text-white' : 'text-[#8a7aaa]'}`}>
-                Monthly
-              </span>
+              {/* toggle */}
+              <div className="inline-flex items-center gap-3 bg-[#13102a] border border-[#2a1a40] rounded-full px-5 py-2">
+                <span className={`text-sm font-medium transition-colors ${!isYearly ? 'text-white' : 'text-[#8a7aaa]'}`}>
+                  Monthly
+                </span>
 
-              {/* Clicking flips isYearly*/}
-              <div
-                onClick={() => setIsYearly(!isYearly)}
-                className="w-11 h-6 bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
+                {/* Clicking flips isYearly*/}
+                <div
+                  onClick={() => setIsYearly(!isYearly)}
+                  className="w-11 h-6 bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
                     shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)]
                     rounded-full relative cursor-pointer transition-all duration-300"
-              >
+                >
 
-                {/* sliding dot that moves between monthly and yearly*/}
-                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300
+                  {/* sliding dot that moves between monthly and yearly*/}
+                  <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300
                     ${isYearly ? 'right-1' : 'left-1'}`}
-                />
-              </div>
+                  />
+                </div>
 
-              <span className={`text-sm transition-colors ${isYearly ? 'text-white' : 'text-[#8a7aaa]'}`}>
-                Yearly
-              </span>
-              <span className="bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Save 20%</span>
+                <span className={`text-sm transition-colors ${isYearly ? 'text-white' : 'text-[#8a7aaa]'}`}>
+                  Yearly
+                </span>
+                <span className="bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Save 20%</span>
+              </div>
+            </div>
+
+            {/* pricing cards rendered from the planes array*/}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {plans.map((p, i) => (
+                <PricingCard key={i} {...p} isYearly={isYearly} />
+              ))}
             </div>
           </div>
+        </section>
 
-          {/* pricing cards rendered from the planes array*/}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {plans.map((p, i) => (
-              <PricingCard key={i} {...p} isYearly={isYearly} />
-            ))}
-          </div>
+        {/* FOOTER */}
+        <div className="py-18 pb-0 px-4">
+          <Footer />
         </div>
-      </section>
-
-      {/* FOOTER */}
-      <div className="py-18 pb-0 px-4">
-        <Footer />
       </div>
-    </div>
+    </>
   )
 }

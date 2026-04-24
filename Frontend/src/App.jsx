@@ -14,7 +14,6 @@ import Dashboard from './pages/Dashboard'
 function App() {
   return (
     <BrowserRouter>
-      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/features" element={<Features />} />
