@@ -15,7 +15,7 @@ export default function Navbar() {
     { label: 'Home', to: '/' },
     { label: 'About Us', to: '/about' },
     { label: 'Features', to: '/features' },
-    { label: "FAQ's", to: '/faqs' },
+    { label: "FAQ'S", to: '/faqs' },
     { label: 'Pricing', to: '/pricing' },
     { label: 'Contact', to: '/contact' },
   ]

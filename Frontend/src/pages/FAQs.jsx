@@ -101,7 +101,7 @@ export default function FAQs() {
           full width heading with label, title and paragraph text.
       ──────────────────────────────────────────────── */}
       <section className="w-full px-4 pt-12 pb-12">
-        <div className="inline-block px-1 py-1 mb-1">
+        <div className="inline-block">
           <span className="text-[#9b59f5] text-md font-semibold tracking-widest uppercase">FAQ's</span>
         </div>
         <h1 className="text-4xl sm:text-6xl font-black leading-tight mt-2">
