@@ -77,7 +77,7 @@ export default function Contact() {
               {/* label heading*/}
               <div className="flex flex-col gap-3 order-1">
                 <span className="text-[#9b59f5] text-xs font-semibold tracking-widest uppercase">Get In Touch</span>
-                <h1 className="text-4xl font-black leading-tight">Let's Talk Focus</h1>
+                <h1 className="text-3xl md:text-4xl font-black leading-tight">Let's Talk Focus</h1>
                 <p className="text-[#8a7aaa] text-md font-medium leading-relaxed max-w-sm">
                   Have questions, feedback, or want to partner with us? We'd love to hear from you.
                   Our team responds within 24 hours.

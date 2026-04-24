@@ -59,7 +59,7 @@ export default function Auth() {
             {/* left of card */}
             <div className="flex flex-col gap-8 px-8 lg:px-12 py-12 pb-0 lg:pb-16 lg:py-16 border-r border-[#1e1535]">
               <div>
-                <h2 className="text-4xl font-black leading-tight">
+                <h2 className="text-2xl md:text-4xl font-black leading-tight">
                   Your <span className="text-[#9b59f5]">Focus</span><br />
                   Journey Starts Here
                 </h2>
