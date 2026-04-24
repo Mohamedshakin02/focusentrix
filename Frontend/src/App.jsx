@@ -8,6 +8,7 @@ import AboutUs from './pages/AboutUs'
 import Contact from './pages/Contact'
 import Auth from './pages/Auth'
 import Dashboard from './pages/Dashboard'
+import NotFound from './pages/NotFound'
 
 
 
@@ -23,6 +24,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="*" element={<NotFound/>} />
       </Routes>
     </BrowserRouter>
   )
