@@ -242,7 +242,7 @@ export default function Home() {
                     hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]
                     transition-all duration-300"
               >
-                Get Started <ChevronRight className="w-4 h-4 mt-0.5 font-bold" />
+                Get Started <ChevronRight className="w-4 h-4 ml-1 mb-0.5" />
               </Link>
             </div>
           </div>
@@ -379,15 +379,6 @@ export default function Home() {
                         w-[50vw] h-[50vw]
                         lg:w-[300px] lg:h-[300px]
                         bg-[#9b59f5] opacity-20 lg:opacity-15 blur-[90px] sm:blur-[110px] lg:blur-[120px]
-        " />
-
-        
-        <div className="
-                        pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2
-                        w-[80vw] h-[50vw]
-                        sm:w-[70vw] sm:h-[40vw]
-                        lg:w-[500px] lg:h-[300px]
-                        bg-[#6229C1] opacity-25 lg:opacity-15 blur-[110px] sm:blur-[130px] lg:blur-[140px]
         " />
 
         <div className="px-4">

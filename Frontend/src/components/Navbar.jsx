@@ -86,7 +86,7 @@ export default function Navbar() {
                 hover:shadow-[0_6px_18px_rgba(123,44,191,0.5)]
                 transition-all duration-300"
             >
-              Get Started <ChevronRight className="w-4 h-4 mt-0.5" />
+              Get Started <ChevronRight className="w-4 h-4 mb-0.5" />
             </Link>
 
             {/* get started link */}

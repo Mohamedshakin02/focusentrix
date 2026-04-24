@@ -26,7 +26,7 @@ export default function Footer() {
                         hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]
                         transition-all duration-300 text-white font-semibold px-5 py-2.5 rounded-lg transition-colors duration-200 text-sm w-fit mt-3"
             >
-              Get Started <span>›</span>
+              Get Started <ChevronRight className="w-4 h-4 mb-0.5" />
             </Link>
           </div>
         </div>
@@ -36,7 +36,7 @@ export default function Footer() {
           <div className="flex items-center gap-2">
             <img src={logo} alt="Focusentrix logo" className="w-auto h-16 lg:h-20 object-contain" />
           </div>
-          <p className="text-[#9b59f5] text-xl lg:text-sm font-medium lg:text-center leading-snug mt-1">
+          <p className="text-[#8c57cb] text-xl lg:text-sm font-medium lg:text-center leading-snug mt-1">
             Stay locked in. Work<br />smarter. Achieve more.
           </p>
         </div>
