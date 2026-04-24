@@ -5,7 +5,7 @@ import Footer from '../components/Footer'
 //user is able to switch between them based on the isYearly prop
 function PricingCard({ plan, monthlyPrice, yearlyPrice, period, features, cta, highlighted, isYearly }) {
 
-    //shows the yearly or monthly prices depening on the toggle state
+  //shows the yearly or monthly prices depening on the toggle state
   const price = isYearly ? yearlyPrice : monthlyPrice
 
   return (
@@ -44,101 +44,107 @@ function PricingCard({ plan, monthlyPrice, yearlyPrice, period, features, cta, h
         ))}
       </ul>
 
+
       <button className={`w-full py-3 rounded-xl font-semibold text-sm transition-all duration-200
         ${highlighted
-          ? 'bg-[#9b59f5] text-white hover:bg-[#7c3de0]'
-          : 'bg-transparent border border-[#3d2060] text-white hover:border-[#9b59f5]'
+          ? ' text-white bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0] hover:cursor-pointer hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]'
+          : 'bg-transparent border border-[#3d2060] text-white hover:border-[#9b59f5] hover:cursor-pointer'
         }`}>
         {cta}
       </button>
     </div>
   )
 }
-
 export default function Pricing() {
 
-    // controls the pricing whether it shows monthly or yearly rate
-    const [isYearly, setIsYearly] = useState(false)
+  // controls the pricing whether it shows monthly or yearly rate
+  const [isYearly, setIsYearly] = useState(false)
 
   //plans pricing and  features unlocked
   const plans = [
     {
-        plan: 'Free', 
-        monthlyPrice: '$0', 
-        yearlyPrice: '$0',
-        period: 'forever',
-        features: ['Basic focus metrics', 'Session timer', 'Session history', 'Distraction alerts', 'Focus analytics'],
-        cta: 'Get started', 
-        highlighted: false,
+      plan: 'Free',
+      monthlyPrice: '$0',
+      yearlyPrice: '$0',
+      period: 'forever',
+      features: ['Basic focus metrics', 'Session timer', 'Session history', 'Distraction alerts', 'Focus analytics'],
+      cta: 'Get started',
+      highlighted: false,
     },
     {
-        plan: 'Pro', 
-        monthlyPrice: '$12', 
-        yearlyPrice: '$10',
-        period: 'per month',
-        features: ['Everything in Free', 'Unlimited sessions', 'Camera monitoring', 'Detailed analytics', 'Focus goals', 'Priority support', 'Streak features'],
-        cta: 'Upgrade to Pro', 
-        highlighted: true, //this plan gets the most popular badge with the purple ring
+      plan: 'Pro',
+      monthlyPrice: '$12',
+      yearlyPrice: '$10',
+      period: 'per month',
+      features: ['Everything in Free', 'Unlimited sessions', 'Camera monitoring', 'Detailed analytics', 'Focus goals', 'Priority support', 'Streak features'],
+      cta: 'Upgrade to Pro',
+      highlighted: true, //this plan gets the most popular badge with the purple ring
     },
     {
-        plan: 'Team', 
-        monthlyPrice: '$29', 
-        yearlyPrice: '$23',
-        period: 'per month',
-        features: ['Everything in Pro', 'Up to 10 members', 'Team dashboard', 'Admin controls', 'Priority support', 'Custom reports'],
-        cta: 'Contact sales', 
-        highlighted: false,
+      plan: 'Enterprise',
+      monthlyPrice: '$29',
+      yearlyPrice: '$23',
+      period: 'per month',
+      features: ['Everything in Pro', 'Up to 10 members', 'Team dashboard', 'Admin controls', 'Priority support', 'Custom reports'],
+      cta: 'Contact sales',
+      highlighted: false,
     },
-    ]
+  ]
 
   return (
-    <div className="bg-[#0a0a0f] min-h-screen text-white">
+    <div className="bg-[#0a0a0f] min-h-screen text-white container mx-auto px-4 sm:px-6 lg:px-30">
 
       {/* PRICING  
         Three tiers of pricing that can be toggled monthly/yearly
         Toggle state is managed by the isYearly useState hook*/}
-        <section className="py-24 border-t border-[#1a1030]">
-        <div className="w-full px-10">
-            <div className="text-center mb-12">
+      <section className="border-t border-[#1a1030]">
+        <div className="w-full px-4 pt-12 pb-0">
+          <div className="text-center mb-12">
             <h2 className="text-4xl font-black mb-2">Pricing</h2>
-            <p className="text-[#9b59f5] text-lg font-medium mb-6">Simple, transparent plans</p>
+            <p className="text-[#9b59f5] text-lg font-semibold mb-6">Simple, transparent plans</p>
+
+            <div className="w-12 h-1 bg-[#9b59f5] rounded-full mt-3 mb-7 mx-auto" />
 
             {/* toggle */}
             <div className="inline-flex items-center gap-3 bg-[#13102a] border border-[#2a1a40] rounded-full px-5 py-2">
-                <span className={`text-sm font-medium transition-colors ${!isYearly ? 'text-white' : 'text-[#8a7aaa]'}`}>
+              <span className={`text-sm font-medium transition-colors ${!isYearly ? 'text-white' : 'text-[#8a7aaa]'}`}>
                 Monthly
-                </span>
+              </span>
 
-                {/* Clicking flips isYearly*/}
-                <div 
+              {/* Clicking flips isYearly*/}
+              <div
                 onClick={() => setIsYearly(!isYearly)}
-                className="w-11 h-6 bg-[#9b59f5] rounded-full relative cursor-pointer transition-all duration-300"
-                >
+                className="w-11 h-6 bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
+                    shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)]
+                    hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)] rounded-full relative cursor-pointer transition-all duration-300"
+              >
 
                 {/* sliding dot that moves between monthly and yearly*/}
                 <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300
-                    ${isYearly ? 'right-1' : 'left-1'}`} 
+                    ${isYearly ? 'right-1' : 'left-1'}`}
                 />
-                </div>
+              </div>
 
-                <span className={`text-sm transition-colors ${isYearly ? 'text-white' : 'text-[#8a7aaa]'}`}>
+              <span className={`text-sm transition-colors ${isYearly ? 'text-white' : 'text-[#8a7aaa]'}`}>
                 Yearly
-                </span>
-                <span className="bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Save 20%</span>
+              </span>
+              <span className="bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Save 20%</span>
             </div>
-            </div>
+          </div>
 
-            {/* pricing cards rendered from the planes array*/}
-            <div className="grid grid-cols-3 gap-6">
+          {/* pricing cards rendered from the planes array*/}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {plans.map((p, i) => (
-                <PricingCard key={i} {...p} isYearly={isYearly} />
+              <PricingCard key={i} {...p} isYearly={isYearly} />
             ))}
-            </div>
+          </div>
         </div>
-        </section>
+      </section>
 
-        {/* footer import from components*/}
+      {/* FOOTER */}
+      <div className="py-18 pb-0 px-4">
         <Footer />
+      </div>
     </div>
   )
 }

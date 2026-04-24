@@ -34,7 +34,7 @@ export default function Footer() {
         {/* Logo. Center area*/}
         <div className="flex flex-col lg:items-center gap-2 px-0 lg:px-10 mb-6 lg:mb-0 order-1 lg:order-2">
           <div className="flex items-center gap-2">
-            <img src={logo} alt="Focusentrix logo" className="w-auto h-20 object-contain" />
+            <img src={logo} alt="Focusentrix logo" className="w-auto h-16 lg:h-20 object-contain" />
           </div>
           <p className="text-[#9b59f5] text-xl lg:text-sm font-medium lg:text-center leading-snug mt-1">
             Stay locked in. Work<br />smarter. Achieve more.
