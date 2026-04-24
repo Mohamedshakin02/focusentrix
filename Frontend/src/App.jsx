@@ -9,12 +9,16 @@ import Contact from './pages/Contact'
 import Auth from './pages/Auth'
 import Dashboard from './pages/Dashboard'
 import NotFound from './pages/NotFound'
+import ScrollToTop from './components/ScrollToTop';
 
 
 
 function App() {
   return (
     <BrowserRouter>
+      {/* ScrollToTop makes the page to scroll up whenever we select a different page */}
+      <ScrollToTop />
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/features" element={<Features />} />
