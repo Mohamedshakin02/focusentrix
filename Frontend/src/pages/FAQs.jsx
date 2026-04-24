@@ -100,7 +100,11 @@ export default function FAQs() {
       {/* HERO section
           full width heading with label, title and paragraph text.
       ──────────────────────────────────────────────── */}
-      <section className="w-full px-4 pt-12 pb-12">
+      <section className="relative w-full px-4 pt-12 pb-12">
+
+        {/* glowing effect */}
+        <div className="pointer-events-none absolute -top-20 -left-20 w-[300px] h-[300px] bg-[#9b59f5] opacity-20 blur-[140px]" />
+
         <div className="inline-block">
           <span className="text-[#9b59f5] text-md font-semibold tracking-widest uppercase">FAQ's</span>
         </div>
