@@ -254,7 +254,7 @@ export default function Features() {
           {/* left heading */}
           <div className="flex flex-col">
             <p className="text-[#9b59f5] text-md font-semibold tracking-widest uppercase">Features</p>
-            <h1 className="text-4xl sm:text-6xl font-black leading-tight mt-2">
+            <h1 className="text-4xl xl:text-5xl font-black leading-tight mt-2">
               Everything You Need<br />to Stay in the Zone
             </h1>
             <p className="text-[#8a7aaa] text-lg font-medium leading-relaxed max-w-sm mt-5">
