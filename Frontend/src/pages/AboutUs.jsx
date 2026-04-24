@@ -136,7 +136,7 @@ export default function AboutUs() {
           <div className="order-4 lg:order-2 bg-[#0e0b1e] border border-[#1e1535] rounded-2xl p-6 lg:row-span-2">
             <div className="flex items-center gap-2 mb-5">
               <div className="w-2.5 h-2.5 rounded-full bg-[#9b59f5]" />
-              <h3 className="text-white font-bold text-base">Our Team — WD Team 19</h3>
+              <h3 className="text-white font-bold text-base">Our Team — Focusentrix Creative Studios</h3>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
