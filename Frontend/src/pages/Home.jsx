@@ -350,7 +350,7 @@ export default function Home() {
           </div>
 
           {/* steps cards rendered from the steps array*/}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 px-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 px-10">
             {steps.map((s, i) => <StepCard key={i} {...s} />)}
           </div>
         </div>

@@ -279,7 +279,7 @@ export default function Contact() {
       </section>
 
       {/* FOOTER */}
-      <div className="py-18 pt-14 pb-0 px-4">
+      <div className="py-18 pb-0 px-4">
         <Footer />
       </div>
 
