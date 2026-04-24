@@ -304,7 +304,7 @@ export default function Home() {
               <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#0a0a0f] to-transparent" />
               <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#0a0a0f] to-transparent" />
 
-              <div className="pointer-events-none absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#0a0a0f] to-transparent blur-xl" />
+              <div className="pointer-events-none absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#0a0a0f] to-transparent blur-xl overflow-x-hidden" />
 
               <div className="relative z-10">
 
@@ -340,7 +340,19 @@ export default function Home() {
       </section>
 
       {/* GETTING STARTED, four column grid of steps card that guides the user */}
-      <section className="py-18 xl:py-24 border-t border-[#1a1030]">
+      <section className="relative py-18 xl:py-24 border-t border-[#1a1030]">
+
+        {/* glowing effect */}
+        <div className="
+                        pointer-events-none absolute top-0 left-1/2 -translate-x-1/2
+                        w-[50vw] h-[50vw]
+                        sm:w-[60vw] sm:h-[35vw]
+                        lg:w-[500px] lg:h-[300px]
+                        bg-[#9b59f5] opacity-25 lg:opacity-15  blur-[100px] sm:blur-[120px] lg:blur-[140px]
+        " />
+
+
+
         <div className="px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-black mb-2">Getting Started</h2>
@@ -359,7 +371,25 @@ export default function Home() {
       {/* PRICING  
         Three tiers of pricing that can be toggled monthly/yearly
         Toggle state is managed by the isYearly useState hook*/}
-      <section className="py-18 pb-0 xl:py-24 xl:pb-0 border-t border-[#1a1030]">
+      <section className="relative py-18 pb-0 xl:py-24 xl:pb-0 border-t border-[#1a1030]">
+
+        {/* glowing effect */}
+        <div className="
+                        pointer-events-none absolute top-0 left-1/2 -translate-x-1/2
+                        w-[50vw] h-[50vw]
+                        lg:w-[300px] lg:h-[300px]
+                        bg-[#9b59f5] opacity-20 lg:opacity-15 blur-[90px] sm:blur-[110px] lg:blur-[120px]
+        " />
+
+        
+        <div className="
+                        pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2
+                        w-[80vw] h-[50vw]
+                        sm:w-[70vw] sm:h-[40vw]
+                        lg:w-[500px] lg:h-[300px]
+                        bg-[#6229C1] opacity-25 lg:opacity-15 blur-[110px] sm:blur-[130px] lg:blur-[140px]
+        " />
+
         <div className="px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-black mb-2">Pricing</h2>
@@ -378,7 +408,7 @@ export default function Home() {
                 onClick={() => setIsYearly(!isYearly)}
                 className="w-11 h-6 bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
                     shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)]
-                    hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)] rounded-full relative cursor-pointer transition-all duration-300"
+                    rounded-full relative cursor-pointer transition-all duration-300"
               >
 
                 {/* sliding dot that moves between monthly and yearly*/}
