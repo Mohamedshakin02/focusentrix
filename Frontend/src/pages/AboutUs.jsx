@@ -72,7 +72,11 @@ export default function AboutUs() {
           right has the logo with glow
       */}
 
-      <section className="w-full pt-12 pb-16 px-4">
+      <section className="relative w-full pt-12 pb-16 px-4">
+
+        {/* glowing effect */}
+        <div className="pointer-events-none absolute -top-20 -left-20 w-[300px] h-[300px] bg-[#9b59f5] opacity-20 blur-[140px] block lg:hidden" />
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
           {/* left heading*/}
