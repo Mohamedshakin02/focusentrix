@@ -18,3 +18,14 @@ textarea:-webkit-autofill:focus {
   box-shadow: 0 0 0px 1000px #0e0b1e inset !important;
   transition: background-color 9999s ease-in-out 0s;
 }
+
+/* Remove number input spinners */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
