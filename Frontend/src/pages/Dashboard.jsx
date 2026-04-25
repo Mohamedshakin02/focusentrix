@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { User, AlertTriangle, SkipBack, SkipForward, Pause, Play, Volume2, Plus, Flame, Settings, Trash2, Hand } from 'lucide-react'
+import { User, AlertTriangle, SkipBack, SkipForward, Pause, Play, Volume2, Plus, Flame, Settings, Trash2, Handshake, LogOut, Timer, Music2, ListCheck } from 'lucide-react'
 import logo from '../assets/focusentrixclear2.png'
 import { Link } from 'react-router-dom'
 import rainSrc from '../assets/music/rainfall.mp3'
@@ -23,9 +23,7 @@ function DashboardNavbar() {
         <div className="w-full h-full bg-gradient-to-r from-transparent via-[#9b59f5] to-transparent opacity-80 blur-[1px]" />
       </div>
       <div className="w-full h-16 flex items-center justify-center">
-        <Link to="/" className="flex items-center no-underline">
-          <img src={logo} alt="Focusentrix logo" className="w-auto h-10 object-contain" />
-        </Link>
+        <img src={logo} alt="Focusentrix logo" className="w-auto h-10 object-contain" />
       </div>
     </nav>
   )
@@ -37,7 +35,7 @@ function StatCard({ label, value, sub, badge, icon, iconColor }) {
   return (
     <div className="bg-[#0e0b1e] border border-[#1e1535] rounded-2xl px-5 py-4 flex flex-col gap-1 flex-1 h-24">
       <div className="flex items-center justify-between">
-        <span className="text-[#5a4a7a] text-xs uppercase tracking-widest">{label}</span>
+        <span className="text-[#5a4a7a] text-xs font-semibold uppercase tracking-widest">{label}</span>
         <div className="flex items-center gap-2">
           {badge && (
             <span className="bg-[#1e1040] border border-[#3d2060] text-[#9b59f5] text-[10px] font-bold px-2 py-0.5 rounded-full">
@@ -47,7 +45,7 @@ function StatCard({ label, value, sub, badge, icon, iconColor }) {
           {icon && <span className={iconColor}>{icon}</span>}
         </div>
       </div>
-      <p className="text-white text-2xl font-black">{value}</p>
+      <p className="text-white text-xl font-bold">{value}</p>
       {sub && <p className="text-[#8a7aaa] text-xs">{sub}</p>}
     </div>
   )
@@ -122,15 +120,15 @@ function DashboardFooter() {
 
 export default function Dashboard() {
 
-  const [sessionState, setSessionState]   = useState('idle')
-  const [timeLeft, setTimeLeft]           = useState(25 * 60)
-  const [phase, setPhase]                 = useState(1)
-  const intervalRef                       = useRef(null)
+  const [sessionState, setSessionState] = useState('idle')
+  const [timeLeft, setTimeLeft] = useState(25 * 60)
+  const [phase, setPhase] = useState(1)
+  const intervalRef = useRef(null)
 
-  const [showConfig, setShowConfig]       = useState(false)
+  const [showConfig, setShowConfig] = useState(false)
   const [customMinutes, setCustomMinutes] = useState(25)
-  const [breakMinutes, setBreakMinutes]   = useState(5)
-  const [totalPhases, setTotalPhases]     = useState(4)
+  const [breakMinutes, setBreakMinutes] = useState(5)
+  const [totalPhases, setTotalPhases] = useState(4)
 
   const startTimer = () => {
     if (intervalRef.current) return
@@ -169,24 +167,24 @@ export default function Dashboard() {
     return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
   }
 
-  const totalTime     = sessionState === 'break' ? breakMinutes * 60 : customMinutes * 60
-  const progress      = 1 - timeLeft / totalTime
-  const radius        = 54
+  const totalTime = sessionState === 'break' ? breakMinutes * 60 : customMinutes * 60
+  const progress = 1 - timeLeft / totalTime
+  const radius = 54
   const circumference = 2 * Math.PI * radius
-  const dashOffset    = circumference * (1 - progress)
+  const dashOffset = circumference * (1 - progress)
 
   const mainButtonLabel =
-    sessionState === 'idle'    ? '+ Start Session' :
-    sessionState === 'running' ? 'Take a Break' : 'Resume Session'
+    sessionState === 'idle' ? '+ Start Session' :
+      sessionState === 'running' ? 'Take a Break' : 'Resume Session'
 
   const phaseLabel =
-    sessionState === 'break'   ? 'BREAK TIME' :
-    sessionState === 'running' ? `WORK PHASE ${phase} OF ${totalPhases}` : 'READY TO START'
+    sessionState === 'break' ? 'BREAK TIME' :
+      sessionState === 'running' ? `WORK PHASE ${phase} OF ${totalPhases}` : 'READY TO START'
 
-  const audioRef                        = useRef(null)
-  const [trackIndex, setTrackIndex]     = useState(0)
+  const audioRef = useRef(null)
+  const [trackIndex, setTrackIndex] = useState(0)
   const [musicPlaying, setMusicPlaying] = useState(false)
-  const [volume, setVolume]             = useState(60)
+  const [volume, setVolume] = useState(60)
 
   useEffect(() => {
     if (!audioRef.current) return
@@ -207,7 +205,7 @@ export default function Dashboard() {
     if (!src) return
     if (musicPlaying) {
       audioRef.current.src = audioRef.current.src || src
-      audioRef.current.play().catch(() => {})
+      audioRef.current.play().catch(() => { })
     } else {
       audioRef.current.pause()
     }
@@ -218,10 +216,10 @@ export default function Dashboard() {
   const handleNext = () => setTrackIndex((trackIndex + 1) % tracks.length)
 
   const [tasks, setTasks] = useState([
-    { id: 1, label: 'Finding color palette',       done: true },
-    { id: 2, label: 'Exploring UI designs',        done: true },
+    { id: 1, label: 'Finding color palette', done: true },
+    { id: 2, label: 'Exploring UI designs', done: true },
     { id: 3, label: 'Start making initial design', done: false },
-    { id: 4, label: 'Make it responsive design',   done: false },
+    { id: 4, label: 'Make it responsive design', done: false },
   ])
   const [newTask, setNewTask] = useState('')
 
@@ -234,7 +232,7 @@ export default function Dashboard() {
   const toggleTask = (id) => setTasks(tasks.map(t => t.id === id ? { ...t, done: !t.done } : t))
   const deleteTask = (id) => setTasks(tasks.filter(t => t.id !== id))
 
-  const days     = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+  const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
   const donedays = [true, true, true, true, true, false, false]
 
   return (
@@ -249,21 +247,21 @@ export default function Dashboard() {
           {/* welcome row */}
           <div className="mb-6 flex items-start justify-between">
             <div>
-              <h1 className="text-2xl font-black">Good morning, Alex</h1>
-              <p className="text-[#5a4a7a] text-sm mt-0.5">
+              <h1 className="text-2xl font-black flex items-center gap-3">Hello, User <Handshake className="w-5 h-5 text-[#8c57cb]" /></h1>
+              <p className="text-[#5a4a7a] text-sm font-semibold mt-0.5">
                 {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
               </p>
             </div>
-            <button className="flex items-center gap-2 border border-[#2a1a40] hover:border-red-500 text-[#8a7aaa] hover:text-red-400 text-sm font-semibold px-4 py-2 rounded-xl transition-colors duration-200">
-              Logout
+            <button className="group flex items-center gap-2 border border-[#665395] hover:border-red-500 text-[#8a7aaa] hover:text-red-400 text-sm font-semibold px-4 py-2 rounded-xl transition-colors duration-200">
+              Logout <LogOut className="w-4 h-4 mb-0.5 text-[#8c57cb] group-hover:text-red-400 opacity-75 transform scale-x-[-1]" />
             </button>
           </div>
 
-  
+
           {/* stat cards and pomodoro time */}
           <div className="grid grid-cols-[1fr_1fr_1fr_1fr_224px] gap-4 mb-4 items-start">
 
-            <StatCard label="Focus score" value="87%" sub="+12% this week" badge="Pro" />
+            <StatCard label="Focus score" value="87%" sub="+12% this week" />
             <StatCard label="Sessions today" value="3" sub="1 active" />
             <StatCard label="Total focus time" value="2h 14m" sub="Today" />
             <StatCard
@@ -278,13 +276,16 @@ export default function Dashboard() {
 
               <button
                 onClick={() => setShowConfig(!showConfig)}
-                className="absolute top-4 right-4 text-[#5a4a7a] hover:text-[#9b59f5] transition-colors duration-200"
+                className="absolute top-5 right-3 text-[#5a4a7a] hover:text-[#9b59f5] transition-colors duration-200"
               >
                 <Settings className="w-4 h-4" />
               </button>
 
-              <p className="text-[#5a4a7a] text-[10px] font-semibold uppercase tracking-widest">Pomodoro Timer</p>
-              <p className="text-[#8a7aaa] text-[9px] uppercase tracking-widest">{phaseLabel}</p>
+              <div className="flex items-center gap-2 mr-3">
+                <Timer className="text-[#9b59f5] w-4 h-4 mb-0.5" />
+                <p className="text-[#5a4a7a] text-[12px] font-bold uppercase tracking-widest">Pomodoro Timer</p>
+              </div>
+              <p className="text-[#8a7aaa] text-[9px] font-medium uppercase tracking-widest">{phaseLabel}</p>
 
               {showConfig && (
                 <div className="w-full bg-[#13102a] border border-[#2a1a40] rounded-xl p-4 flex flex-col gap-3 text-left">
@@ -343,7 +344,7 @@ export default function Dashboard() {
             <div className="col-span-4 bg-[#0e0b1e] border border-[#1e1535] rounded-2xl overflow-hidden">
               <div className="px-6 py-4 border-b border-[#1e1535]">
                 <p className="text-white font-bold text-sm uppercase tracking-wider">Camera Monitoring</p>
-                <p className="text-[#5a4a7a] text-xs mt-0.5">Real Time Attention Tracking (Webcam Active)</p>
+                <p className="text-[#5a4a7a] text-xs font-medium mt-1">Real Time Attention Tracking (Webcam Active)</p>
               </div>
               <div className="h-100 flex flex-col items-center justify-center gap-3 bg-[#080612]">
                 <User className="text-[#3d2060] w-12 h-12" />
@@ -360,7 +361,7 @@ export default function Dashboard() {
 
             {/* tasks */}
             <div className="bg-[#0e0b1e] border border-[#1e1535] rounded-2xl px-6 py-5">
-              <p className="text-white font-semibold text-sm mb-3">Add Quick Task:</p>
+              <p className="text-white font-semibold text-lg mb-3">Add Quick Task:</p>
               <div className="flex gap-3 mb-5">
                 <input type="text" placeholder="Add new task" value={newTask}
                   onChange={e => setNewTask(e.target.value)}
@@ -371,19 +372,23 @@ export default function Dashboard() {
                   <Plus className="w-4 h-4" /> Add Task
                 </button>
               </div>
-              <p className="text-[#8a7aaa] text-sm mb-3">To do list</p>
+              {/* <p className="text-[#8a7aaa] text-lg font-semibold mt-10 mb-3">To do list</p> */}
+              <div className="flex items-center gap-2 mt-10 mb-3">
+                <ListCheck className="text-[#9b59f5] w-4 h-4 mb-0.5" />
+                <p className="text-[#5a4a7a] text-lg font-semibold">To do list</p>
+              </div>
               <div className="flex flex-col divide-y divide-[#1e1535]">
                 {tasks.map(task => (
                   <div key={task.id} className="flex items-center justify-between py-4">
-                    <span className={`text-lg font-semibold ${task.done ? 'text-[#5a4a7a] line-through' : 'text-white'}`}>
+                    <span className={`text-lg font-medium ${task.done ? 'text-[#5a4a7a] line-through' : 'text-white'}`}>
                       {task.label}
                     </span>
                     <div className="flex items-center gap-3">
                       <button onClick={() => toggleTask(task.id)}>
                         {task.done
                           ? <div className="w-8 h-8 rounded-lg border border-[#9b59f5] bg-[#1e1040] flex items-center justify-center">
-                              <span className="text-[#9b59f5] text-sm">✓</span>
-                            </div>
+                            <span className="text-[#9b59f5] text-sm">✓</span>
+                          </div>
                           : <div className="w-8 h-8 rounded-lg border border-[#2a1a40] hover:border-[#9b59f5] transition-colors duration-200" />
                         }
                       </button>
@@ -401,7 +406,11 @@ export default function Dashboard() {
 
               {/* background music */}
               <div className="bg-[#0e0b1e] border border-[#1e1535] rounded-2xl px-5 py-5 flex flex-col gap-4">
-                <p className="text-[#5a4a7a] text-xs font-semibold uppercase tracking-widest">Background Music</p>
+                {/* <p className="text-[#5a4a7a] text-[12px] font-bold uppercase tracking-widest">Background Music</p> */}
+                <div className="flex items-center gap-2 mr-3">
+                  <Music2 className="text-[#9b59f5] w-4 h-4 mb-0.5" />
+                  <p className="text-[#5a4a7a] text-[12px] font-bold uppercase tracking-widest">Background Music</p>
+                </div>
                 <div className="flex flex-col gap-2">
                   {tracks.map((track, i) => (
                     <button key={track.label} onClick={() => setTrackIndex(i)}
@@ -444,7 +453,7 @@ export default function Dashboard() {
               <div className="bg-[#0e0b1e] border border-[#1e1535] rounded-2xl px-5 py-5 flex flex-col gap-4">
                 <div className="flex items-center gap-2">
                   <Flame className="text-[#9b59f5] w-4 h-4" />
-                  <p className="text-[#5a4a7a] text-xs font-semibold uppercase tracking-widest">Current Streak</p>
+                  <p className="text-[#5a4a7a] text-[12px] font-bold uppercase tracking-widest">Current Streak</p>
                 </div>
                 <p className="text-white text-2xl font-black">12 Days</p>
                 <div className="flex items-center justify-between w-full">
@@ -464,8 +473,11 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <DashboardFooter />
-      </div>
+        {/* FOOTER */}
+        <div className="py-18 pb-0 px-4">
+          <DashboardFooter />
+        </div>
+      </div >
     </>
   )
 }
