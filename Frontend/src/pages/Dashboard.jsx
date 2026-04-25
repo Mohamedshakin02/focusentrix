@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
-import { User, AlertTriangle, SkipBack, SkipForward, Pause, Play, Volume2, Plus, Flame, Settings, Trash2, Handshake, LogOut, Timer, Music2, ListCheck } from 'lucide-react'
+import { User, AlertTriangle, SkipBack, SkipForward, Pause, Play, Volume2, Plus, Flame, Settings, Trash2, Handshake, LogOut, Timer, Music2, ListCheck, CameraOff } from 'lucide-react'
 import logo from '../assets/focusentrixclear2.png'
 import { Link } from 'react-router-dom'
 import rainSrc from '../assets/music/rainfall.mp3'
 import classicalSrc from '../assets/music/classicalmusic.mp3'
 import zenSrc from '../assets/music/zengarden.mp3'
+import useFaceFocusTracker from '../utils/useFaceFocusTracker'
+import Webcam from "react-webcam";
 
 
 //music goes here
@@ -129,6 +131,76 @@ export default function Dashboard() {
   const [customMinutes, setCustomMinutes] = useState(25)
   const [breakMinutes, setBreakMinutes] = useState(5)
   const [totalPhases, setTotalPhases] = useState(4)
+
+  const [recentAlert, setRecentAlert] = useState("All Good")
+
+  //face focus tracking states and refs
+  const videoRef = useRef(null)
+  const canvasRef = useRef(null)
+
+  const webcamRef = useRef(null)
+  const [videoElement, setVideoElement] = useState(null)
+  const [cameraStatus, setCameraStatus] = useState("idle")
+
+  const { status, isFocused, alert } = useFaceFocusTracker(webcamRef)
+
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (webcamRef.current?.video) {
+        setVideoElement(webcamRef.current.video)
+        clearInterval(interval)
+      }
+    }, 500)
+
+    return () => clearInterval(interval)
+  }, [cameraStatus])
+
+
+  const faceLandmarkerRef = useRef(null)
+  const lastState = useRef("focused")
+  const lastChangeTime = useRef(Date.now())
+
+  const [focusTime, setFocusTime] = useState(0)
+  const [distractedTime, setDistractedTime] = useState(0)
+
+  useEffect(() => {
+    if (!isFocused) {
+      console.log("User distracted")
+    }
+  }, [isFocused])
+
+  useEffect(() => {
+    if (sessionState !== 'running') return
+
+    const interval = setInterval(() => {
+      if (isFocused) {
+        setFocusTime(prev => prev + 1)
+      } else {
+        setDistractedTime(prev => prev + 1)
+      }
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [isFocused, sessionState])
+
+  useEffect(() => {
+    setRecentAlert(alert)
+  }, [alert])
+
+  // camera access request on load
+  useEffect(() => {
+    const startCamera = async () => {
+      try {
+        await navigator.mediaDevices.getUserMedia({ video: true })
+        setCameraStatus("active")
+      } catch (err) {
+        console.log("Camera denied", err)
+        setCameraStatus("denied")
+      }
+    }
+    startCamera()
+  }, [])
 
   const startTimer = () => {
     if (intervalRef.current) return
@@ -280,7 +352,7 @@ export default function Dashboard() {
             <StatCard label="Total focus time" value="2h 14m" sub="Today" />
             <StatCard
               label="Recent Alerts"
-              value="User left the frame"
+              value={recentAlert}
               icon={<AlertTriangle className="w-4 h-4" />}
               iconColor="text-orange-400"
             />
@@ -360,11 +432,47 @@ export default function Dashboard() {
                 <p className="text-white font-bold text-sm uppercase tracking-wider">Camera Monitoring</p>
                 <p className="text-[#5a4a7a] text-xs font-medium mt-1">Real Time Attention Tracking (Webcam Active)</p>
               </div>
-              <div className="h-100 flex flex-col items-center justify-center gap-3 bg-[#080612]">
-                <User className="text-[#3d2060] w-12 h-12" />
-                <p className="text-[#5a4a7a] text-sm">
-                  Status: <span className="text-[#9b59f5]">Calibrated & Monitoring</span>
-                </p>
+              <div className="w-full flex items-center justify-center bg-[#080612] p-4">
+                <div className="w-full max-w-3xl h-100  aspect-video rounded-xl overflow-hidden border border-[#1e1535] relative">
+                  {cameraStatus === "active" ? (
+                    <>
+                      <div className='className="relative w-full h-full"'>
+                        <Webcam
+                          ref={webcamRef}
+                          audio={false}
+                          mirrored={true}
+                          screenshotFormat="image/jpeg"
+                          className="w-full h-full object-cover"
+                        />
+
+                      </div>:
+
+
+                      {/* focus status */}
+                      <div className="absolute bottom-2 left-2 right-2 flex justify-center">
+                        <div className="bg-black/50 backdrop-blur-md px-3 py-1 rounded-lg text-xs text-white">
+                          Focus Status:{" "}
+                          <span className={isFocused ? "text-green-400" : "text-red-400"}>
+                            {status === "loading" ? "Loading..." : isFocused ? "Focused" : "Distracted"}
+                          </span>
+                        </div>
+                      </div>
+                    </>
+                  ) : cameraStatus === "denied" ? (
+                    // show error message if camera access is denied
+                    <div className="h-full flex flex-col items-center justify-center gap-2 text-red-400">
+                      <CameraOff className="w-10 h-10" />
+                      <p>Camera permission denied</p>
+                    </div>
+                  ) : (
+                    // show message while waiting for camera access
+                    <div className="h-full flex flex-col items-center justify-center gap-2 text-[#5a4a7a]">
+                      <User className="w-10 h-10" />
+                      <p>Camera is off</p>
+                      <p className="text-xs">Please allow camera access to continue</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
