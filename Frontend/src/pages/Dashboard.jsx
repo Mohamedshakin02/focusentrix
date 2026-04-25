@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from 'react'
 import { User, AlertTriangle, SkipBack, SkipForward, Pause, Play, Volume2, Plus, Flame, Settings, Trash2, Handshake, LogOut, Timer, Music2, ListCheck, CameraOff } from 'lucide-react'
 import logo from '../assets/focusentrixclear2.png'
+import logo2 from '../assets/focusentrixclear.png'
 import { Link } from 'react-router-dom'
 import rainSrc from '../assets/music/rainfall.mp3'
 import classicalSrc from '../assets/music/classicalmusic.mp3'
 import zenSrc from '../assets/music/zengarden.mp3'
 import useFaceFocusTracker from '../utils/useFaceFocusTracker'
 import Webcam from "react-webcam";
+import { CustomizedToast } from "../utils/toast";
 
 
 //music goes here
@@ -145,7 +147,6 @@ export default function Dashboard() {
   const { status, isFocused, alert } =
     useFaceFocusTracker(webcamRef)
 
-
     
   useEffect(() => {
     const interval = setInterval(() => {
@@ -166,12 +167,33 @@ export default function Dashboard() {
   const [focusTime, setFocusTime] = useState(0)
   const [distractedTime, setDistractedTime] = useState(0)
 
+  // shows toast and browser notifications based on the alert and focus status from the face focus tracker
+  useEffect(() => {
+  if (status === "loading") return;
+
+  if (alert === "No Face") {
+    CustomizedToast.error("No face detected");
+    showBrowserNotification("Focusentrix Alert", "No face detected");
+  }
+
+  else if (alert === "Bad Lighting") {
+    CustomizedToast.warning("Bad lighting detected");
+    showBrowserNotification("Focusentrix Alert", "Bad lighting detected");
+  }
+
+  else if (!isFocused) {
+    CustomizedToast.error("You seem distracted");
+    showBrowserNotification("Focusentrix Alert", "You are distracted");
+  }
+}, [alert, isFocused, status]);
+
   useEffect(() => {
     if (!isFocused) {
       console.log("User distracted")
     }
   }, [isFocused])
 
+  
   useEffect(() => {
     if (sessionState !== 'running') return
 
@@ -303,6 +325,16 @@ export default function Dashboard() {
   const [musicPlaying, setMusicPlaying] = useState(false)
   const [volume, setVolume] = useState(60)
 
+  // function to show browser notifications for focus alerts
+  const showBrowserNotification = (title, message) => {
+      if (Notification.permission === "granted") {
+        new Notification(title, {
+          body: message,
+          icon: logo2,
+        });
+      }
+    };
+
   useEffect(() => {
     if (!audioRef.current) return
     const src = tracks[trackIndex].src
@@ -364,6 +396,13 @@ export default function Dashboard() {
     webcamRef.current = null
     setCameraStatus("idle")
   }
+
+  // Request notification permission 
+  useEffect(() => {
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+  }, []);
 
   return (
     <>
