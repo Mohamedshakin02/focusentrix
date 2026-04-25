@@ -239,7 +239,21 @@ export default function Dashboard() {
     <>
       <DashboardNavbar />
 
-      <div className="bg-[#0a0a0f] min-h-screen text-white">
+      <div className="bg-[#0a0a0f] min-h-screen text-white relative overflow-hidden">
+
+        {/* glowing effect */}
+        <div className="pointer-events-none absolute -top-32 -left-32 
+                        w-[250px] h-[250px] sm:w-[350px] sm:h-[350px] lg:w-[450px] lg:h-[450px] 
+                       bg-[#9b59f5] opacity-10 blur-[140px]" />
+
+        <div className="pointer-events-none absolute bottom-0 right-0 
+                        w-[250px] h-[250px] sm:w-[350px] sm:h-[350px] lg:w-[450px] lg:h-[450px] 
+                      bg-[#6229C1] opacity-10 blur-[160px]" />
+
+
+        {/* Audio element used to play background music.
+            The ref (audioRef) allows control from React (play, pause, volume, track change).
+             The 'loop' attribute ensures the music keeps playing continuously. */}
         <audio ref={audioRef} loop />
 
         <div className="w-full px-10 pt-10 pb-24">
