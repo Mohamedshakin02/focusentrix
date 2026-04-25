@@ -70,9 +70,11 @@ export default function useFaceFocusTracker(webcamRef) {
         let running = true
 
         const detect = () => {
-            const video = webcamRef.current?.video
+            const video = webcamRef?.current?.video
             const model = faceLandmarkerRef.current
 
+            if (!webcamRef) return
+            
             if (!running) return
 
             if (!video || video.readyState < 2 || !model) {
@@ -132,7 +134,7 @@ export default function useFaceFocusTracker(webcamRef) {
                 alertMsg = "Looking up"
 
                 // 5. looking away
-            } else if (Math.abs(gazeX) > 0.35) {
+            } else if (Math.abs(gazeX) > 0.7) {
                 focused = false
                 alertMsg = "Looking away"
             }

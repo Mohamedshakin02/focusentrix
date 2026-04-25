@@ -142,9 +142,11 @@ export default function Dashboard() {
   const [videoElement, setVideoElement] = useState(null)
   const [cameraStatus, setCameraStatus] = useState("idle")
 
-  const { status, isFocused, alert } = useFaceFocusTracker(webcamRef)
+  const { status, isFocused, alert } =
+    useFaceFocusTracker(webcamRef)
 
-  
+
+    
   useEffect(() => {
     const interval = setInterval(() => {
       if (webcamRef.current?.video) {
@@ -188,18 +190,18 @@ export default function Dashboard() {
     setRecentAlert(alert)
   }, [alert])
 
-  // camera access request on load
+
+
   useEffect(() => {
-    const startCamera = async () => {
-      try {
-        await navigator.mediaDevices.getUserMedia({ video: true })
-        setCameraStatus("active")
-      } catch (err) {
-        console.log("Camera denied", err)
-        setCameraStatus("denied")
-      }
+    if (sessionState === "idle") {
+      stopCamera()
     }
-    startCamera()
+  }, [sessionState])
+
+  useEffect(() => {
+    return () => {
+      stopCamera()
+    }
   }, [])
 
   const startTimer = () => {
@@ -219,13 +221,56 @@ export default function Dashboard() {
 
   const handleMainButton = () => {
     if (sessionState === 'idle') {
-      setSessionState('running'); setTimeLeft(customMinutes * 60); startTimer()
-    } else if (sessionState === 'running') {
-      setSessionState('break'); stopTimer(); setTimeLeft(breakMinutes * 60); startTimer()
-    } else if (sessionState === 'break') {
-      setSessionState('running'); stopTimer(); setTimeLeft(customMinutes * 60); setPhase(p => p + 1); startTimer()
+      setSessionState('running')
+      setTimeLeft(customMinutes * 60)
+      startTimer()
+    }
+
+    else if (sessionState === 'running') {
+      setSessionState('break')
+      stopTimer()
+      setTimeLeft(breakMinutes * 60)
+      startTimer()
+    }
+
+    else if (sessionState === 'break') {
+
+      // checks if last phase reacched, if yes then reset everything to initial state
+      if (phase >= totalPhases) {
+        stopTimer()
+        setSessionState('idle')
+        setPhase(1)
+        setTimeLeft(customMinutes * 60)
+        return
+      }
+
+      // otherwise continue next cycle
+      setSessionState('running')
+      stopTimer()
+      setTimeLeft(customMinutes * 60)
+      setPhase(p => p + 1)
+      startTimer()
     }
   }
+
+  useEffect(() => {
+    if (sessionState !== "running") return;
+
+    const startCamera = async () => {
+      try {
+        await navigator.mediaDevices.getUserMedia({ video: true })
+        setCameraStatus("active")
+      } catch (err) {
+        setCameraStatus("denied")
+      }
+    }
+
+    startCamera()
+
+    return () => {
+      stopCamera()
+    }
+  }, [sessionState])
 
   const handleEndSession = () => {
     stopTimer(); setSessionState('idle'); setTimeLeft(customMinutes * 60); setPhase(1)
@@ -306,6 +351,19 @@ export default function Dashboard() {
 
   const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
   const donedays = [true, true, true, true, true, false, false]
+
+  const stopCamera = () => {
+    const webcam = webcamRef.current
+
+    if (webcam && webcam.video && webcam.video.srcObject) {
+      const stream = webcam.video.srcObject
+      stream.getTracks().forEach(track => track.stop())
+      webcam.video.srcObject = null
+    }
+
+    webcamRef.current = null
+    setCameraStatus("idle")
+  }
 
   return (
     <>
@@ -433,45 +491,48 @@ export default function Dashboard() {
                 <p className="text-[#5a4a7a] text-xs font-medium mt-1">Real Time Attention Tracking (Webcam Active)</p>
               </div>
               <div className="w-full flex items-center justify-center bg-[#080612] p-4">
-                <div className="w-full max-w-3xl h-100  aspect-video rounded-xl overflow-hidden border border-[#1e1535] relative">
-                  {cameraStatus === "active" ? (
-                    <>
-                      <div className='className="relative w-full h-full"'>
-                        <Webcam
-                          ref={webcamRef}
-                          audio={false}
-                          mirrored={true}
-                          screenshotFormat="image/jpeg"
-                          className="w-full h-full object-cover"
-                        />
+                <div className="w-full max-w-3xl h-100 aspect-video rounded-xl overflow-hidden border border-[#1e1535] relative bg-[#080612]">
 
-                      </div>:
+                  {/* Webcam only when active */}
+                  {cameraStatus === "active" && (
+                    <Webcam
+                      ref={webcamRef}
+                      audio={false}
+                      mirrored={true}
+                      screenshotFormat="image/jpeg"
+                      className="w-full h-full object-cover"
+                    />
+                  )}
 
-
-                      {/* focus status */}
-                      <div className="absolute bottom-2 left-2 right-2 flex justify-center">
-                        <div className="bg-black/50 backdrop-blur-md px-3 py-1 rounded-lg text-xs text-white">
-                          Focus Status:{" "}
-                          <span className={isFocused ? "text-green-400" : "text-red-400"}>
-                            {status === "loading" ? "Loading..." : isFocused ? "Focused" : "Distracted"}
-                          </span>
-                        </div>
-                      </div>
-                    </>
-                  ) : cameraStatus === "denied" ? (
-                    // show error message if camera access is denied
-                    <div className="h-full flex flex-col items-center justify-center gap-2 text-red-400">
-                      <CameraOff className="w-10 h-10" />
-                      <p>Camera permission denied</p>
-                    </div>
-                  ) : (
-                    // show message while waiting for camera access
-                    <div className="h-full flex flex-col items-center justify-center gap-2 text-[#5a4a7a]">
-                      <User className="w-10 h-10" />
-                      <p>Camera is off</p>
-                      <p className="text-xs">Please allow camera access to continue</p>
+                  {/* Only your session overlays */}
+                  {sessionState === "idle" && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#080612] text-[#5a4a7a] text-sm font-medium gap-2">
+                      <User className="text-[#3d2060] w-12 h-12" />
+                      <div>Start session to enable focus monitoring</div>
                     </div>
                   )}
+
+                  {sessionState === "break" && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-[#080612] text-[#5a4a7a] text-sm font-medium">
+                      Break time — relax
+                    </div>
+                  )}
+
+                  {sessionState === "running" && cameraStatus === "active" && (
+                    <div className="absolute bottom-2 left-2 right-2 flex justify-center">
+                      <div className="bg-[#080612] backdrop-blur-md px-3 py-1 rounded-lg text-xs text-white">
+                        Focus Status:{" "}
+                        <span className={isFocused ? "text-green-400" : "text-red-400"}>
+                          {status === "loading"
+                            ? "Loading..."
+                            : isFocused
+                              ? "Focused"
+                              : "Distracted"}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
                 </div>
               </div>
             </div>
