@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import rainSrc from '../assets/music/rainfall.mp3'
 import classicalSrc from '../assets/music/classicalmusic.mp3'
 import zenSrc from '../assets/music/zengarden.mp3'
+import distractionSound from '../assets/music/distraction.mp3'
 import useFaceFocusTracker from '../utils/useFaceFocusTracker'
 import Webcam from "react-webcam";
 import { CustomizedToast } from "../utils/toast";
@@ -167,40 +168,91 @@ export default function Dashboard() {
   const [focusTime, setFocusTime] = useState(0)
   const [distractedTime, setDistractedTime] = useState(0)
 
-  const distractionStartRef = useRef(null)
+  const distractionAudioRef = useRef(null)
 
-  // shows toast and browser notifications based on the alert and focus status from the face focus tracker
+  useEffect(() => {
+    distractionAudioRef.current = new Audio(distractionSound)
+  }, [])
+
+  const distractionStartRef = useRef(null)
+  const alertIntervalRef = useRef(null);
+
+  const lastAlertRef = useRef(null)
+
+  // shows toast and browser notifications and plays alert sound based on the alert and focus status from the face focus tracker
   useEffect(() => {
     if (status === "loading") return;
 
-    // Reset if focused again
-    if (isFocused) {
+    // stop everything if session not running
+    if (sessionState !== "running") {
       distractionStartRef.current = null;
+
+      if (alertIntervalRef.current) {
+        clearInterval(alertIntervalRef.current);
+        alertIntervalRef.current = null;
+      }
+
+      lastAlertRef.current = null
+
       return;
     }
 
-    // If distracted
+    // If user is focused, stop tracking
+    if (isFocused) {
+      distractionStartRef.current = null;
+
+      if (alertIntervalRef.current) {
+        clearInterval(alertIntervalRef.current);
+        alertIntervalRef.current = null;
+      }
+
+      lastAlertRef.current = null;
+
+      return;
+    }
+
+    // Start tracking distraction time
     if (!distractionStartRef.current) {
       distractionStartRef.current = Date.now();
     }
 
-    const interval = setInterval(() => {
-      const now = Date.now();
-      const elapsed = (now - distractionStartRef.current) / 1000;
+    // Start alert loop
+    if (!alertIntervalRef.current) {
+      alertIntervalRef.current = setInterval(() => {
+        const now = Date.now()
 
-      if (elapsed >= 30) {
-        CustomizedToast.error("You seem distracted for too long");
-        showBrowserNotification("Focusentrix Alert", "You are distracted for 30 seconds");
+        if (!lastAlertRef.current) {
+          lastAlertRef.current = now
+          return
+        }
 
-        // Prevent repeated spam
-        distractionStartRef.current = null;
-        clearInterval(interval);
+        const diff = now - lastAlertRef.current
+
+        if (diff >= 30000) {
+          CustomizedToast.error("You are still distracted!")
+
+          showBrowserNotification(
+            "Focusentrix Alert",
+            "You are distracted for too long"
+          )
+
+          if (distractionAudioRef.current) {
+            distractionAudioRef.current.currentTime = 0
+            distractionAudioRef.current.play().catch(() => { })
+          }
+
+          lastAlertRef.current = now
+        }
+      }, 1000)
+    }
+
+    return () => {
+      if (alertIntervalRef.current) {
+        clearInterval(alertIntervalRef.current);
+        alertIntervalRef.current = null;
       }
-    }, 1000);
-
-    return () => clearInterval(interval);
-
-  }, [isFocused, status]);
+    };
+  }, [isFocused, status, sessionState]);
 
   useEffect(() => {
     if (!isFocused) {
@@ -417,6 +469,13 @@ export default function Dashboard() {
     setSessionState('idle');
     setTimeLeft(customMinutes * 60);
     setPhase(1)
+
+    distractionStartRef.current = null;
+
+    if (alertIntervalRef.current) {
+      clearInterval(alertIntervalRef.current);
+      alertIntervalRef.current = null;
+    }
 
     notifyUser(
       "Focusentrix",
