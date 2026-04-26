@@ -11,7 +11,7 @@ import Dashboard from './pages/Dashboard'
 import NotFound from './pages/NotFound'
 import ScrollToTop from './components/ScrollToTop';
 import { Toaster } from "react-hot-toast";
-
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 
 function App() {
@@ -31,7 +31,14 @@ function App() {
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/auth" element={<Auth />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
