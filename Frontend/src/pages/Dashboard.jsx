@@ -224,6 +224,8 @@ export default function Dashboard() {
     return `${minutes}m ${secs}s`
   }
 
+  const [streak, setStreak] = useState(null)
+
   // Fetches today's session count for the logged-in user from MongoDB
   useEffect(() => {
     const fetchSessions = async () => {
@@ -361,63 +363,67 @@ export default function Dashboard() {
   useEffect(() => {
     if (timeLeft !== 0) return;
 
-    // WORK SESSION ENDED
-    if (sessionState === "running") {
+    const handleSessionEnd = async () => {
 
-      stopTimer();
-      stopCamera(); // turn off camera
+      // WORK SESSION ENDED
+      if (sessionState === "running") {
 
-      // If last phase → reset everything
-      if (phase >= totalPhases) {
-
-        completeSession();
-
-        setSessionState("idle");
-        setPhase(1);
-        setTimeLeft(customMinutes * 60);
-
-
-        return;
-      }
-
-      // Otherwise go to break
-      setSessionState("break");
-      setTimeLeft(breakMinutes * 60);
-      startTimer();
-
-      notifyUser(
-        "Focusentrix",
-        "One work session is completed"
-      )
-    }
-
-    // BREAK ENDED
-    else if (sessionState === "break") {
-
-      stopTimer();
-
-      // If last phase already completed → end session
-      if (phase >= totalPhases) {
-        setSessionState("idle");
-        setPhase(1);
-        setTimeLeft(customMinutes * 60);
-        stopCamera();
         stopTimer();
-        return;
+        stopCamera(); // turn off camera
+
+        // If last phase → reset everything
+        if (phase >= totalPhases) {
+
+          completeSession();
+          await updateStreak()
+          setSessionState("idle");
+          setPhase(1);
+          setTimeLeft(customMinutes * 60);
+
+          return;
+        }
+
+        // Otherwise go to break
+        setSessionState("break");
+        setTimeLeft(breakMinutes * 60);
+        startTimer();
+
+        notifyUser(
+          "Focusentrix",
+          "One work session is completed"
+        )
       }
 
-      // otherwise continue next work phase
-      setSessionState("running");
-      setPhase(prev => prev + 1);
-      setTimeLeft(customMinutes * 60);
+      // BREAK ENDED
+      else if (sessionState === "break") {
 
-      startTimer();
+        stopTimer();
 
-      notifyUser(
-        "Focusentrix",
-        "Next session is started"
-      )
+        // If last phase already completed → end session
+        if (phase >= totalPhases) {
+          setSessionState("idle");
+          setPhase(1);
+          setTimeLeft(customMinutes * 60);
+          stopCamera();
+          stopTimer();
+          return;
+        }
+
+        // otherwise continue next work phase
+        setSessionState("running");
+        setPhase(prev => prev + 1);
+        setTimeLeft(customMinutes * 60);
+
+        startTimer();
+
+        notifyUser(
+          "Focusentrix",
+          "Next session is started"
+        )
+      }
     }
+
+    handleSessionEnd();
 
   }, [timeLeft]);
 
@@ -589,6 +595,7 @@ export default function Dashboard() {
       total === 0 ? 100 : Math.round((focusTime / total) * 100)
 
     setFinalFocusScore(score)
+    await updateStreak()
 
     const userId = localStorage.getItem("userId");
 
@@ -707,7 +714,18 @@ export default function Dashboard() {
   const deleteTask = (id) => setTasks(tasks.filter(t => t.id !== id))
 
   const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
-  const donedays = [true, true, true, true, true, false, false]
+  const today = new Date()
+  const last7Days = [...Array(7)].map((_, i) => {
+    const d = new Date()
+    d.setDate(today.getDate() - (6 - i))
+    return d.toISOString().split("T")[0]
+  })
+
+  const activeDays = streak?.activeDays || []
+
+  const weekStatus = last7Days.map(date =>
+    activeDays.includes(date)
+  )
 
   const stopCamera = () => {
     const webcam = webcamRef.current
@@ -737,6 +755,42 @@ export default function Dashboard() {
   }
 
 
+
+  useEffect(() => {
+    const fetchStreak = async () => {
+      try {
+        const userId = localStorage.getItem("userId")
+
+        const res = await axios.get(
+          `http://localhost:5000/api/streak/${userId}`
+        )
+
+        setStreak(res.data)
+      } catch (err) {
+        console.log("Failed to fetch streak")
+      }
+    }
+
+    fetchStreak()
+  }, [])
+
+  const updateStreak = async () => {
+    try {
+      const userId = localStorage.getItem("userId")
+
+      await axios.post("http://localhost:5000/api/streak/update", {
+        userId,
+      })
+
+      const streakRes = await axios.get(
+        `http://localhost:5000/api/streak/${userId}`
+      )
+
+      setStreak(streakRes.data)
+    } catch (err) {
+      console.log("Failed to update streak")
+    }
+  }
 
 
   return (
@@ -1044,15 +1098,17 @@ export default function Dashboard() {
                   <Flame className="text-[#9b59f5] w-4 h-4" />
                   <p className="text-[#5a4a7a] text-[12px] font-bold uppercase tracking-widest">Current Streak</p>
                 </div>
-                <p className="text-white text-2xl font-black">12 Days</p>
+                <p className="text-white text-2xl font-black">
+                  {streak?.streakCount || 0} Days
+                </p>
                 <div className="flex items-center justify-between w-full">
-                  {days.map((d, i) => (
+                  {weekStatus.map((done, i) => (
                     <div key={i} className="flex flex-col items-center gap-1">
                       <div className={`w-6 h-6 rounded-full flex items-center justify-center
-                        ${donedays[i] ? 'bg-[#9b59f5]' : 'bg-[#1e1535] border border-[#2a1a40]'}`}>
-                        {donedays[i] && <span className="text-white text-[8px]">✓</span>}
+      ${done ? 'bg-[#9b59f5]' : 'bg-[#1e1535] border border-[#2a1a40]'}`}>
+                        {done && <span className="text-white text-[8px]">✓</span>}
                       </div>
-                      <span className="text-[#5a4a7a] text-[9px]">{d}</span>
+                      <span className="text-[#5a4a7a] text-[9px]">{days[i]}</span>
                     </div>
                   ))}
                 </div>
