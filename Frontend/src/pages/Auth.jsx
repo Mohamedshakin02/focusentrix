@@ -46,6 +46,8 @@ export default function Auth() {
       )
 
       localStorage.setItem("token", res.data.token)
+      localStorage.setItem("username", res.data.user.name)
+      localStorage.setItem("userId", res.data.user._id)
 
       CustomizedToast.success("Login successful")
 
@@ -83,6 +85,8 @@ export default function Auth() {
       )
 
       localStorage.setItem("token", res.data.token)
+      localStorage.setItem("username", res.data.user.name)
+      localStorage.setItem("userId", res.data.user._id)
 
       CustomizedToast.success("Account created successfully")
 
@@ -109,6 +113,8 @@ export default function Auth() {
       )
 
       localStorage.setItem("token", res.data.token)
+      localStorage.setItem("username", res.data.user.name)
+      localStorage.setItem("userId", res.data.user._id)
 
       CustomizedToast.success("Google login successful")
 

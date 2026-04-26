@@ -3,6 +3,7 @@ import { User, AlertTriangle, SkipBack, SkipForward, Pause, Play, Volume2, Plus,
 import logo from '../assets/focusentrixclear2.png'
 import logo2 from '../assets/focusentrixclear.png'
 import { Link } from 'react-router-dom'
+import { useNavigate } from "react-router-dom"
 import rainSrc from '../assets/music/rainfall.mp3'
 import classicalSrc from '../assets/music/classicalmusic.mp3'
 import zenSrc from '../assets/music/zengarden.mp3'
@@ -10,6 +11,7 @@ import distractionSound from '../assets/music/distraction.mp3'
 import useFaceFocusTracker from '../utils/useFaceFocusTracker'
 import Webcam from "react-webcam";
 import { CustomizedToast } from "../utils/toast";
+import axios from "axios"
 
 
 //music goes here
@@ -59,13 +61,30 @@ function StatCard({ label, value, sub, badge, icon, iconColor }) {
 
 
 //footer for this page
-function DashboardFooter() {
+function DashboardFooter({ username, handleLogout }) {
   return (
     <footer className="border-t border-[#1a1030] bg-[#0a0a0f] py-10 pb-7">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-0 lg:divide-x lg:divide-[#1a1030] mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-0 lg:divide-x lg:divide-[#1a1030] mb-8">
+
+        {/* Left area*/}
+        <div className="flex items-start gap-4 pr-0 lg:pr-10  mb-2 lg:mb-0 order-2 lg:order-1 mb-2 lg:mb-0">
+          <div className="bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
+                          shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)] rounded-full p-3 flex-shrink-0 mt-1">
+            <User className="text-white w-5 h-5" />
+          </div>
+          <div className="flex flex-col gap-3">
+            <div>
+              <p className="text-white font-bold text-lg leading-snug">Hello, <br />{username}</p>
+              <p className="text-[#8a7aaa] text-md mt-2">Welcome back! Stay focused and make today your most productive session.</p>
+            </div>
+            <button className="w-fit mt-2 group flex items-center gap-2 border border-[#665395] hover:border-red-500 text-[#8a7aaa] hover:text-red-400 text-sm font-semibold px-4 py-2 rounded-xl transition-colors duration-200" onClick={handleLogout}>
+              <LogOut className="w-4 h-4 mb-0.5 text-[#8c57cb] group-hover:text-red-400 opacity-75 transform scale-x-[-1]" /> Logout
+            </button>
+          </div>
+        </div>
 
         {/* logo */}
-        <div className="flex flex-col lg:items-center gap-2 px-0 lg:px-10 mb-6 lg:mb-0">
+        <div className="flex flex-col lg:items-center gap-2 px-0 lg:px-10 mb-6 lg:mb-0 order-1 lg:order-2">
           <div className="flex items-center gap-2">
             <img src={logo} alt="Focusentrix logo" className="w-auto h-16 lg:h-20 object-contain" />
           </div>
@@ -75,7 +94,7 @@ function DashboardFooter() {
         </div>
 
         {/* socials */}
-        <div className="flex items-start gap-4 pl-0 lg:pl-10">
+        <div className="flex items-start gap-4 pl-0 lg:pl-10 order-3 lg:order-3">
           <div className="bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
                           shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)] rounded-full p-3 flex-shrink-0 mt-1">
             <svg className="text-white w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -135,6 +154,21 @@ export default function Dashboard() {
   const [breakMinutes, setBreakMinutes] = useState(5)
   const [totalPhases, setTotalPhases] = useState(4)
 
+  const username = localStorage.getItem("username") || "User"
+
+  const navigate = useNavigate()
+  const [loggingOut, setLoggingOut] = useState(false)
+
+  // clears local storage and redirects to home page on logout
+  const handleLogout = () => {
+    setLoggingOut(true)
+
+    setTimeout(() => {
+      localStorage.clear() // 
+      navigate("/")
+    }, 3000)
+  }
+
   const [recentAlert, setRecentAlert] = useState("All Good")
 
   //face focus tracking states and refs
@@ -167,6 +201,51 @@ export default function Dashboard() {
 
   const [focusTime, setFocusTime] = useState(0)
   const [distractedTime, setDistractedTime] = useState(0)
+
+  const [finalFocusScore, setFinalFocusScore] = useState(null)
+  const totalTrackedTime = focusTime + distractedTime
+
+  const liveFocusScore =
+    totalTrackedTime === 0
+      ? 100
+      : Math.round((focusTime / totalTrackedTime) * 100)
+
+  const [sessionsToday, setSessionsToday] = useState(0)
+  const sessionCompletedRef = useRef(false);
+
+  const [todayFocusTime, setTodayFocusTime] = useState(0)
+
+  const formatFocusTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600)
+    const minutes = Math.floor((seconds % 3600) / 60)
+    const secs = seconds % 60
+
+    if (hours > 0) return `${hours}h ${minutes}m ${secs}s`
+    return `${minutes}m ${secs}s`
+  }
+
+  // Fetches today's session count for the logged-in user from MongoDB
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        const userId = localStorage.getItem("userId")
+
+        const res = await axios.get(
+          `http://localhost:5000/api/session/today/${userId}`
+        )
+
+        setSessionsToday(res.data.count)
+        setTodayFocusTime(res.data.focusTime)
+      } catch (err) {
+        console.log("Failed to fetch sessions today")
+        setSessionsToday(0)
+        setTodayFocusTime(0)
+      }
+    }
+
+    fetchSessions()
+  }, [])
+
 
   const distractionAudioRef = useRef(null)
 
@@ -290,9 +369,14 @@ export default function Dashboard() {
 
       // If last phase → reset everything
       if (phase >= totalPhases) {
+
+        completeSession();
+
         setSessionState("idle");
         setPhase(1);
         setTimeLeft(customMinutes * 60);
+
+
         return;
       }
 
@@ -364,6 +448,30 @@ export default function Dashboard() {
     intervalRef.current = null
   }
 
+  const completeSession = async () => {
+    if (sessionCompletedRef.current) return;
+    sessionCompletedRef.current = true;
+
+    const userId = localStorage.getItem("userId");
+
+    try {
+      await axios.post("http://localhost:5000/api/session/increment", {
+        userId,
+        focusTime: focusTime
+      });
+
+      const res = await axios.get(
+        `http://localhost:5000/api/session/today/${userId}`
+      );
+
+      setSessionsToday(res.data.count);
+      setTodayFocusTime(res.data.focusTime);
+
+    } catch (err) {
+      console.log("Failed to update session");
+    }
+  };
+
   const checkCameraPermission = async () => {
     try {
       await navigator.mediaDevices.getUserMedia({ video: true })
@@ -394,6 +502,8 @@ export default function Dashboard() {
     // Block session to start if camera setting is denied
     if (sessionState === 'idle') {
 
+      sessionCompletedRef.current = false;
+
       const permission = await checkCameraPermission()
 
       if (permission === "denied") {
@@ -401,6 +511,9 @@ export default function Dashboard() {
         CustomizedToast.error("Turn on camera access to start session")
         return
       }
+
+      setFocusTime(0)
+      setDistractedTime(0)
 
       setCameraStatus("active")
       setSessionState('running')
@@ -464,11 +577,38 @@ export default function Dashboard() {
     }
   }, [sessionState])
 
-  const handleEndSession = () => {
+  const handleEndSession = async () => {
     stopTimer();
     setSessionState('idle');
     setTimeLeft(customMinutes * 60);
     setPhase(1)
+
+    const total = focusTime + distractedTime
+
+    const score =
+      total === 0 ? 100 : Math.round((focusTime / total) * 100)
+
+    setFinalFocusScore(score)
+
+    const userId = localStorage.getItem("userId");
+
+    try {
+      await axios.post("http://localhost:5000/api/session/increment", {
+        userId,
+        focusTime: focusTime
+      });
+
+      // refresh UI after update
+      const res = await axios.get(
+        `http://localhost:5000/api/session/today/${userId}`
+      );
+
+      setSessionsToday(res.data.count);
+      setTodayFocusTime(res.data.focusTime);
+
+    } catch (err) {
+      console.log("Failed to update session");
+    }
 
     distractionStartRef.current = null;
 
@@ -601,6 +741,14 @@ export default function Dashboard() {
 
   return (
     <>
+
+      {/* Show loading screen when logging out*/}
+      {loggingOut && (
+        <div className="fixed inset-0 bg-black/80 flex flex-col items-center justify-center z-[9999]">
+          <div className="w-12 h-12 border-4 border-[#9b59f5] border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
+
       <DashboardNavbar />
 
       <div className="bg-[#0a0a0f] min-h-screen text-white relative overflow-hidden">
@@ -625,12 +773,12 @@ export default function Dashboard() {
           {/* welcome row */}
           <div className="mb-6 flex items-start justify-between">
             <div>
-              <h1 className="text-2xl font-black flex items-center gap-3">Hello, User <Handshake className="w-5 h-5 text-[#8c57cb]" /></h1>
+              <h1 className="text-2xl font-black flex items-center gap-3">Hello, {username} <Handshake className="w-5 h-5 text-[#8c57cb]" /></h1>
               <p className="text-[#5a4a7a] text-sm font-semibold mt-0.5">
                 {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
               </p>
             </div>
-            <button className="group flex items-center gap-2 border border-[#665395] hover:border-red-500 text-[#8a7aaa] hover:text-red-400 text-sm font-semibold px-4 py-2 rounded-xl transition-colors duration-200">
+            <button className="group flex items-center gap-2 border border-[#665395] hover:border-red-500 text-[#8a7aaa] hover:text-red-400 text-sm font-semibold px-4 py-2 rounded-xl transition-colors duration-200" onClick={handleLogout}>
               Logout <LogOut className="w-4 h-4 mb-0.5 text-[#8c57cb] group-hover:text-red-400 opacity-75 transform scale-x-[-1]" />
             </button>
           </div>
@@ -639,9 +787,23 @@ export default function Dashboard() {
           {/* stat cards and pomodoro time */}
           <div className="grid grid-cols-[1fr_1fr_1fr_1fr_224px] gap-4 mb-4 items-start">
 
-            <StatCard label="Focus score" value="87%" sub="+12% this week" />
-            <StatCard label="Sessions today" value="3" sub="1 active" />
-            <StatCard label="Total focus time" value="2h 14m" sub="Today" />
+            <StatCard
+              label="Focus score"
+              value={
+                sessionState === "running"
+                  ? `${liveFocusScore}%`
+                  : finalFocusScore !== null
+                    ? `${finalFocusScore}%`
+                    : "0%"
+              }
+              sub={
+                sessionState === "running"
+                  ? "Live tracking"
+                  : "Last session"
+              }
+            />
+            <StatCard label="Sessions today" value={sessionsToday} sub="Today’s completed sessions" />
+            <StatCard label="Total focus time" value={formatFocusTime(todayFocusTime)} sub="Today" />
             <StatCard
               label="Recent Alerts"
               value={recentAlert}
@@ -901,8 +1063,8 @@ export default function Dashboard() {
         </div>
 
         {/* FOOTER */}
-        <div className="py-18 pb-0 px-4">
-          <DashboardFooter />
+        <div className="container mx-auto px-4 sm:px-6 lg:px-30">
+          <DashboardFooter username={username} handleLogout={handleLogout} />
         </div>
       </div >
     </>
