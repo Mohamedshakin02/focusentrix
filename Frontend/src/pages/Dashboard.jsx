@@ -147,7 +147,7 @@ export default function Dashboard() {
   const { status, isFocused, alert } =
     useFaceFocusTracker(webcamRef)
 
-    
+
   useEffect(() => {
     const interval = setInterval(() => {
       if (webcamRef.current?.video) {
@@ -167,25 +167,40 @@ export default function Dashboard() {
   const [focusTime, setFocusTime] = useState(0)
   const [distractedTime, setDistractedTime] = useState(0)
 
+  const distractionStartRef = useRef(null)
+
   // shows toast and browser notifications based on the alert and focus status from the face focus tracker
   useEffect(() => {
-  if (status === "loading") return;
+    if (status === "loading") return;
 
-  if (alert === "No Face") {
-    CustomizedToast.error("No face detected");
-    showBrowserNotification("Focusentrix Alert", "No face detected");
-  }
+    // Reset if focused again
+    if (isFocused) {
+      distractionStartRef.current = null;
+      return;
+    }
 
-  else if (alert === "Bad Lighting") {
-    CustomizedToast.warning("Bad lighting detected");
-    showBrowserNotification("Focusentrix Alert", "Bad lighting detected");
-  }
+    // If distracted
+    if (!distractionStartRef.current) {
+      distractionStartRef.current = Date.now();
+    }
 
-  else if (!isFocused) {
-    CustomizedToast.error("You seem distracted");
-    showBrowserNotification("Focusentrix Alert", "You are distracted");
-  }
-}, [alert, isFocused, status]);
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const elapsed = (now - distractionStartRef.current) / 1000;
+
+      if (elapsed >= 30) {
+        CustomizedToast.error("You seem distracted for too long");
+        showBrowserNotification("Focusentrix Alert", "You are distracted for 30 seconds");
+
+        // Prevent repeated spam
+        distractionStartRef.current = null;
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+
+  }, [isFocused, status]);
 
   useEffect(() => {
     if (!isFocused) {
@@ -193,7 +208,7 @@ export default function Dashboard() {
     }
   }, [isFocused])
 
-  
+
   useEffect(() => {
     if (sessionState !== 'running') return
 
@@ -212,7 +227,63 @@ export default function Dashboard() {
     setRecentAlert(alert)
   }, [alert])
 
+  useEffect(() => {
+    if (timeLeft !== 0) return;
 
+    // WORK SESSION ENDED
+    if (sessionState === "running") {
+
+      stopTimer();
+      stopCamera(); // turn off camera
+
+      // If last phase → reset everything
+      if (phase >= totalPhases) {
+        setSessionState("idle");
+        setPhase(1);
+        setTimeLeft(customMinutes * 60);
+        return;
+      }
+
+      // Otherwise go to break
+      setSessionState("break");
+      setTimeLeft(breakMinutes * 60);
+      startTimer();
+
+      notifyUser(
+        "Focusentrix",
+        "One work session is completed"
+      )
+    }
+
+    // BREAK ENDED
+    else if (sessionState === "break") {
+
+      stopTimer();
+
+      // If last phase already completed → end session
+      if (phase >= totalPhases) {
+        setSessionState("idle");
+        setPhase(1);
+        setTimeLeft(customMinutes * 60);
+        stopCamera();
+        stopTimer();
+        return;
+      }
+
+      // otherwise continue next work phase
+      setSessionState("running");
+      setPhase(prev => prev + 1);
+      setTimeLeft(customMinutes * 60);
+
+      startTimer();
+
+      notifyUser(
+        "Focusentrix",
+        "Next session is started"
+      )
+    }
+
+  }, [timeLeft]);
 
   useEffect(() => {
     if (sessionState === "idle") {
@@ -241,11 +312,50 @@ export default function Dashboard() {
     intervalRef.current = null
   }
 
-  const handleMainButton = () => {
+  const checkCameraPermission = async () => {
+    try {
+      await navigator.mediaDevices.getUserMedia({ video: true })
+      return "granted"
+    } catch {
+      return "denied"
+    }
+  }
+
+
+  useEffect(() => {
+    const checkPermission = async () => {
+      try {
+        const permission = await navigator.permissions.query({ name: "camera" })
+        if (permission.state === "denied") {
+          setCameraStatus("denied")
+        }
+      } catch {
+
+      }
+    }
+
+    checkPermission()
+  }, [])
+
+  const handleMainButton = async () => {
+
+    // Block session to start if camera setting is denied
     if (sessionState === 'idle') {
+
+      const permission = await checkCameraPermission()
+
+      if (permission === "denied") {
+        setCameraStatus("denied")
+        CustomizedToast.error("Turn on camera access to start session")
+        return
+      }
+
+      setCameraStatus("active")
       setSessionState('running')
       setTimeLeft(customMinutes * 60)
       startTimer()
+
+      notifyUser("Focusentrix", "Session started. Stay focused!")
     }
 
     else if (sessionState === 'running') {
@@ -253,16 +363,22 @@ export default function Dashboard() {
       stopTimer()
       setTimeLeft(breakMinutes * 60)
       startTimer()
+
+      notifyUser("Focusentrix", "Break time started")
     }
 
     else if (sessionState === 'break') {
 
-      // checks if last phase reacched, if yes then reset everything to initial state
+      notifyUser("Focusentrix", "Next session is started")
+
+      // checks if last phase reached, if yes then reset everything to initial state
       if (phase >= totalPhases) {
         stopTimer()
         setSessionState('idle')
         setPhase(1)
         setTimeLeft(customMinutes * 60)
+
+        notifyUser("Focusentrix", "Session is completed")
         return
       }
 
@@ -272,6 +388,8 @@ export default function Dashboard() {
       setTimeLeft(customMinutes * 60)
       setPhase(p => p + 1)
       startTimer()
+
+
     }
   }
 
@@ -295,7 +413,15 @@ export default function Dashboard() {
   }, [sessionState])
 
   const handleEndSession = () => {
-    stopTimer(); setSessionState('idle'); setTimeLeft(customMinutes * 60); setPhase(1)
+    stopTimer();
+    setSessionState('idle');
+    setTimeLeft(customMinutes * 60);
+    setPhase(1)
+
+    notifyUser(
+      "Focusentrix",
+      "Session is Ended"
+    )
   }
 
   useEffect(() => () => stopTimer(), [])
@@ -327,13 +453,13 @@ export default function Dashboard() {
 
   // function to show browser notifications for focus alerts
   const showBrowserNotification = (title, message) => {
-      if (Notification.permission === "granted") {
-        new Notification(title, {
-          body: message,
-          icon: logo2,
-        });
-      }
-    };
+    if (Notification.permission === "granted") {
+      new Notification(title, {
+        body: message,
+        icon: logo2,
+      });
+    }
+  }
 
   useEffect(() => {
     if (!audioRef.current) return
@@ -397,12 +523,22 @@ export default function Dashboard() {
     setCameraStatus("idle")
   }
 
+
   // Request notification permission 
   useEffect(() => {
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
   }, []);
+
+  const notifyUser = (title, message) => {
+    CustomizedToast.success(message)
+
+    showBrowserNotification(title, message)
+  }
+
+
+
 
   return (
     <>
@@ -543,21 +679,31 @@ export default function Dashboard() {
                     />
                   )}
 
-                  {/* Only your session overlays */}
-                  {sessionState === "idle" && (
+                  {/* CAMERA DENIED (highest priority) */}
+                  {cameraStatus === "denied" && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-[#080612] text-red-400 text-sm font-medium">
+                      <CameraOff className="w-10 h-10" />
+                      <p>Camera permission denied</p>
+                    </div>
+                  )}
+
+                  {/* IDLE */}
+                  {cameraStatus !== "denied" && sessionState === "idle" && (
                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#080612] text-[#5a4a7a] text-sm font-medium gap-2">
                       <User className="text-[#3d2060] w-12 h-12" />
                       <div>Start session to enable focus monitoring</div>
                     </div>
                   )}
 
-                  {sessionState === "break" && (
+                  {/* BREAK */}
+                  {cameraStatus !== "denied" && sessionState === "break" && (
                     <div className="absolute inset-0 flex items-center justify-center bg-[#080612] text-[#5a4a7a] text-sm font-medium">
                       Break time — relax
                     </div>
                   )}
 
-                  {sessionState === "running" && cameraStatus === "active" && (
+                  {/* RUNNING */}
+                  {cameraStatus === "active" && sessionState === "running" && (
                     <div className="absolute bottom-2 left-2 right-2 flex justify-center">
                       <div className="bg-[#080612] backdrop-blur-md px-3 py-1 rounded-lg text-xs text-white">
                         Focus Status:{" "}

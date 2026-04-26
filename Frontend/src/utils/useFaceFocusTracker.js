@@ -86,7 +86,7 @@ export default function useFaceFocusTracker(webcamRef) {
 
             if (!result.faceBlendshapes?.length) {
                 setIsFocused(false)
-                setAlert("No Face")
+                setAlert("No Face Detected")
                 animationRef.current = requestAnimationFrame(detect)
                 return
             }
