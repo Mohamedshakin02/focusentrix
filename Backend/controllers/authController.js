@@ -7,47 +7,58 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // REGISTER
 export const signup = async (req, res) => {
-    try {
-        const { name, email, password } = req.body;
+  try {
+    const { name, email, password } = req.body;
 
-        const exists = await User.findOne({ email });
-        if (exists) return res.status(400).json({ message: "User exists" });
-
-        const hashed = await bcrypt.hash(password, 10);
-
-        const user = await User.create({
-            name,
-            email,
-            password: hashed
-        });
-
-        const token = generateToken(user._id);
-
-        const { password: _, ...safeUser } = user._doc;
-        res.json({ user: safeUser, token });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+    const exists = await User.findOne({ email });
+    if (exists) {
+      return res.status(400).json({ message: "User already exists" });
     }
+
+    const hashed = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+      name,
+      email,
+      password: hashed
+    });
+
+    const token = generateToken(user._id);
+
+    const { password: _, ...safeUser } = user._doc;
+
+    res.status(201).json({ user: safeUser, token });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
 // LOGIN
 export const login = async (req, res) => {
-    try {
-        const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-        const user = await User.findOne({ email });
-        if (!user) return res.status(400).json({ message: "User not found" });
+    const user = await User.findOne({ email });
 
-        const match = await bcrypt.compare(password, user.password);
-        if (!match) return res.status(400).json({ message: "Wrong password" });
-
-        const token = generateToken(user._id);
-
-        const { password: _, ...safeUser } = user._doc;
-        res.json({ user: safeUser, token });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+    if (!user) {
+      return res.status(404).json({ message: "User does not exist" });
     }
+
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match) {
+      return res.status(401).json({ message: "Incorrect password" });
+    }
+
+    const token = generateToken(user._id);
+
+    const { password: _, ...safeUser } = user._doc;
+
+    res.json({ user: safeUser, token });
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
 // GOOGLE LOGIN

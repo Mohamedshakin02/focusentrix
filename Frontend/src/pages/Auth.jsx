@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Webcam, Bell, Trophy, BarChart2, Globe, ArrowRight } from 'lucide-react'
 import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
+import { CustomizedToast } from "../utils/toast";
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 import { GoogleLogin } from '@react-oauth/google'
@@ -16,6 +17,10 @@ export default function Auth() {
   const navigate = useNavigate()
 
   const googleBtnRef = useRef()
+
+  // loading state for form submission
+  const [loading, setLoading] = useState(false)
+
 
   // toggles between login and signup
   const [mode, setMode] = useState('login')
@@ -32,6 +37,8 @@ export default function Auth() {
   const handleLoginSubmit = async (e) => {
     e.preventDefault()
 
+    setLoading(true)
+
     try {
       const res = await axios.post(
         "http://localhost:5000/api/auth/login",
@@ -40,17 +47,34 @@ export default function Auth() {
 
       localStorage.setItem("token", res.data.token)
 
-      console.log("Login success:", res.data)
+      CustomizedToast.success("Login successful")
+
+      setLoginForm({ email: "", password: "" })
 
       navigate("/dashboard")
+
     } catch (err) {
-      console.log(err.response?.data?.message || "Login failed")
+      const status = err.response?.status
+      const msg = err.response?.data?.message
+
+      if (status === 401) {
+        CustomizedToast.error("Incorrect email or password")
+      }
+      else if (status === 404) {
+        CustomizedToast.error("User not found")
+      }
+      else {
+        CustomizedToast.error(msg || "Login failed")
+      }
+    } finally {
+      setLoading(false)
     }
   }
 
   const handleSignupSubmit = async (e) => {
     e.preventDefault()
 
+    setLoading(true)
 
     try {
       const res = await axios.post(
@@ -60,15 +84,22 @@ export default function Auth() {
 
       localStorage.setItem("token", res.data.token)
 
-      console.log("Signup success:", res.data)
+      CustomizedToast.success("Account created successfully")
 
-      setMode("login")
+      setSignupForm({ name: "", email: "", password: "" })
+
+      navigate("/dashboard")
+
     } catch (err) {
-      console.log(err.response?.data?.message || "Signup failed")
+      CustomizedToast.error("Signup failed")
+    } finally {
+      setLoading(false)
     }
   }
 
   const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true)
+
     try {
       const res = await axios.post(
         "http://localhost:5000/api/auth/google-login",
@@ -78,10 +109,21 @@ export default function Auth() {
       )
 
       localStorage.setItem("token", res.data.token)
+
+      CustomizedToast.success("Google login successful")
+
       navigate("/dashboard")
 
     } catch (err) {
-      console.log("Google login failed", err)
+      const msg = err.response?.data?.message
+
+      if (msg === "User not found") {
+        CustomizedToast.error("No account found. Please sign up first.")
+      } else {
+        CustomizedToast.error("Google login failed")
+      }
+
+      setLoading(false)
     }
   }
 
@@ -96,8 +138,17 @@ export default function Auth() {
     { icon: Globe, label: 'No software install — 100% browser-based' },
   ]
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#0a0a0f] text-white">
+        <div className="w-14 h-14 border-4 border-[#9b59f5] border-t-transparent rounded-full animate-spin mb-4"></div>
+      </div>
+    )
+  }
+
   return (
     <>
+
       <Navbar />
 
       <div className="bg-[#0a0a0f] min-h-screen text-white container mx-auto px-4 sm:px-6 lg:px-30">
