@@ -28,65 +28,72 @@ function App() {
           <Route
             path="/"
             element={
-              <PublicRoute>
+              // <PublicRoute>
                 <Home />
-              </PublicRoute>
+              // </PublicRoute>
             }
           />
 
           <Route
             path="/features"
             element={
-              <PublicRoute>
+              // <PublicRoute>
                 <Features />
-              </PublicRoute>}
+              // </PublicRoute>
+            }
           />
 
           <Route
             path="/pricing"
             element={
-              <PublicRoute>
+              // <PublicRoute>
                 <Pricing />
-              </PublicRoute>} />
+              // </PublicRoute>
+            }
+          />
 
           <Route 
           path="/faqs" 
           element={
-          <PublicRoute>
+          // <PublicRoute>
             <FAQs />
-          </PublicRoute>} 
+          // </PublicRoute>
+          } 
           />
 
           <Route 
           path="/about" 
           element={
-          <PublicRoute>
+          // <PublicRoute>
             <AboutUs />
-          </PublicRoute>} 
+          // </PublicRoute>
+          } 
           />
 
           <Route 
           path="/contact" 
           element={
-          <PublicRoute>
+          // <PublicRoute>
             <Contact />
-          </PublicRoute>} 
+          // </PublicRoute>
+          } 
           />
 
           <Route 
           path="/auth" 
           element={
-          <PublicRoute>
+          // <PublicRoute>
             <Auth />
-          </PublicRoute>} 
+          // </PublicRoute>
+          } 
           />
-          
+
           <Route
             path="/dashboard"
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <Dashboard />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
 
