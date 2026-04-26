@@ -1,13 +1,22 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { Webcam, Bell, Trophy, BarChart2, Globe, ArrowRight } from 'lucide-react'
 import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
+import axios from "axios"
+import { useNavigate } from "react-router-dom"
+import { GoogleLogin } from '@react-oauth/google'
 
 // login and signup page
 // two columns used 
 // right has the login/signup form with tab toggle.
 export default function Auth() {
+
+  // for navigation after login/signup
+  const navigate = useNavigate()
+
+  const googleBtnRef = useRef()
+
   // toggles between login and signup
   const [mode, setMode] = useState('login')
 
@@ -15,20 +24,68 @@ export default function Auth() {
   const [loginForm, setLoginForm] = useState({ email: '', password: '' })
 
   // signup form state
-  const [signupForm, setSignupForm] = useState({ name: '', email: '', password: '', confirm: '' })
+  const [signupForm, setSignupForm] = useState({ name: '', email: '', password: '' })
 
   const handleLoginChange = (e) => setLoginForm({ ...loginForm, [e.target.name]: e.target.value })
   const handleSignupChange = (e) => setSignupForm({ ...signupForm, [e.target.name]: e.target.value })
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault()
-    console.log('Login:', loginForm)
+
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        loginForm
+      )
+
+      localStorage.setItem("token", res.data.token)
+
+      console.log("Login success:", res.data)
+
+      navigate("/dashboard")
+    } catch (err) {
+      console.log(err.response?.data?.message || "Login failed")
+    }
   }
 
-  const handleSignupSubmit = (e) => {
+  const handleSignupSubmit = async (e) => {
     e.preventDefault()
-    console.log('Signup:', signupForm)
+
+
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/signup",
+        signupForm
+      )
+
+      localStorage.setItem("token", res.data.token)
+
+      console.log("Signup success:", res.data)
+
+      setMode("login")
+    } catch (err) {
+      console.log(err.response?.data?.message || "Signup failed")
+    }
   }
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/google-login",
+        {
+          credential: credentialResponse.credential
+        }
+      )
+
+      localStorage.setItem("token", res.data.token)
+      navigate("/dashboard")
+
+    } catch (err) {
+      console.log("Google login failed", err)
+    }
+  }
+
+
 
   // features shown on the left side of the card
   const features = [
@@ -42,7 +99,7 @@ export default function Auth() {
   return (
     <>
       <Navbar />
-      
+
       <div className="bg-[#0a0a0f] min-h-screen text-white container mx-auto px-4 sm:px-6 lg:px-30">
 
         {/* login/signp card
@@ -143,11 +200,7 @@ export default function Auth() {
                           required
                           className="bg-[#13102a] border border-[#2a1a40] rounded-xl px-4 py-3 text-white text-sm placeholder-[#3d2060] focus:outline-none focus:border-[#9b59f5] transition-colors duration-200"
                         />
-                        <div className="flex justify-end">
-                          <button type="button" className="text-[#8a7aaa] text-xs hover:text-white transition-colors duration-200">
-                            Forgot password?
-                          </button>
-                        </div>
+
                       </div>
 
                       {/*login button */}
@@ -171,6 +224,7 @@ export default function Auth() {
                       {/* google button */}
                       <button
                         type="button"
+                        onClick={() => document.querySelector("div[role='button']").click()}
                         className="w-full bg-[#13102a] border border-[#2a1a40] hover:border-[#9b59f5] text-white font-semibold py-3.5 rounded-xl transition-colors duration-200 text-sm flex items-center justify-center gap-3"
                       >
                         {/* svg copied from claude code */}
@@ -182,6 +236,16 @@ export default function Auth() {
                         </svg>
                         Log in with Google
                       </button>
+
+
+
+                      <div id="googleBtn" style={{ display: "none" }}>
+                        <GoogleLogin
+                          onSuccess={handleGoogleSuccess}
+                          onError={() => console.log("Google login failed")}
+                        />
+                      </div>
+
 
                       <p className="text-center text-[#5a4a7a] text-xs mt-1">
                         Don't have an account?{' '}
@@ -241,19 +305,6 @@ export default function Auth() {
                         />
                       </div>
 
-                      <div className="flex flex-col gap-1.5">
-                        <label className="text-[#5a4a7a] text-xs font-semibold uppercase tracking-widest">Confirm Password:</label>
-                        <input
-                          type="password"
-                          name="confirm"
-                          placeholder="••••••••"
-                          value={signupForm.confirm}
-                          onChange={handleSignupChange}
-                          required
-                          className="bg-[#13102a] border border-[#2a1a40] rounded-xl px-4 py-3 text-white text-sm placeholder-[#3d2060] focus:outline-none focus:border-[#9b59f5] transition-colors duration-200"
-                        />
-                      </div>
-
                       {/*signup button */}
                       <button
                         type="submit"
@@ -275,6 +326,7 @@ export default function Auth() {
                       {/*google button */}
                       <button
                         type="button"
+                        onClick={() => document.querySelector("div[role='button']").click()}
                         className="w-full bg-[#13102a] border border-[#2a1a40] hover:border-[#9b59f5] text-white font-semibold py-3.5 rounded-xl transition-colors duration-200 text-sm flex items-center justify-center gap-3"
                       >
 
@@ -287,6 +339,14 @@ export default function Auth() {
                         </svg>
                         Sign up with Google
                       </button>
+
+                      <div id="googleBtn" style={{ display: "none" }}>
+                        <GoogleLogin
+                          onSuccess={handleGoogleSuccess}
+                          onError={() => console.log("Google login failed")}
+                        />
+                      </div>
+
 
                       <p className="text-center text-[#5a4a7a] text-xs mt-1">
                         Already have an account?{' '}
@@ -301,15 +361,15 @@ export default function Auth() {
 
               </div>
             </div>
-          </div>
-        </section>
+          </div >
+        </section >
 
         {/* FOOTER */}
-        <div className="py-18 pb-0 px-4">
+        < div className="py-18 pb-0 px-4" >
           <Footer />
-        </div>
+        </div >
 
-      </div>
+      </div >
     </>
   )
 }
