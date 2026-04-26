@@ -12,6 +12,7 @@ import NotFound from './pages/NotFound'
 import ScrollToTop from './components/ScrollToTop';
 import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import PublicRoute from "./routes/PublicRoute";
 
 
 function App() {
@@ -24,13 +25,62 @@ function App() {
         <ScrollToTop />
 
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/features" element={<Features />} />
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/faqs" element={<FAQs />} />
-          <Route path="/about" element={<AboutUs />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/auth" element={<Auth />} />
+          <Route
+            path="/"
+            element={
+              <PublicRoute>
+                <Home />
+              </PublicRoute>
+            }
+          />
+
+          <Route
+            path="/features"
+            element={
+              <PublicRoute>
+                <Features />
+              </PublicRoute>}
+          />
+
+          <Route
+            path="/pricing"
+            element={
+              <PublicRoute>
+                <Pricing />
+              </PublicRoute>} />
+
+          <Route 
+          path="/faqs" 
+          element={
+          <PublicRoute>
+            <FAQs />
+          </PublicRoute>} 
+          />
+
+          <Route 
+          path="/about" 
+          element={
+          <PublicRoute>
+            <AboutUs />
+          </PublicRoute>} 
+          />
+
+          <Route 
+          path="/contact" 
+          element={
+          <PublicRoute>
+            <Contact />
+          </PublicRoute>} 
+          />
+
+          <Route 
+          path="/auth" 
+          element={
+          <PublicRoute>
+            <Auth />
+          </PublicRoute>} 
+          />
+          
           <Route
             path="/dashboard"
             element={
@@ -39,6 +89,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
