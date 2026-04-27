@@ -473,7 +473,9 @@ export default function Dashboard() {
   const handleNext = () => setTrackIndex((trackIndex + 1) % tracks.length)
 
   const unlockAudio = () => {
-    
+    distractionAudioRef.current.pause();
+    distractionAudioRef.current.currentTime = 0;
+
     if (!distractionAudioRef.current) return;
 
     const audio = distractionAudioRef.current;
@@ -834,7 +836,6 @@ export default function Dashboard() {
           }
         }
 
-        const diff = now - lastAlertRef.current
 
         if (diff >= 30000) {
           CustomizedToast.error("You are still distracted!")
