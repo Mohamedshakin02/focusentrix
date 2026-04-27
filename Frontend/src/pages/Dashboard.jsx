@@ -228,7 +228,7 @@ export default function Dashboard() {
   // ======================
   // TASK MANAGEMENT STATE
   // ======================
-
+  
   const [tasks, setTasks] = useState([])
   const [newTask, setNewTask] = useState('')
 
@@ -393,22 +393,22 @@ export default function Dashboard() {
 
   // fetch tasks
   useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const userId = localStorage.getItem("userId");
+  const fetchTasks = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
 
-        const res = await axios.get(
-          `https://focusentrix-backend.onrender.com/api/tasks/${userId}`
-        );
+      const res = await axios.get(
+        `https://focusentrix-backend.onrender.com/api/tasks/${userId}`
+      );
 
-        setTasks(res.data);
-      } catch (err) {
-        console.log("Failed to fetch tasks");
-      }
-    };
+      setTasks(res.data);
+    } catch (err) {
+      console.log("Failed to fetch tasks");
+    }
+  };
 
-    fetchTasks();
-  }, []);
+  fetchTasks();
+}, []);
 
   // add task
   const addTask = async () => {
@@ -472,21 +472,6 @@ export default function Dashboard() {
   const handlePrev = () => setTrackIndex((trackIndex - 1 + tracks.length) % tracks.length)
   const handleNext = () => setTrackIndex((trackIndex + 1) % tracks.length)
 
-  const unlockAudio = () => {
-    distractionAudioRef.current.pause();
-    distractionAudioRef.current.currentTime = 0;
-
-    if (!distractionAudioRef.current) return;
-
-    const audio = distractionAudioRef.current;
-    audio.muted = true;
-    audio.play().then(() => {
-      audio.pause();
-      audio.currentTime = 0;
-      audio.muted = false;
-    }).catch(() => { });
-  };
-
   // ======================
   // TIMER CONTROL FUNCTIONS
   // ======================
@@ -540,29 +525,12 @@ export default function Dashboard() {
 
       sessionCompletedRef.current = false;
 
-      unlockAudio();
-
       const permission = await checkCameraPermission()
 
       if (permission === "denied") {
         setCameraStatus("denied")
         CustomizedToast.error("Turn on camera access to start session")
         return
-      }
-
-      // Unlock audio on mobile browsers
-      if (distractionAudioRef.current) {
-
-        distractionAudioRef.current.volume = 0;
-
-        // Force a play/pause cycle attached directly to this click event
-        distractionAudioRef.current.play().then(() => {
-          distractionAudioRef.current.pause();
-          distractionAudioRef.current.currentTime = 0;
-          distractionAudioRef.current.volume = 1; // Restore volume for the actual alert
-        }).catch((err) => {
-          console.log("Audio unlock failed:", err);
-        });
       }
 
       setFocusTime(0)
@@ -772,35 +740,77 @@ export default function Dashboard() {
 
   // shows toast and browser notifications and plays alert sound based on the alert and focus status from the face focus tracker
   useEffect(() => {
-    if (status === "loading" || sessionState !== "running") return;
+    if (status === "loading") return;
 
+    // stop everything if session not running
+    if (sessionState !== "running") {
+      distractionStartRef.current = null;
+
+      if (alertIntervalRef.current) {
+        clearInterval(alertIntervalRef.current);
+        alertIntervalRef.current = null;
+      }
+
+      lastAlertRef.current = null
+
+      return;
+    }
+
+    // If user is focused, stop tracking
     if (isFocused) {
       distractionStartRef.current = null;
+
+      if (alertIntervalRef.current) {
+        clearInterval(alertIntervalRef.current);
+        alertIntervalRef.current = null;
+      }
+
+      lastAlertRef.current = null;
+
       return;
     }
 
+    // Start tracking distraction time
     if (!distractionStartRef.current) {
       distractionStartRef.current = Date.now();
-      return;
     }
 
-    const elapsed = Date.now() - distractionStartRef.current;
+    // Start alert loop
+    if (!alertIntervalRef.current) {
+      alertIntervalRef.current = setInterval(() => {
+        const now = Date.now()
 
-    if (elapsed >= 30000) {
-      distractionStartRef.current = Date.now();
+        if (!lastAlertRef.current) {
+          lastAlertRef.current = now
+          return
+        }
 
-      CustomizedToast.error("You are still distracted!");
+        const diff = now - lastAlertRef.current
 
-      showBrowserNotification(
-        "Focusentrix Alert",
-        "You are distracted for too long"
-      );
+        if (diff >= 30000) {
+          CustomizedToast.error("You are still distracted!")
 
-      if (distractionAudioRef.current) {
-        distractionAudioRef.current.currentTime = 0;
-        distractionAudioRef.current.play().catch(() => { });
+          showBrowserNotification(
+            "Focusentrix Alert",
+            "You are distracted for too long"
+          )
+
+          if (distractionAudioRef.current) {
+            distractionAudioRef.current.currentTime = 0
+            distractionAudioRef.current.play().catch(() => { })
+          }
+
+          lastAlertRef.current = now
+        }
+      }, 1000)
+    }
+
+    return () => {
+      if (alertIntervalRef.current) {
+        clearInterval(alertIntervalRef.current);
+        alertIntervalRef.current = null;
       }
-    }
+    };
   }, [isFocused, status, sessionState]);
 
   // Tracks total focus and distraction time during active sessions to calculate focus score and show in stats
@@ -859,7 +869,7 @@ export default function Dashboard() {
           "One work session is completed"
         )
       }
-
+      
 
       // BREAK ENDED
       else if (sessionState === "break") {
