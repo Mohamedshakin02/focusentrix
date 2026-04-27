@@ -144,20 +144,304 @@ function DashboardFooter({ username, handleLogout }) {
 
 export default function Dashboard() {
 
-  const [sessionState, setSessionState] = useState('idle')
-  const [timeLeft, setTimeLeft] = useState(25 * 60)
-  const [phase, setPhase] = useState(1)
-  const intervalRef = useRef(null)
+  // DOM & MEDIA REFERENCES (camera, audio, canvas)
+  // ======================
+  const webcamRef = useRef(null)
+  const videoRef = useRef(null)
+  const canvasRef = useRef(null)
+  const audioRef = useRef(null)
+  const distractionAudioRef = useRef(null)
 
+
+  // ======================
+  // INTERVAL & TIMER REFERENCES
+  // ======================
+  const intervalRef = useRef(null)
+  const alertIntervalRef = useRef(null);
+
+  // ======================
+  // TRACKING REFERENCES (focus, alerts, session flags)
+  // ======================
+  const sessionCompletedRef = useRef(false);
+  const lastAlertRef = useRef(null)
+  const distractionStartRef = useRef(null)
+  const faceLandmarkerRef = useRef(null)
+  const lastState = useRef("focused")
+  const lastChangeTime = useRef(Date.now())
+
+
+  // ======================
+  // CUSTOM HOOK (focus tracking logic)
+  // ======================
+  const { status, isFocused, alert } = useFaceFocusTracker(webcamRef)
+
+
+  // ======================
+  // USER & AUTH STATE
+  // ======================
+  const username = localStorage.getItem("username") || "User"
+  const navigate = useNavigate()
+  const [loggingOut, setLoggingOut] = useState(false)
+
+
+  // ======================
+  // SESSION CONFIGURATION (user settings)
+  // ======================
   const [showConfig, setShowConfig] = useState(false)
   const [customMinutes, setCustomMinutes] = useState(25)
   const [breakMinutes, setBreakMinutes] = useState(5)
   const [totalPhases, setTotalPhases] = useState(4)
 
-  const username = localStorage.getItem("username") || "User"
 
-  const navigate = useNavigate()
-  const [loggingOut, setLoggingOut] = useState(false)
+  // ======================
+  // ACTIVE TIMER STATE
+  // ======================
+  const [sessionState, setSessionState] = useState('idle')
+  const [phase, setPhase] = useState(1)
+  const [timeLeft, setTimeLeft] = useState(25 * 60)
+
+
+  // ======================
+  // FOCUS & DISTRACTION TRACKING
+  // ======================
+  const [focusTime, setFocusTime] = useState(0)
+  const [distractedTime, setDistractedTime] = useState(0)
+  const [recentAlert, setRecentAlert] = useState("All Good")
+  const [finalFocusScore, setFinalFocusScore] = useState(null)
+
+
+  // ======================
+  // DAILY STATS & STREAK TRACKING
+  // ======================
+  const [sessionsToday, setSessionsToday] = useState(0)
+  const [todayFocusTime, setTodayFocusTime] = useState(0)
+  const [streak, setStreak] = useState(null)
+
+
+  // ======================
+  // CAMERA STATE MANAGEMENT
+  // ======================
+  const [videoElement, setVideoElement] = useState(null)
+  const [cameraStatus, setCameraStatus] = useState("idle") // 'idle' | 'running' | 'break'
+
+
+  // ======================
+  // TASK MANAGEMENT STATE
+  // ======================
+  const [tasks, setTasks] = useState([
+    { id: 1, label: 'Finding color palette', done: true },
+    { id: 2, label: 'Exploring UI designs', done: true },
+    { id: 3, label: 'Start making initial design', done: false },
+    { id: 4, label: 'Make it responsive design', done: false },
+  ])
+  const [newTask, setNewTask] = useState('')
+
+
+  // ======================
+  // MUSIC PLAYER STATE
+  // ======================
+  const [trackIndex, setTrackIndex] = useState(0)
+  const [musicPlaying, setMusicPlaying] = useState(false)
+  const [volume, setVolume] = useState(60)
+
+
+  // ======================
+  // DERIVED VALUES (calculated UI values)
+  // ======================
+  const totalTrackedTime = focusTime + distractedTime
+
+  const liveFocusScore =
+    totalTrackedTime === 0
+      ? 100
+      : Math.round((focusTime / totalTrackedTime) * 100)
+
+
+  // ======================
+  // TIMER UI CALCULATIONS (progress circle)
+  // ======================
+  const totalTime = sessionState === 'break' ? breakMinutes * 60 : customMinutes * 60
+  const progress = 1 - timeLeft / totalTime
+  const radius = 54
+  const circumference = 2 * Math.PI * radius
+  const dashOffset = circumference * (1 - progress)
+
+
+  // ======================
+  // BUTTON & LABEL TEXTS
+  // ======================
+  const mainButtonLabel =
+    sessionState === 'idle' ? '+ Start Session' :
+      sessionState === 'running' ? 'Take a Break' : 'Resume Session'
+
+  const phaseLabel =
+    sessionState === 'break' ? 'BREAK TIME' :
+      sessionState === 'running' ? `WORK PHASE ${phase} OF ${totalPhases}` : 'READY TO START'
+
+
+  // ======================
+  // STREAK CALENDAR CALCULATION
+  // ======================
+  const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+  const today = new Date()
+  const last7Days = [...Array(7)].map((_, i) => {
+    const d = new Date()
+    d.setDate(today.getDate() - (6 - i))
+    return d.toISOString().split("T")[0]
+  })
+
+  const activeDays = streak?.activeDays || []
+
+  const weekStatus = last7Days.map(date =>
+    activeDays.includes(date)
+  )
+
+
+  // ======================
+  // UTILITY FUNCTIONS (formatting helpers)
+  // ======================
+
+  const formatTime = (s) => {
+    const m = Math.floor(s / 60)
+    const sec = s % 60
+    return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
+  }
+
+  const formatFocusTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600)
+    const minutes = Math.floor((seconds % 3600) / 60)
+    const secs = seconds % 60
+
+    if (hours > 0) return `${hours}h ${minutes}m ${secs}s`
+    return `${minutes}m ${secs}s`
+  }
+
+
+  // ======================
+  // NOTIFICATION HANDLING (toast + browser)
+  // ======================
+  const showBrowserNotification = (title, message) => {
+    if (Notification.permission === "granted") {
+      new Notification(title, {
+        body: message,
+        icon: logo2,
+      });
+    }
+  }
+
+  const notifyUser = (title, message) => {
+    CustomizedToast.success(message)
+
+    showBrowserNotification(title, message)
+  }
+
+  // ======================
+  // API FUNCTIONS
+  // ======================
+
+  // updates streak
+  const updateStreak = async () => {
+    try {
+      const userId = localStorage.getItem("userId")
+
+      await axios.post("http://localhost:5000/api/streak/update", {
+        userId,
+      })
+
+      const streakRes = await axios.get(
+        `http://localhost:5000/api/streak/${userId}`
+      )
+
+      setStreak(streakRes.data)
+    } catch (err) {
+      console.log("Failed to update streak")
+    }
+  }
+
+  // completes session
+  const completeSession = async () => {
+    if (sessionCompletedRef.current) return;
+    sessionCompletedRef.current = true;
+
+    const userId = localStorage.getItem("userId");
+
+    try {
+      await axios.post("http://localhost:5000/api/session/increment", {
+        userId,
+        focusTime: focusTime
+      });
+
+      const res = await axios.get(
+        `http://localhost:5000/api/session/today/${userId}`
+      );
+
+      setSessionsToday(res.data.count);
+      setTodayFocusTime(res.data.focusTime);
+
+    } catch (err) {
+      console.log("Failed to update session");
+    }
+  };
+
+  // ======================
+  // API FUNCTIONS (backend connection)
+  // ======================
+
+  // const addTask = () => {
+  //   if (!newTask.trim()) return
+  //   setTasks([...tasks, { id: Date.now(), label: newTask.trim(), done: false }])
+  //   setNewTask('')
+  // }
+
+  // const toggleTask = (id) => setTasks(tasks.map(t => t.id === id ? { ...t, done: !t.done } : t))
+  // const deleteTask = (id) => setTasks(tasks.filter(t => t.id !== id))
+
+
+  // add task
+  const addTask = async () => {
+    if (!newTask.trim()) return;
+
+    const userId = localStorage.getItem("userId");
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/tasks", {
+        userId,
+        label: newTask,
+      });
+
+      setTasks([...tasks, res.data]);
+      setNewTask("");
+    } catch (err) {
+      console.log("Failed to add task");
+    }
+  };
+
+
+  // Toggles task completion status in MongoDB and updates UI
+  const toggleTask = async (id) => {
+    try {
+      const res = await axios.put(`http://localhost:5000/api/tasks/${id}`);
+
+      setTasks(tasks.map(t => t._id === id ? res.data : t));
+    } catch (err) {
+      console.log("Failed to update task");
+    }
+  };
+
+  // Deletes task from MongoDB and updates UI
+  const deleteTask = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/tasks/${id}`);
+
+      setTasks(tasks.filter(t => t._id !== id));
+    } catch (err) {
+      console.log("Failed to delete task");
+    }
+  };
+
+
+  // ======================
+  // EVENT HANDLERS (user actions)
+  // ======================
 
   // clears local storage and redirects to home page on logout
   const handleLogout = () => {
@@ -169,20 +453,223 @@ export default function Dashboard() {
     }, 3000)
   }
 
-  const [recentAlert, setRecentAlert] = useState("All Good")
+  // Music Handlers
+  const handlePlayPause = () => setMusicPlaying(!musicPlaying)
+  const handlePrev = () => setTrackIndex((trackIndex - 1 + tracks.length) % tracks.length)
+  const handleNext = () => setTrackIndex((trackIndex + 1) % tracks.length)
 
-  //face focus tracking states and refs
-  const videoRef = useRef(null)
-  const canvasRef = useRef(null)
+  // ======================
+  // TIMER CONTROL FUNCTIONS
+  // ======================
+  const startTimer = () => {
+    if (intervalRef.current) return
+    intervalRef.current = setInterval(() => {
+      setTimeLeft(t => {
+        if (t <= 1) { clearInterval(intervalRef.current); intervalRef.current = null; return 0 }
+        return t - 1
+      })
+    }, 1000)
+  }
 
-  const webcamRef = useRef(null)
-  const [videoElement, setVideoElement] = useState(null)
-  const [cameraStatus, setCameraStatus] = useState("idle")
+  const stopTimer = () => {
+    clearInterval(intervalRef.current)
+    intervalRef.current = null
+  }
 
-  const { status, isFocused, alert } =
-    useFaceFocusTracker(webcamRef)
+  // ======================
+  // CAMERA CONTROL FUNCTIONS
+  // ======================
+  const checkCameraPermission = async () => {
+    try {
+      await navigator.mediaDevices.getUserMedia({ video: true })
+      return "granted"
+    } catch {
+      return "denied"
+    }
+  }
+
+  const stopCamera = () => {
+    const webcam = webcamRef.current
+
+    if (webcam && webcam.video && webcam.video.srcObject) {
+      const stream = webcam.video.srcObject
+      stream.getTracks().forEach(track => track.stop())
+      webcam.video.srcObject = null
+    }
+
+    webcamRef.current = null
+    setCameraStatus("idle")
+  }
+
+  // ======================
+  // SESSION CONTROL LOGIC
+  // ======================
+  const handleMainButton = async () => {
+
+    // Block session to start if camera setting is denied
+    if (sessionState === 'idle') {
+
+      sessionCompletedRef.current = false;
+
+      const permission = await checkCameraPermission()
+
+      if (permission === "denied") {
+        setCameraStatus("denied")
+        CustomizedToast.error("Turn on camera access to start session")
+        return
+      }
+
+      setFocusTime(0)
+      setDistractedTime(0)
+
+      setCameraStatus("active")
+      setSessionState('running')
+      setTimeLeft(customMinutes * 60)
+      startTimer()
+
+      notifyUser("Focusentrix", "Session started. Stay focused!")
+    }
+
+    else if (sessionState === 'running') {
+      setSessionState('break')
+      stopTimer()
+      setTimeLeft(breakMinutes * 60)
+      startTimer()
+
+      notifyUser("Focusentrix", "Break time started")
+    }
+
+    else if (sessionState === 'break') {
+
+      notifyUser("Focusentrix", "Next session is started")
+
+      // checks if last phase reached, if yes then reset everything to initial state
+      if (phase >= totalPhases) {
+        stopTimer()
+        setSessionState('idle')
+        setPhase(1)
+        setTimeLeft(customMinutes * 60)
+
+        notifyUser("Focusentrix", "Session is completed")
+        return
+      }
+
+      // otherwise continue next cycle
+      setSessionState('running')
+      stopTimer()
+      setTimeLeft(customMinutes * 60)
+      setPhase(p => p + 1)
+      startTimer()
 
 
+    }
+  }
+
+  const handleEndSession = async () => {
+    stopTimer();
+    setSessionState('idle');
+    setTimeLeft(customMinutes * 60);
+    setPhase(1)
+
+    const total = focusTime + distractedTime
+
+    const score =
+      total === 0 ? 100 : Math.round((focusTime / total) * 100)
+
+    setFinalFocusScore(score)
+    await updateStreak()
+
+    const userId = localStorage.getItem("userId");
+
+    try {
+      await axios.post("http://localhost:5000/api/session/increment", {
+        userId,
+        focusTime: focusTime
+      });
+
+      // refresh UI after update
+      const res = await axios.get(
+        `http://localhost:5000/api/session/today/${userId}`
+      );
+
+      setSessionsToday(res.data.count);
+      setTodayFocusTime(res.data.focusTime);
+
+    } catch (err) {
+      console.log("Failed to update session");
+    }
+
+    distractionStartRef.current = null;
+
+    if (alertIntervalRef.current) {
+      clearInterval(alertIntervalRef.current);
+      alertIntervalRef.current = null;
+    }
+
+    notifyUser(
+      "Focusentrix",
+      "Session is Ended"
+    )
+  }
+
+
+  // ======================
+  // EFFECTS 
+  // ======================
+
+  // Initializes distraction alert audio
+  useEffect(() => {
+    distractionAudioRef.current = new Audio(distractionSound)
+  }, [])
+
+
+  // Request notification permission 
+  useEffect(() => {
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+  }, []);
+
+
+  // Checks camera permission on mount and updates camera status accordingly
+  useEffect(() => {
+    const checkPermission = async () => {
+      try {
+        const permission = await navigator.permissions.query({ name: "camera" })
+        if (permission.state === "denied") {
+          setCameraStatus("denied")
+        }
+      } catch {
+
+      }
+    }
+
+    checkPermission()
+  }, [])
+
+
+  // Starts camera stream when session starts and stops when session ends
+  useEffect(() => {
+    if (sessionState !== "running") return;
+
+    const startCamera = async () => {
+      try {
+        await navigator.mediaDevices.getUserMedia({ video: true })
+        setCameraStatus("active")
+      } catch (err) {
+        setCameraStatus("denied")
+      }
+    }
+
+    startCamera()
+
+    return () => {
+      stopCamera()
+    }
+  }, [sessionState])
+
+
+  // Sets video element for face focus tracker once camera is active
   useEffect(() => {
     const interval = setInterval(() => {
       if (webcamRef.current?.video) {
@@ -195,36 +682,6 @@ export default function Dashboard() {
   }, [cameraStatus])
 
 
-  const faceLandmarkerRef = useRef(null)
-  const lastState = useRef("focused")
-  const lastChangeTime = useRef(Date.now())
-
-  const [focusTime, setFocusTime] = useState(0)
-  const [distractedTime, setDistractedTime] = useState(0)
-
-  const [finalFocusScore, setFinalFocusScore] = useState(null)
-  const totalTrackedTime = focusTime + distractedTime
-
-  const liveFocusScore =
-    totalTrackedTime === 0
-      ? 100
-      : Math.round((focusTime / totalTrackedTime) * 100)
-
-  const [sessionsToday, setSessionsToday] = useState(0)
-  const sessionCompletedRef = useRef(false);
-
-  const [todayFocusTime, setTodayFocusTime] = useState(0)
-
-  const formatFocusTime = (seconds) => {
-    const hours = Math.floor(seconds / 3600)
-    const minutes = Math.floor((seconds % 3600) / 60)
-    const secs = seconds % 60
-
-    if (hours > 0) return `${hours}h ${minutes}m ${secs}s`
-    return `${minutes}m ${secs}s`
-  }
-
-  const [streak, setStreak] = useState(null)
 
   // Fetches today's session count for the logged-in user from MongoDB
   useEffect(() => {
@@ -248,17 +705,24 @@ export default function Dashboard() {
     fetchSessions()
   }, [])
 
-
-  const distractionAudioRef = useRef(null)
-
+  // Fetches current streak data for the logged-in user from MongoDB
   useEffect(() => {
-    distractionAudioRef.current = new Audio(distractionSound)
+    const fetchStreak = async () => {
+      try {
+        const userId = localStorage.getItem("userId")
+
+        const res = await axios.get(
+          `http://localhost:5000/api/streak/${userId}`
+        )
+
+        setStreak(res.data)
+      } catch (err) {
+        console.log("Failed to fetch streak")
+      }
+    }
+
+    fetchStreak()
   }, [])
-
-  const distractionStartRef = useRef(null)
-  const alertIntervalRef = useRef(null);
-
-  const lastAlertRef = useRef(null)
 
   // shows toast and browser notifications and plays alert sound based on the alert and focus status from the face focus tracker
   useEffect(() => {
@@ -335,13 +799,7 @@ export default function Dashboard() {
     };
   }, [isFocused, status, sessionState]);
 
-  useEffect(() => {
-    if (!isFocused) {
-      console.log("User distracted")
-    }
-  }, [isFocused])
-
-
+  // Tracks total focus and distraction time during active sessions to calculate focus score and show in stats
   useEffect(() => {
     if (sessionState !== 'running') return
 
@@ -356,10 +814,14 @@ export default function Dashboard() {
     return () => clearInterval(interval)
   }, [isFocused, sessionState])
 
+
+  // Updates recent alert message from face focus tracker to show in UI
   useEffect(() => {
     setRecentAlert(alert)
   }, [alert])
 
+
+  // Handles automatic session phase transitions and session completion based on timer reaching 0 and current session state
   useEffect(() => {
     if (timeLeft !== 0) return;
 
@@ -427,246 +889,42 @@ export default function Dashboard() {
 
   }, [timeLeft]);
 
+
+
+
+
+  // testing 
+  useEffect(() => {
+    if (!isFocused) {
+      console.log("User distracted")
+    }
+  }, [isFocused])
+
+
+  // 
+  useEffect(() => {
+    return () => {
+      stopCamera()
+    }
+  }, [])
+
+  // 
   useEffect(() => {
     if (sessionState === "idle") {
       stopCamera()
     }
   }, [sessionState])
 
-  useEffect(() => {
-    return () => {
-      stopCamera()
-    }
-  }, [])
-
-  const startTimer = () => {
-    if (intervalRef.current) return
-    intervalRef.current = setInterval(() => {
-      setTimeLeft(t => {
-        if (t <= 1) { clearInterval(intervalRef.current); intervalRef.current = null; return 0 }
-        return t - 1
-      })
-    }, 1000)
-  }
-
-  const stopTimer = () => {
-    clearInterval(intervalRef.current)
-    intervalRef.current = null
-  }
-
-  const completeSession = async () => {
-    if (sessionCompletedRef.current) return;
-    sessionCompletedRef.current = true;
-
-    const userId = localStorage.getItem("userId");
-
-    try {
-      await axios.post("http://localhost:5000/api/session/increment", {
-        userId,
-        focusTime: focusTime
-      });
-
-      const res = await axios.get(
-        `http://localhost:5000/api/session/today/${userId}`
-      );
-
-      setSessionsToday(res.data.count);
-      setTodayFocusTime(res.data.focusTime);
-
-    } catch (err) {
-      console.log("Failed to update session");
-    }
-  };
-
-  const checkCameraPermission = async () => {
-    try {
-      await navigator.mediaDevices.getUserMedia({ video: true })
-      return "granted"
-    } catch {
-      return "denied"
-    }
-  }
 
 
-  useEffect(() => {
-    const checkPermission = async () => {
-      try {
-        const permission = await navigator.permissions.query({ name: "camera" })
-        if (permission.state === "denied") {
-          setCameraStatus("denied")
-        }
-      } catch {
-
-      }
-    }
-
-    checkPermission()
-  }, [])
-
-  const handleMainButton = async () => {
-
-    // Block session to start if camera setting is denied
-    if (sessionState === 'idle') {
-
-      sessionCompletedRef.current = false;
-
-      const permission = await checkCameraPermission()
-
-      if (permission === "denied") {
-        setCameraStatus("denied")
-        CustomizedToast.error("Turn on camera access to start session")
-        return
-      }
-
-      setFocusTime(0)
-      setDistractedTime(0)
-
-      setCameraStatus("active")
-      setSessionState('running')
-      setTimeLeft(customMinutes * 60)
-      startTimer()
-
-      notifyUser("Focusentrix", "Session started. Stay focused!")
-    }
-
-    else if (sessionState === 'running') {
-      setSessionState('break')
-      stopTimer()
-      setTimeLeft(breakMinutes * 60)
-      startTimer()
-
-      notifyUser("Focusentrix", "Break time started")
-    }
-
-    else if (sessionState === 'break') {
-
-      notifyUser("Focusentrix", "Next session is started")
-
-      // checks if last phase reached, if yes then reset everything to initial state
-      if (phase >= totalPhases) {
-        stopTimer()
-        setSessionState('idle')
-        setPhase(1)
-        setTimeLeft(customMinutes * 60)
-
-        notifyUser("Focusentrix", "Session is completed")
-        return
-      }
-
-      // otherwise continue next cycle
-      setSessionState('running')
-      stopTimer()
-      setTimeLeft(customMinutes * 60)
-      setPhase(p => p + 1)
-      startTimer()
 
 
-    }
-  }
 
-  useEffect(() => {
-    if (sessionState !== "running") return;
-
-    const startCamera = async () => {
-      try {
-        await navigator.mediaDevices.getUserMedia({ video: true })
-        setCameraStatus("active")
-      } catch (err) {
-        setCameraStatus("denied")
-      }
-    }
-
-    startCamera()
-
-    return () => {
-      stopCamera()
-    }
-  }, [sessionState])
-
-  const handleEndSession = async () => {
-    stopTimer();
-    setSessionState('idle');
-    setTimeLeft(customMinutes * 60);
-    setPhase(1)
-
-    const total = focusTime + distractedTime
-
-    const score =
-      total === 0 ? 100 : Math.round((focusTime / total) * 100)
-
-    setFinalFocusScore(score)
-    await updateStreak()
-
-    const userId = localStorage.getItem("userId");
-
-    try {
-      await axios.post("http://localhost:5000/api/session/increment", {
-        userId,
-        focusTime: focusTime
-      });
-
-      // refresh UI after update
-      const res = await axios.get(
-        `http://localhost:5000/api/session/today/${userId}`
-      );
-
-      setSessionsToday(res.data.count);
-      setTodayFocusTime(res.data.focusTime);
-
-    } catch (err) {
-      console.log("Failed to update session");
-    }
-
-    distractionStartRef.current = null;
-
-    if (alertIntervalRef.current) {
-      clearInterval(alertIntervalRef.current);
-      alertIntervalRef.current = null;
-    }
-
-    notifyUser(
-      "Focusentrix",
-      "Session is Ended"
-    )
-  }
-
+  // Cleanup timer
   useEffect(() => () => stopTimer(), [])
 
-  const formatTime = (s) => {
-    const m = Math.floor(s / 60)
-    const sec = s % 60
-    return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
-  }
 
-  const totalTime = sessionState === 'break' ? breakMinutes * 60 : customMinutes * 60
-  const progress = 1 - timeLeft / totalTime
-  const radius = 54
-  const circumference = 2 * Math.PI * radius
-  const dashOffset = circumference * (1 - progress)
-
-  const mainButtonLabel =
-    sessionState === 'idle' ? '+ Start Session' :
-      sessionState === 'running' ? 'Take a Break' : 'Resume Session'
-
-  const phaseLabel =
-    sessionState === 'break' ? 'BREAK TIME' :
-      sessionState === 'running' ? `WORK PHASE ${phase} OF ${totalPhases}` : 'READY TO START'
-
-  const audioRef = useRef(null)
-  const [trackIndex, setTrackIndex] = useState(0)
-  const [musicPlaying, setMusicPlaying] = useState(false)
-  const [volume, setVolume] = useState(60)
-
-  // function to show browser notifications for focus alerts
-  const showBrowserNotification = (title, message) => {
-    if (Notification.permission === "granted") {
-      new Notification(title, {
-        body: message,
-        icon: logo2,
-      });
-    }
-  }
-
+  // Music player effects 
   useEffect(() => {
     if (!audioRef.current) return
     const src = tracks[trackIndex].src
@@ -691,163 +949,6 @@ export default function Dashboard() {
       audioRef.current.pause()
     }
   }, [musicPlaying])
-
-  const handlePlayPause = () => setMusicPlaying(!musicPlaying)
-  const handlePrev = () => setTrackIndex((trackIndex - 1 + tracks.length) % tracks.length)
-  const handleNext = () => setTrackIndex((trackIndex + 1) % tracks.length)
-
-  const [tasks, setTasks] = useState([
-    { id: 1, label: 'Finding color palette', done: true },
-    { id: 2, label: 'Exploring UI designs', done: true },
-    { id: 3, label: 'Start making initial design', done: false },
-    { id: 4, label: 'Make it responsive design', done: false },
-  ])
-  const [newTask, setNewTask] = useState('')
-
-  // const addTask = () => {
-  //   if (!newTask.trim()) return
-  //   setTasks([...tasks, { id: Date.now(), label: newTask.trim(), done: false }])
-  //   setNewTask('')
-  // }
-
-  // const toggleTask = (id) => setTasks(tasks.map(t => t.id === id ? { ...t, done: !t.done } : t))
-  // const deleteTask = (id) => setTasks(tasks.filter(t => t.id !== id))
-
-  const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
-  const today = new Date()
-  const last7Days = [...Array(7)].map((_, i) => {
-    const d = new Date()
-    d.setDate(today.getDate() - (6 - i))
-    return d.toISOString().split("T")[0]
-  })
-
-  const activeDays = streak?.activeDays || []
-
-  const weekStatus = last7Days.map(date =>
-    activeDays.includes(date)
-  )
-
-  const stopCamera = () => {
-    const webcam = webcamRef.current
-
-    if (webcam && webcam.video && webcam.video.srcObject) {
-      const stream = webcam.video.srcObject
-      stream.getTracks().forEach(track => track.stop())
-      webcam.video.srcObject = null
-    }
-
-    webcamRef.current = null
-    setCameraStatus("idle")
-  }
-
-
-  // Request notification permission 
-  useEffect(() => {
-    if ("Notification" in window && Notification.permission === "default") {
-      Notification.requestPermission();
-    }
-  }, []);
-
-  const notifyUser = (title, message) => {
-    CustomizedToast.success(message)
-
-    showBrowserNotification(title, message)
-  }
-
-
-
-  useEffect(() => {
-    const fetchStreak = async () => {
-      try {
-        const userId = localStorage.getItem("userId")
-
-        const res = await axios.get(
-          `http://localhost:5000/api/streak/${userId}`
-        )
-
-        setStreak(res.data)
-      } catch (err) {
-        console.log("Failed to fetch streak")
-      }
-    }
-
-    fetchStreak()
-  }, [])
-
-  const updateStreak = async () => {
-    try {
-      const userId = localStorage.getItem("userId")
-
-      await axios.post("http://localhost:5000/api/streak/update", {
-        userId,
-      })
-
-      const streakRes = await axios.get(
-        `http://localhost:5000/api/streak/${userId}`
-      )
-
-      setStreak(streakRes.data)
-    } catch (err) {
-      console.log("Failed to update streak")
-    }
-  }
-
-  // Fetch tasks for the logged-in user from MongoDB
-  useEffect(() => {
-    const fetchTasks = async () => {
-      const userId = localStorage.getItem("userId");
-
-      try {
-        const res = await axios.get(`http://localhost:5000/api/tasks/${userId}`);
-        setTasks(res.data);
-      } catch (err) {
-        console.log("Failed to fetch tasks");
-      }
-    };
-
-    fetchTasks();
-  }, []);
-
-  // Adds a new task to MongoDB and updates UI
-  const addTask = async () => {
-    if (!newTask.trim()) return;
-
-    const userId = localStorage.getItem("userId");
-
-    try {
-      const res = await axios.post("http://localhost:5000/api/tasks", {
-        userId,
-        label: newTask,
-      });
-
-      setTasks([...tasks, res.data]);
-      setNewTask("");
-    } catch (err) {
-      console.log("Failed to add task");
-    }
-  };
-
-  // Toggles task completion status in MongoDB and updates UI
-  const toggleTask = async (id) => {
-    try {
-      const res = await axios.put(`http://localhost:5000/api/tasks/${id}`);
-
-      setTasks(tasks.map(t => t._id === id ? res.data : t));
-    } catch (err) {
-      console.log("Failed to update task");
-    }
-  };
-
-  // Deletes task from MongoDB and updates UI
-  const deleteTask = async (id) => {
-    try {
-      await axios.delete(`http://localhost:5000/api/tasks/${id}`);
-
-      setTasks(tasks.filter(t => t._id !== id));
-    } catch (err) {
-      console.log("Failed to delete task");
-    }
-  };
 
 
   return (
