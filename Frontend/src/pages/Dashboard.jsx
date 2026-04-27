@@ -772,95 +772,35 @@ export default function Dashboard() {
 
   // shows toast and browser notifications and plays alert sound based on the alert and focus status from the face focus tracker
   useEffect(() => {
-    if (status === "loading") return;
+    if (status === "loading" || sessionState !== "running") return;
 
-    // stop everything if session not running
-    if (sessionState !== "running") {
-      distractionStartRef.current = null;
-
-      if (alertIntervalRef.current) {
-        clearInterval(alertIntervalRef.current);
-        alertIntervalRef.current = null;
-      }
-
-      lastAlertRef.current = null
-
-      return;
-    }
-
-    // If user is focused, stop tracking
     if (isFocused) {
       distractionStartRef.current = null;
-
-      if (alertIntervalRef.current) {
-        clearInterval(alertIntervalRef.current);
-        alertIntervalRef.current = null;
-      }
-
-      lastAlertRef.current = null;
-
       return;
     }
 
-    // Start tracking distraction time
     if (!distractionStartRef.current) {
       distractionStartRef.current = Date.now();
+      return;
     }
 
-    // Start alert loop
-    if (!alertIntervalRef.current) {
-      alertIntervalRef.current = setInterval(() => {
-        const now = Date.now()
+    const elapsed = Date.now() - distractionStartRef.current;
 
-        if (!lastAlertRef.current) {
-          lastAlertRef.current = now;
-          return;
-        }
+    if (elapsed >= 30000) {
+      distractionStartRef.current = Date.now();
 
-        const diff = now - lastAlertRef.current;
+      CustomizedToast.error("You are still distracted!");
 
-        // only trigger once per 30s block
-        if (diff >= 30000) {
-          lastAlertRef.current = now; // reset cycle immediately
+      showBrowserNotification(
+        "Focusentrix Alert",
+        "You are distracted for too long"
+      );
 
-          CustomizedToast.error("You are still distracted!");
-
-          showBrowserNotification(
-            "Focusentrix Alert",
-            "You are distracted for too long"
-          );
-
-          if (distractionAudioRef.current) {
-            distractionAudioRef.current.currentTime = 0;
-            distractionAudioRef.current.play().catch(() => { });
-          }
-        }
-
-
-        if (diff >= 30000) {
-          CustomizedToast.error("You are still distracted!")
-
-          showBrowserNotification(
-            "Focusentrix Alert",
-            "You are distracted for too long"
-          )
-
-          if (distractionAudioRef.current) {
-            distractionAudioRef.current.currentTime = 0
-            distractionAudioRef.current.play().catch(() => { })
-          }
-
-          lastAlertRef.current = now
-        }
-      }, 1000)
-    }
-
-    return () => {
-      if (alertIntervalRef.current) {
-        clearInterval(alertIntervalRef.current);
-        alertIntervalRef.current = null;
+      if (distractionAudioRef.current) {
+        distractionAudioRef.current.currentTime = 0;
+        distractionAudioRef.current.play().catch(() => { });
       }
-    };
+    }
   }, [isFocused, status, sessionState]);
 
   // Tracks total focus and distraction time during active sessions to calculate focus score and show in stats
