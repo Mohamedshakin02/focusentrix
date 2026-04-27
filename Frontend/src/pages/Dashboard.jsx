@@ -1000,7 +1000,7 @@ export default function Dashboard() {
           {/* welcome row */}
           <div className="mb-6 flex items-start justify-between">
             <div>
-              <h1 className="text-2xl font-black flex items-center gap-3">Hello, {username} <Handshake className="w-5 h-5 text-[#8c57cb]" /></h1>
+              <h1 className="text-2xl font-black flex items-center gap-3">Hello, {username} <Handshake className="w-5 h-5 text-[#8c57cb] hidden sm:block" /></h1>
               <p className="text-[#5a4a7a] text-sm font-semibold mt-0.5">
                 {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
               </p>
