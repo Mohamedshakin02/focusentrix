@@ -704,14 +704,14 @@ export default function Dashboard() {
   ])
   const [newTask, setNewTask] = useState('')
 
-  const addTask = () => {
-    if (!newTask.trim()) return
-    setTasks([...tasks, { id: Date.now(), label: newTask.trim(), done: false }])
-    setNewTask('')
-  }
+  // const addTask = () => {
+  //   if (!newTask.trim()) return
+  //   setTasks([...tasks, { id: Date.now(), label: newTask.trim(), done: false }])
+  //   setNewTask('')
+  // }
 
-  const toggleTask = (id) => setTasks(tasks.map(t => t.id === id ? { ...t, done: !t.done } : t))
-  const deleteTask = (id) => setTasks(tasks.filter(t => t.id !== id))
+  // const toggleTask = (id) => setTasks(tasks.map(t => t.id === id ? { ...t, done: !t.done } : t))
+  // const deleteTask = (id) => setTasks(tasks.filter(t => t.id !== id))
 
   const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
   const today = new Date()
@@ -791,6 +791,63 @@ export default function Dashboard() {
       console.log("Failed to update streak")
     }
   }
+
+  // Fetch tasks for the logged-in user from MongoDB
+  useEffect(() => {
+    const fetchTasks = async () => {
+      const userId = localStorage.getItem("userId");
+
+      try {
+        const res = await axios.get(`http://localhost:5000/api/tasks/${userId}`);
+        setTasks(res.data);
+      } catch (err) {
+        console.log("Failed to fetch tasks");
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
+  // Adds a new task to MongoDB and updates UI
+  const addTask = async () => {
+    if (!newTask.trim()) return;
+
+    const userId = localStorage.getItem("userId");
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/tasks", {
+        userId,
+        label: newTask,
+      });
+
+      setTasks([...tasks, res.data]);
+      setNewTask("");
+    } catch (err) {
+      console.log("Failed to add task");
+    }
+  };
+
+  // Toggles task completion status in MongoDB and updates UI
+  const toggleTask = async (id) => {
+    try {
+      const res = await axios.put(`http://localhost:5000/api/tasks/${id}`);
+
+      setTasks(tasks.map(t => t._id === id ? res.data : t));
+    } catch (err) {
+      console.log("Failed to update task");
+    }
+  };
+
+  // Deletes task from MongoDB and updates UI
+  const deleteTask = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/tasks/${id}`);
+
+      setTasks(tasks.filter(t => t._id !== id));
+    } catch (err) {
+      console.log("Failed to delete task");
+    }
+  };
 
 
   return (
@@ -1022,12 +1079,12 @@ export default function Dashboard() {
               </div>
               <div className="flex flex-col divide-y divide-[#1e1535]">
                 {tasks.map(task => (
-                  <div key={task.id} className="flex items-center justify-between py-4">
+                  <div key={task._id} className="flex items-center justify-between py-4">
                     <span className={`text-lg font-medium ${task.done ? 'text-[#5a4a7a] line-through' : 'text-white'}`}>
                       {task.label}
                     </span>
                     <div className="flex items-center gap-3">
-                      <button onClick={() => toggleTask(task.id)}>
+                      <button onClick={() => toggleTask(task._id)}>
                         {task.done
                           ? <div className="w-8 h-8 rounded-lg border border-[#9b59f5] bg-[#1e1040] flex items-center justify-center">
                             <span className="text-[#9b59f5] text-sm">✓</span>
@@ -1035,7 +1092,7 @@ export default function Dashboard() {
                           : <div className="w-8 h-8 rounded-lg border border-[#2a1a40] hover:border-[#9b59f5] transition-colors duration-200" />
                         }
                       </button>
-                      <button onClick={() => deleteTask(task.id)} className="text-[#5a4a7a] hover:text-red-400 transition-colors duration-200">
+                      <button onClick={() => deleteTask(task._id)} className="text-[#5a4a7a] hover:text-red-400 transition-colors duration-200">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>

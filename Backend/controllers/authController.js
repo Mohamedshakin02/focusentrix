@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/generateToken.js";
 import { OAuth2Client } from "google-auth-library";
+import Task from "../models/Task.js";
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -22,6 +23,23 @@ export const signup = async (req, res) => {
       email,
       password: hashed
     });
+
+    const defaultTasks = [
+      { label: 'Finding color palette' },
+      { label: 'Exploring UI designs' },
+      { label: 'Start making initial design' },
+      { label: 'Make it responsive design' },
+    ];
+
+    await Promise.all(
+      defaultTasks.map(task =>
+        Task.create({
+          userId: user._id,
+          label: task.label,
+          done: false,
+        })
+      )
+    );
 
     const token = generateToken(user._id);
 
@@ -63,37 +81,55 @@ export const login = async (req, res) => {
 
 // GOOGLE LOGIN
 export const googleLogin = async (req, res) => {
-    try {
-        const { credential } = req.body;
+  try {
+    const { credential } = req.body;
 
-        const ticket = await client.verifyIdToken({
-            idToken: credential,
-            audience: process.env.GOOGLE_CLIENT_ID
-        });
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID
+    });
 
-        const payload = ticket.getPayload();
+    const payload = ticket.getPayload();
 
-        let user = await User.findOne({ email: payload.email });
+    let user = await User.findOne({ email: payload.email });
 
-        if (!user) {
-            user = await User.create({
-                name: payload.name,
-                email: payload.email,
-                googleId: payload.sub
-            });
-        } else {
-            if (!user.googleId) {
-                user.googleId = payload.sub;
-                await user.save();
-            }
-        }
+    if (!user) {
+      user = await User.create({
+        name: payload.name,
+        email: payload.email,
+        googleId: payload.sub
+      });
 
-        const token = generateToken(user._id);
+      const defaultTasks = [
+        { label: 'Finding color palette' },
+        { label: 'Exploring UI designs' },
+        { label: 'Start making initial design' },
+        { label: 'Make it responsive design' },
+      ];
 
-        const { password: _, ...safeUser } = user._doc;
-        res.json({ user: safeUser, token });
+      await Promise.all(
+        defaultTasks.map(task =>
+          Task.create({
+            userId: user._id,
+            label: task.label,
+            done: false,
+          })
+        )
+      );
 
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+    } else {
+      if (!user.googleId) {
+        user.googleId = payload.sub;
+        await user.save();
+      }
     }
+
+    const token = generateToken(user._id);
+
+    const { password: _, ...safeUser } = user._doc;
+    res.json({ user: safeUser, token });
+
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };

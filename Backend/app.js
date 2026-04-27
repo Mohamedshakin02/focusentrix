@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
 import sessionRoutes from "./routes/session.js";
 import streakRoutes from "./routes/streak.js";
+import taskRoutes from "./routes/taskRoutes.js";
 
 const app = express();
 
@@ -20,5 +21,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/session", sessionRoutes);
 app.use("/api/streak", streakRoutes);
+app.use("/api/tasks", taskRoutes);
 
 export default app;
