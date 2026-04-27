@@ -9,7 +9,7 @@ import taskRoutes from "./routes/taskRoutes.js";
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:5173", // frontend link
+  origin: ["http://localhost:5173", "https://focusentrix.vercel.app"], // frontend link
   credentials: true
 }));
 

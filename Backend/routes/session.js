@@ -20,7 +20,7 @@ router.post("/increment", async (req, res) => {
           focusTime: focusTime || 0 // focus time
         }
       },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: "after" }
     )
 
     res.json(session)

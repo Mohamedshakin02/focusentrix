@@ -343,12 +343,12 @@ export default function Dashboard() {
     try {
       const userId = localStorage.getItem("userId")
 
-      await axios.post("http://localhost:5000/api/streak/update", {
+      await axios.post("https://focusentrix-backend.onrender.com/api/streak/update", {
         userId,
       })
 
       const streakRes = await axios.get(
-        `http://localhost:5000/api/streak/${userId}`
+        `https://focusentrix-backend.onrender.com/api/streak/${userId}`
       )
 
       setStreak(streakRes.data)
@@ -365,13 +365,13 @@ export default function Dashboard() {
     const userId = localStorage.getItem("userId");
 
     try {
-      await axios.post("http://localhost:5000/api/session/increment", {
+      await axios.post("https://focusentrix-backend.onrender.com/api/session/increment", {
         userId,
         focusTime: focusTime
       });
 
       const res = await axios.get(
-        `http://localhost:5000/api/session/today/${userId}`
+        `https://focusentrix-backend.onrender.com/api/session/today/${userId}`
       );
 
       setSessionsToday(res.data.count);
@@ -403,7 +403,7 @@ export default function Dashboard() {
     const userId = localStorage.getItem("userId");
 
     try {
-      const res = await axios.post("http://localhost:5000/api/tasks", {
+      const res = await axios.post("https://focusentrix-backend.onrender.com/api/tasks", {
         userId,
         label: newTask,
       });
@@ -419,7 +419,7 @@ export default function Dashboard() {
   // Toggles task completion status in MongoDB and updates UI
   const toggleTask = async (id) => {
     try {
-      const res = await axios.put(`http://localhost:5000/api/tasks/${id}`);
+      const res = await axios.put(`https://focusentrix-backend.onrender.com/api/tasks/${id}`);
 
       setTasks(tasks.map(t => t._id === id ? res.data : t));
     } catch (err) {
@@ -430,7 +430,7 @@ export default function Dashboard() {
   // Deletes task from MongoDB and updates UI
   const deleteTask = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/tasks/${id}`);
+      await axios.delete(`https://focusentrix-backend.onrender.com/api/tasks/${id}`);
 
       setTasks(tasks.filter(t => t._id !== id));
     } catch (err) {
@@ -582,14 +582,14 @@ export default function Dashboard() {
     const userId = localStorage.getItem("userId");
 
     try {
-      await axios.post("http://localhost:5000/api/session/increment", {
+      await axios.post("https://focusentrix-backend.onrender.com/api/session/increment", {
         userId,
         focusTime: focusTime
       });
 
       // refresh UI after update
       const res = await axios.get(
-        `http://localhost:5000/api/session/today/${userId}`
+        `https://focusentrix-backend.onrender.com/api/session/today/${userId}`
       );
 
       setSessionsToday(res.data.count);
@@ -690,7 +690,7 @@ export default function Dashboard() {
         const userId = localStorage.getItem("userId")
 
         const res = await axios.get(
-          `http://localhost:5000/api/session/today/${userId}`
+          `https://focusentrix-backend.onrender.com/api/session/today/${userId}`
         )
 
         setSessionsToday(res.data.count)
@@ -712,7 +712,7 @@ export default function Dashboard() {
         const userId = localStorage.getItem("userId")
 
         const res = await axios.get(
-          `http://localhost:5000/api/streak/${userId}`
+          `https://focusentrix-backend.onrender.com/api/streak/${userId}`
         )
 
         setStreak(res.data)

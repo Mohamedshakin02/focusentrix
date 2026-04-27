@@ -41,7 +41,7 @@ export default function Auth() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        "https://focusentrix-backend.onrender.com/api/auth/login",
         loginForm
       )
 
@@ -80,7 +80,7 @@ export default function Auth() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/signup",
+        "https://focusentrix-backend.onrender.com/api/auth/signup",
         signupForm
       )
 
@@ -106,7 +106,7 @@ export default function Auth() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/google-login",
+        "https://focusentrix-backend.onrender.com/api/auth/google-login",
         {
           credential: credentialResponse.credential
         }
