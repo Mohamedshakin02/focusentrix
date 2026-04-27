@@ -998,7 +998,7 @@ export default function Dashboard() {
         <div className="w-full px-5 md:px-10 pt-10 pb-24">
 
           {/* welcome row */}
-          <div className="mb-6 flex items-start justify-between">
+          <div className="mb-6 flex items-start justify-between gap-6">
             <div>
               <h1 className="text-2xl font-black flex items-center gap-3">Hello, {username} <Handshake className="w-5 h-5 text-[#8c57cb] hidden sm:block" /></h1>
               <p className="text-[#5a4a7a] text-sm font-semibold mt-0.5">
