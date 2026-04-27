@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
+import { useNavigate } from 'react-router-dom'
 
 //pricing tier card which accepts both monthly and yearly prices.
 //user is able to switch between them based on the isYearly prop
-function PricingCard({ plan, monthlyPrice, yearlyPrice, period, features, cta, highlighted, isYearly }) {
+function PricingCard({ plan, monthlyPrice, yearlyPrice, period, features, cta, highlighted, isYearly, onCtaClick }) {
 
   //shows the yearly or monthly prices depening on the toggle state
   const price = isYearly ? yearlyPrice : monthlyPrice
@@ -46,11 +47,14 @@ function PricingCard({ plan, monthlyPrice, yearlyPrice, period, features, cta, h
       </ul>
 
 
-      <button className={`w-full py-3 rounded-xl font-semibold text-sm transition-all duration-200
+      <button
+        onClick={() => onCtaClick(plan)}
+        className={`w-full py-3 rounded-xl font-semibold text-sm transition-all duration-200
         ${highlighted
-          ? ' text-white bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0] hover:cursor-pointer hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]'
-          : 'bg-transparent border border-[#3d2060] text-white hover:border-[#9b59f5] hover:cursor-pointer'
-        }`}>
+            ? ' text-white bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0] hover:cursor-pointer hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]'
+            : 'bg-transparent border border-[#3d2060] text-white hover:border-[#9b59f5] hover:cursor-pointer'
+          }`}
+      >
         {cta}
       </button>
     </div>
@@ -92,10 +96,20 @@ export default function Pricing() {
     },
   ]
 
+
+  const navigate = useNavigate()
+
+  // navigates user to auth page only when Free plan is selected
+  const handleAuthRedirect = (planName) => {
+    if (planName === "Free") {
+      navigate("/auth")
+    }
+  }
+
   return (
     <>
       <Navbar />
-      
+
       <div className="bg-[#0a0a0f] min-h-screen text-white container mx-auto px-4 sm:px-6 lg:px-30">
 
         {/* PRICING  
@@ -148,7 +162,12 @@ export default function Pricing() {
             {/* pricing cards rendered from the planes array*/}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {plans.map((p, i) => (
-                <PricingCard key={i} {...p} isYearly={isYearly} />
+                <PricingCard
+                  key={i}
+                  {...p}
+                  isYearly={isYearly}
+                  onCtaClick={handleAuthRedirect}
+                />
               ))}
             </div>
           </div>
