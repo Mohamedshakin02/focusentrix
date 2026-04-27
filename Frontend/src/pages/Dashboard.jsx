@@ -228,7 +228,7 @@ export default function Dashboard() {
   // ======================
   // TASK MANAGEMENT STATE
   // ======================
-  
+
   const [tasks, setTasks] = useState([])
   const [newTask, setNewTask] = useState('')
 
@@ -279,15 +279,23 @@ export default function Dashboard() {
   // ======================
   const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
   const today = new Date()
-  const last7Days = [...Array(7)].map((_, i) => {
-    const d = new Date()
-    d.setDate(today.getDate() - (6 - i))
+  const currentDay = today.getDay() 
+
+  const mondayIndex = currentDay === 0 ? 6 : currentDay - 1
+
+  
+  const monday = new Date(today)
+  monday.setDate(today.getDate() - mondayIndex)
+
+  const weekDates = [...Array(7)].map((_, i) => {
+    const d = new Date(monday)
+    d.setDate(monday.getDate() + i)
     return d.toISOString().split("T")[0]
   })
 
   const activeDays = streak?.activeDays || []
 
-  const weekStatus = last7Days.map(date =>
+  const weekStatus = weekDates.map(date =>
     activeDays.includes(date)
   )
 
@@ -393,22 +401,22 @@ export default function Dashboard() {
 
   // fetch tasks
   useEffect(() => {
-  const fetchTasks = async () => {
-    try {
-      const userId = localStorage.getItem("userId");
+    const fetchTasks = async () => {
+      try {
+        const userId = localStorage.getItem("userId");
 
-      const res = await axios.get(
-        `https://focusentrix-backend.onrender.com/api/tasks/${userId}`
-      );
+        const res = await axios.get(
+          `https://focusentrix-backend.onrender.com/api/tasks/${userId}`
+        );
 
-      setTasks(res.data);
-    } catch (err) {
-      console.log("Failed to fetch tasks");
-    }
-  };
+        setTasks(res.data);
+      } catch (err) {
+        console.log("Failed to fetch tasks");
+      }
+    };
 
-  fetchTasks();
-}, []);
+    fetchTasks();
+  }, []);
 
   // add task
   const addTask = async () => {
@@ -869,7 +877,7 @@ export default function Dashboard() {
           "One work session is completed"
         )
       }
-      
+
 
       // BREAK ENDED
       else if (sessionState === "break") {
