@@ -6,5 +6,14 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-  ],
+  ], server: {
+    proxy: {
+      '/api': {
+        target: 'https://focusentrix-backend.onrender.com',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api/, '/api')
+      }
+    }
+  }
 })
