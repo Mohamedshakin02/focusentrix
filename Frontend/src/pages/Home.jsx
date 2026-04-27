@@ -6,6 +6,7 @@ import bg from "../assets/feature-bg.png";
 import { useState } from 'react' //used for the monthly/yearly function in the price section
 import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
+import { useNavigate } from 'react-router-dom'
 
 
 // small cards that are displayed around the focusentrix logo in the hero section
@@ -104,7 +105,7 @@ function StepCard({ number, icon: Icon, title, description }) {
 
 //pricing tier card which accepts both monthly and yearly prices.
 //user is able to switch between them based on the isYearly prop
-function PricingCard({ plan, monthlyPrice, yearlyPrice, period, features, cta, highlighted, isYearly }) {
+function PricingCard({ plan, monthlyPrice, yearlyPrice, period, features, cta, highlighted, isYearly, onCtaClick }) {
 
   //shows the yearly or monthly prices depening on the toggle state
   const price = isYearly ? yearlyPrice : monthlyPrice
@@ -146,11 +147,13 @@ function PricingCard({ plan, monthlyPrice, yearlyPrice, period, features, cta, h
       </ul>
 
 
-      <button className={`w-full py-3 rounded-xl font-semibold text-sm transition-all duration-200
+      <button
+        onClick={() => onCtaClick(plan)}
+        className={`w-full py-3 rounded-xl font-semibold text-sm transition-all duration-200
         ${highlighted
-          ? ' text-white bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0] hover:cursor-pointer hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]'
-          : 'bg-transparent border border-[#3d2060] text-white hover:border-[#9b59f5] hover:cursor-pointer'
-        }`}>
+            ? ' text-white bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0] hover:cursor-pointer hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]'
+            : 'bg-transparent border border-[#3d2060] text-white hover:border-[#9b59f5] hover:cursor-pointer'
+          }`}>
         {cta}
       </button>
     </div>
@@ -214,140 +217,152 @@ export default function Home() {
     },
   ]
 
+  const navigate = useNavigate()
+
+  // navigates user to auth page only when Free plan is selected
+  const handleAuthRedirect = (planName) => {
+    if (planName === "Free") {
+      navigate("/auth")
+    }
+  }
+
+
+
+
 
   return (
     <>
-    <Navbar />
-    
-    <div className="bg-[#0a0a0f] min-h-screen text-white container mx-auto px-4 sm:px-6 lg:px-30">
+      <Navbar />
 
-      {/* HERO section, 2 column layout
+      <div className="bg-[#0a0a0f] min-h-screen text-white container mx-auto px-4 sm:px-6 lg:px-30">
+
+        {/* HERO section, 2 column layout
         Left area has Headline, Right area has the logo surrounded by the 4 feature cards.*/}
-      <section className="px-4">
-        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 lg:gap-12 items-center pb-18 lg:pb-0">
+        <section className="px-4">
+          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 lg:gap-12 items-center pb-18 lg:pb-0">
 
-          {/* left column*/}
-          <div className="order-2 lg:order-1 flex flex-col">
-            <h1 className="text-5xl xl:text-7xl font-black leading-14 xl:leading-18">
-              Stay locked in.<br />
-              Work smarter.<br />
-              <span className="text-[#9b59f5]">Achieve more.</span>
-            </h1>
-            <p className="text-[#8a7aaa] text-lg xl:text-xl mt-3 font-medium leading-relaxed max-w-md">
-              Focusentrix uses real time camera monitoring to detect distractions
-              and keep you in the zone so every session counts.
-            </p>
-            <div>
-              <Link
-                to="/contact"
-                className="inline-flex items-center mt-10 text-white font-semibold px-5 py-2.5 rounded-lg text-md no-underline
+            {/* left column*/}
+            <div className="order-2 lg:order-1 flex flex-col">
+              <h1 className="text-5xl xl:text-7xl font-black leading-14 xl:leading-18">
+                Stay locked in.<br />
+                Work smarter.<br />
+                <span className="text-[#9b59f5]">Achieve more.</span>
+              </h1>
+              <p className="text-[#8a7aaa] text-lg xl:text-xl mt-3 font-medium leading-relaxed max-w-md">
+                Focusentrix uses real time camera monitoring to detect distractions
+                and keep you in the zone so every session counts.
+              </p>
+              <div>
+                <Link
+                  to="/auth"
+                  className="inline-flex items-center mt-10 text-white font-semibold px-5 py-2.5 rounded-lg text-md no-underline
                     bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
                     shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)]
                     hover:shadow-[0_6px_18px_rgba(123,44,191,0.5),inset_0_1px_2px_rgba(255,255,255,0.25)]
                     transition-all duration-300"
-              >
-                Get Started <ChevronRight className="w-4 h-4 ml-1 mb-0.5" />
-              </Link>
-            </div>
-          </div>
-
-          {/* right column*/}
-          <div className="order-1 lg:order-2 relative flex items-center justify-center py-16 lg:py-25 xl:pr-15">
-
-            {/* right section logo with glow */}
-            <div className="absolute w-[220px] h-[220px] lg:w-[30vw] lg:h-[30vw] xl:w-[60vw] xl:h-[60vw] max-w-[500px] max-h-[500px] rounded-full bg-[#4a1a90] opacity-30 blur-3xl" />
-
-            {/* image container */}
-            <div className="relative w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] lg:w-[30vw] lg:h-[30vw] xl:w-[70vw] xl:h-[70vw] max-w-[400px] max-h-[400px] flex items-center justify-center">
-
-              {/* dashed orbit ring around logo */}
-              <div className="absolute w-full h-full rounded-full border border-dashed border-[#3d2060]" />
-
-
-              <img
-                src={logo}
-                alt="Focusentrix logo"
-                className="w-32 h-32 sm:w-40 sm:h-40 xl:w-80 xl:h-80 object-contain z-10"
-              />
-
-              <div className="absolute top-0 left-0 -translate-x-1/3 -translate-y-1/4">
-                <HeroFeatureCard icon={Webcam} title="Real-Time Monitoring" />
+                >
+                  Get Started <ChevronRight className="w-4 h-4 ml-1 mb-0.5" />
+                </Link>
               </div>
-
-              <div className="absolute top-0 right-0 translate-x-1/3 -translate-y-1/4">
-                <HeroFeatureCard icon={Bell} title="Instant Smart Alerts" />
-              </div>
-
-              <div className="absolute bottom-0 left-0 -translate-x-1/3 translate-y-1/4">
-                <HeroFeatureCard icon={Target} title="Session Goal Setting" />
-              </div>
-
-              <div className="absolute bottom-0 right-0 translate-x-1/3 translate-y-1/4">
-                <HeroFeatureCard icon={BarChart2} title="Focus Analytics" />
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* WHAT WE OFFER, two column layout
-        Left has heading, right has the list of items */}
-      <section className="border-t border-[#1a1030] py-18 xl:py-24">
-        <div className="px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
-
-            {/*Left column, heading and descriptions */}
-
-            <div
-              className="relative flex flex-col gap-5 p-6 pt-0 pl-0 bg-cover bg-left lg:h-[500px] overflow-hidden"
-              style={{ backgroundImage: `url(${bg})` }}
-            >
-              <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#0a0a0f] to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0a0a0f] to-transparent" />
-              <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#0a0a0f] to-transparent" />
-              <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#0a0a0f] to-transparent" />
-
-              <div className="pointer-events-none absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#0a0a0f] to-transparent blur-xl overflow-x-hidden" />
-
-              <div className="relative z-10">
-
-                <p className="text-[#9b59f5] text-md font-semibold tracking-widest uppercase">
-                  What we offer
-                </p>
-
-                <h2 className="text-4xl mt-2 font-black leading-snug">
-                  Everything You Need<br />to Stay in the Zone
-                </h2>
-
-                <div className="w-12 h-1 bg-[#9b59f5] rounded-full mt-3 mb-7" />
-
-                <p className="text-[#9b95a7] text-lg font-semibold leading-relaxed">
-                  Five core capabilities designed to detect, analyze, and improve your focus all in real time.
-                </p>
-              </div>
-
             </div>
 
-            {/* right, list of offer items. These are rendered from the offers array*/}
-            <div className="flex flex-col gap-3">
-              {offers.map((o, i) => (
-                <OfferItem
-                  key={i}
-                  index={i}
-                  {...o}
+            {/* right column*/}
+            <div className="order-1 lg:order-2 relative flex items-center justify-center py-16 lg:py-25 xl:pr-15">
+
+              {/* right section logo with glow */}
+              <div className="absolute w-[220px] h-[220px] lg:w-[30vw] lg:h-[30vw] xl:w-[60vw] xl:h-[60vw] max-w-[500px] max-h-[500px] rounded-full bg-[#4a1a90] opacity-30 blur-3xl" />
+
+              {/* image container */}
+              <div className="relative w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] lg:w-[30vw] lg:h-[30vw] xl:w-[70vw] xl:h-[70vw] max-w-[400px] max-h-[400px] flex items-center justify-center">
+
+                {/* dashed orbit ring around logo */}
+                <div className="absolute w-full h-full rounded-full border border-dashed border-[#3d2060]" />
+
+
+                <img
+                  src={logo}
+                  alt="Focusentrix logo"
+                  className="w-32 h-32 sm:w-40 sm:h-40 xl:w-80 xl:h-80 object-contain z-10"
                 />
-              ))}
+
+                <div className="absolute top-0 left-0 -translate-x-1/3 -translate-y-1/4">
+                  <HeroFeatureCard icon={Webcam} title="Real-Time Monitoring" />
+                </div>
+
+                <div className="absolute top-0 right-0 translate-x-1/3 -translate-y-1/4">
+                  <HeroFeatureCard icon={Bell} title="Instant Smart Alerts" />
+                </div>
+
+                <div className="absolute bottom-0 left-0 -translate-x-1/3 translate-y-1/4">
+                  <HeroFeatureCard icon={Target} title="Session Goal Setting" />
+                </div>
+
+                <div className="absolute bottom-0 right-0 translate-x-1/3 translate-y-1/4">
+                  <HeroFeatureCard icon={BarChart2} title="Focus Analytics" />
+                </div>
+
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* GETTING STARTED, four column grid of steps card that guides the user */}
-      <section className="relative py-18 xl:py-24 border-t border-[#1a1030]">
+        {/* WHAT WE OFFER, two column layout
+        Left has heading, right has the list of items */}
+        <section className="border-t border-[#1a1030] py-18 xl:py-24">
+          <div className="px-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
 
-        {/* glowing effect */}
-        <div className="
+              {/*Left column, heading and descriptions */}
+
+              <div
+                className="relative flex flex-col gap-5 p-6 pt-0 pl-0 bg-cover bg-left lg:h-[500px] overflow-hidden"
+                style={{ backgroundImage: `url(${bg})` }}
+              >
+                <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#0a0a0f] to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0a0a0f] to-transparent" />
+                <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#0a0a0f] to-transparent" />
+                <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#0a0a0f] to-transparent" />
+
+                <div className="pointer-events-none absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-[#0a0a0f] to-transparent blur-xl overflow-x-hidden" />
+
+                <div className="relative z-10">
+
+                  <p className="text-[#9b59f5] text-md font-semibold tracking-widest uppercase">
+                    What we offer
+                  </p>
+
+                  <h2 className="text-4xl mt-2 font-black leading-snug">
+                    Everything You Need<br />to Stay in the Zone
+                  </h2>
+
+                  <div className="w-12 h-1 bg-[#9b59f5] rounded-full mt-3 mb-7" />
+
+                  <p className="text-[#9b95a7] text-lg font-semibold leading-relaxed">
+                    Five core capabilities designed to detect, analyze, and improve your focus all in real time.
+                  </p>
+                </div>
+
+              </div>
+
+              {/* right, list of offer items. These are rendered from the offers array*/}
+              <div className="flex flex-col gap-3">
+                {offers.map((o, i) => (
+                  <OfferItem
+                    key={i}
+                    index={i}
+                    {...o}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* GETTING STARTED, four column grid of steps card that guides the user */}
+        <section className="relative py-18 xl:py-24 border-t border-[#1a1030]">
+
+          {/* glowing effect */}
+          <div className="
                         pointer-events-none absolute top-0 left-1/2 -translate-x-1/2
                         w-[50vw] h-[50vw]
                         sm:w-[60vw] sm:h-[35vw]
@@ -357,82 +372,87 @@ export default function Home() {
 
 
 
-        <div className="px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-black mb-2">Getting Started</h2>
-            <p className="text-[#9b59f5] text-lg font-semibold">Up and Running in 4 Simple Steps</p>
+          <div className="px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-black mb-2">Getting Started</h2>
+              <p className="text-[#9b59f5] text-lg font-semibold">Up and Running in 4 Simple Steps</p>
 
-            <div className="w-12 h-1 bg-[#9b59f5] rounded-full mt-3 mb-7 mx-auto" />
+              <div className="w-12 h-1 bg-[#9b59f5] rounded-full mt-3 mb-7 mx-auto" />
+            </div>
+
+            {/* steps cards rendered from the steps array*/}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 px-10">
+              {steps.map((s, i) => <StepCard key={i} {...s} />)}
+            </div>
           </div>
+        </section>
 
-          {/* steps cards rendered from the steps array*/}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 px-10">
-            {steps.map((s, i) => <StepCard key={i} {...s} />)}
-          </div>
-        </div>
-      </section>
-
-      {/* PRICING  
+        {/* PRICING  
         Three tiers of pricing that can be toggled monthly/yearly
         Toggle state is managed by the isYearly useState hook*/}
-      <section className="relative py-18 pb-0 xl:py-24 xl:pb-0 border-t border-[#1a1030]">
+        <section className="relative py-18 pb-0 xl:py-24 xl:pb-0 border-t border-[#1a1030]">
 
-        {/* glowing effect */}
-        <div className="
+          {/* glowing effect */}
+          <div className="
                         pointer-events-none absolute top-0 left-1/2 -translate-x-1/2
                         w-[50vw] h-[50vw]
                         lg:w-[300px] lg:h-[300px]
                         bg-[#9b59f5] opacity-20 lg:opacity-15 blur-[90px] sm:blur-[110px] lg:blur-[120px]
         " />
 
-        <div className="px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-black mb-2">Pricing</h2>
-            <p className="text-[#9b59f5] text-lg font-semibold mb-6">Simple, transparent plans</p>
+          <div className="px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-black mb-2">Pricing</h2>
+              <p className="text-[#9b59f5] text-lg font-semibold mb-6">Simple, transparent plans</p>
 
-            <div className="w-12 h-1 bg-[#9b59f5] rounded-full mt-3 mb-7 mx-auto" />
+              <div className="w-12 h-1 bg-[#9b59f5] rounded-full mt-3 mb-7 mx-auto" />
 
-            {/* toggle */}
-            <div className="inline-flex items-center gap-3 bg-[#13102a] border border-[#2a1a40] rounded-full px-5 py-2">
-              <span className={`text-sm font-medium transition-colors ${!isYearly ? 'text-white' : 'text-[#8a7aaa]'}`}>
-                Monthly
-              </span>
+              {/* toggle */}
+              <div className="inline-flex items-center gap-3 bg-[#13102a] border border-[#2a1a40] rounded-full px-5 py-2">
+                <span className={`text-sm font-medium transition-colors ${!isYearly ? 'text-white' : 'text-[#8a7aaa]'}`}>
+                  Monthly
+                </span>
 
-              {/* Clicking flips isYearly*/}
-              <div
-                onClick={() => setIsYearly(!isYearly)}
-                className="w-11 h-6 bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
+                {/* Clicking flips isYearly*/}
+                <div
+                  onClick={() => setIsYearly(!isYearly)}
+                  className="w-11 h-6 bg-gradient-to-b from-[#7A34F0] via-[#6229C1] to-[#501CA0]
                     shadow-[0_4px_12px_rgba(123,44,191,0.4),inset_0_1px_2px_rgba(255,255,255,0.2)]
                     rounded-full relative cursor-pointer transition-all duration-300"
-              >
+                >
 
-                {/* sliding dot that moves between monthly and yearly*/}
-                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300
+                  {/* sliding dot that moves between monthly and yearly*/}
+                  <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300
                     ${isYearly ? 'right-1' : 'left-1'}`}
-                />
-              </div>
+                  />
+                </div>
 
-              <span className={`text-sm transition-colors ${isYearly ? 'text-white' : 'text-[#8a7aaa]'}`}>
-                Yearly
-              </span>
-              <span className="bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Save 20%</span>
+                <span className={`text-sm transition-colors ${isYearly ? 'text-white' : 'text-[#8a7aaa]'}`}>
+                  Yearly
+                </span>
+                <span className="bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Save 20%</span>
+              </div>
+            </div>
+
+            {/* pricing cards rendered from the planes array*/}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {plans.map((p, i) => (
+                <PricingCard
+                  key={i}
+                  {...p}
+                  isYearly={isYearly}
+                  onCtaClick={handleAuthRedirect}
+                />
+              ))}
             </div>
           </div>
+        </section>
 
-          {/* pricing cards rendered from the planes array*/}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {plans.map((p, i) => (
-              <PricingCard key={i} {...p} isYearly={isYearly} />
-            ))}
-          </div>
+        {/* footer import from components*/}
+        <div className='py-18 pb-0 xl:pb-0 px-4'>
+          <Footer />
         </div>
-      </section>
-
-      {/* footer import from components*/}
-      <div className='py-18 pb-0 xl:pb-0 px-4'>
-        <Footer />
       </div>
-    </div>
     </>
   )
 }
