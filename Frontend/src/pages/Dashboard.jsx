@@ -228,12 +228,8 @@ export default function Dashboard() {
   // ======================
   // TASK MANAGEMENT STATE
   // ======================
-  const [tasks, setTasks] = useState([
-    { id: 1, label: 'Finding color palette', done: true },
-    { id: 2, label: 'Exploring UI designs', done: true },
-    { id: 3, label: 'Start making initial design', done: false },
-    { id: 4, label: 'Make it responsive design', done: false },
-  ])
+  
+  const [tasks, setTasks] = useState([])
   const [newTask, setNewTask] = useState('')
 
 
@@ -395,6 +391,24 @@ export default function Dashboard() {
   // const toggleTask = (id) => setTasks(tasks.map(t => t.id === id ? { ...t, done: !t.done } : t))
   // const deleteTask = (id) => setTasks(tasks.filter(t => t.id !== id))
 
+  // fetch tasks
+  useEffect(() => {
+  const fetchTasks = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
+
+      const res = await axios.get(
+        `https://focusentrix-backend.onrender.com/api/tasks/${userId}`
+      );
+
+      setTasks(res.data);
+    } catch (err) {
+      console.log("Failed to fetch tasks");
+    }
+  };
+
+  fetchTasks();
+}, []);
 
   // add task
   const addTask = async () => {
@@ -855,6 +869,7 @@ export default function Dashboard() {
           "One work session is completed"
         )
       }
+      
 
       // BREAK ENDED
       else if (sessionState === "break") {
@@ -901,7 +916,7 @@ export default function Dashboard() {
   }, [isFocused])
 
 
-  // 
+  // Cleanup camera 
   useEffect(() => {
     return () => {
       stopCamera()
