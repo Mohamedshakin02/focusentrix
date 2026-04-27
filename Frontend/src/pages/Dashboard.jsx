@@ -879,7 +879,7 @@ export default function Dashboard() {
              The 'loop' attribute ensures the music keeps playing continuously. */}
         <audio ref={audioRef} loop />
 
-        <div className="w-full px-10 pt-10 pb-24">
+        <div className="w-full px-5 md:px-10 pt-10 pb-24">
 
           {/* welcome row */}
           <div className="mb-6 flex items-start justify-between">
@@ -896,7 +896,13 @@ export default function Dashboard() {
 
 
           {/* stat cards and pomodoro time */}
-          <div className="grid grid-cols-[1fr_1fr_1fr_1fr_224px] gap-4 mb-4 items-start">
+          <div className="
+            grid gap-4 mb-4 items-start
+
+            grid-cols-2              /* mobile */
+            md:grid-cols-2           /* tablet */
+            lg:grid-cols-[1fr_1fr_1fr_1fr_224px] /* laptop */
+          ">
 
             <StatCard
               label="Focus score"
@@ -923,7 +929,10 @@ export default function Dashboard() {
             />
 
             {/* pomodoro timer */}
-            <div className="bg-[#0e0b1e] border border-[#1e1535] rounded-2xl px-6 py-5 flex flex-col items-center gap-3 relative row-span-2">
+            <div className="bg-[#0e0b1e] border border-[#1e1535] rounded-2xl px-6 py-5 flex flex-col items-center gap-3 relative
+             col-span-2 md:col-span-3 lg:col-span-1
+             row-span-2 md:row-span-2 lg:row-span-2
+             ">
 
               <button
                 onClick={() => setShowConfig(!showConfig)}
@@ -992,7 +1001,14 @@ export default function Dashboard() {
             </div>
 
             {/* camera monitoring*/}
-            <div className="col-span-4 bg-[#0e0b1e] border border-[#1e1535] rounded-2xl overflow-hidden">
+            <div className="
+                bg-[#0e0b1e] border border-[#1e1535] rounded-2xl overflow-hidden
+
+                col-span-2        /* mobile */
+                md:col-span-3     /* tablet */
+                lg:col-span-4     /* laptop */
+              ">
+
               <div className="px-6 py-4 border-b border-[#1e1535]">
                 <p className="text-white font-bold text-sm uppercase tracking-wider">Camera Monitoring</p>
                 <p className="text-[#5a4a7a] text-xs font-medium mt-1">Real Time Attention Tracking (Webcam Active)</p>
@@ -1057,10 +1073,23 @@ export default function Dashboard() {
           </div>
 
           {/* tasks right column */}
-          <div className="grid grid-cols-[1fr_220px] gap-4">
+          <div className="
+              grid gap-4
+
+              grid-cols-2        /* mobile */
+              md:grid-cols-3     /* tablet */
+              lg:grid-cols-[1fr_220px] /* laptop */
+            ">
 
             {/* tasks */}
-            <div className="bg-[#0e0b1e] border border-[#1e1535] rounded-2xl px-6 py-5">
+            <div className="
+                bg-[#0e0b1e] border border-[#1e1535] rounded-2xl px-6 py-5
+
+                col-span-2
+                md:col-span-2
+                lg:col-span-1
+              ">
+
               <p className="text-white font-semibold text-lg mb-3">Add Quick Task:</p>
               <div className="flex gap-3 mb-5">
                 <input type="text" placeholder="Add new task" value={newTask}
@@ -1079,7 +1108,7 @@ export default function Dashboard() {
               </div>
               <div className="flex flex-col divide-y divide-[#1e1535]">
                 {tasks.map(task => (
-                  <div key={task._id} className="flex items-center justify-between py-4">
+                  <div key={task._id || task.id || index} className="flex items-center justify-between py-4">
                     <span className={`text-lg font-medium ${task.done ? 'text-[#5a4a7a] line-through' : 'text-white'}`}>
                       {task.label}
                     </span>
@@ -1102,7 +1131,13 @@ export default function Dashboard() {
             </div>
 
             {/* right column */}
-            <div className="flex flex-col gap-4">
+            <div className="
+                flex flex-col gap-4
+
+                col-span-2
+                md:col-span-1
+                lg:col-span-1
+              ">
 
               {/* background music */}
               <div className="bg-[#0e0b1e] border border-[#1e1535] rounded-2xl px-5 py-5 flex flex-col gap-4">
@@ -1162,7 +1197,7 @@ export default function Dashboard() {
                   {weekStatus.map((done, i) => (
                     <div key={i} className="flex flex-col items-center gap-1">
                       <div className={`w-6 h-6 rounded-full flex items-center justify-center
-      ${done ? 'bg-[#9b59f5]' : 'bg-[#1e1535] border border-[#2a1a40]'}`}>
+                        ${done ? 'bg-[#9b59f5]' : 'bg-[#1e1535] border border-[#2a1a40]'}`}>
                         {done && <span className="text-white text-[8px]">✓</span>}
                       </div>
                       <span className="text-[#5a4a7a] text-[9px]">{days[i]}</span>
@@ -1176,7 +1211,7 @@ export default function Dashboard() {
         </div>
 
         {/* FOOTER */}
-        <div className="container mx-auto px-4 sm:px-6 lg:px-30">
+        <div className="container mx-auto px-6 md:px-10 sm:px-6 lg:px-30">
           <DashboardFooter username={username} handleLogout={handleLogout} />
         </div>
       </div >
