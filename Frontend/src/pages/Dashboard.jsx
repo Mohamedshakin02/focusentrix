@@ -533,6 +533,21 @@ export default function Dashboard() {
         return
       }
 
+      // Unlock audio on mobile browsers
+      if (distractionAudioRef.current) {
+        
+        distractionAudioRef.current.volume = 0; 
+        
+        // Force a play/pause cycle attached directly to this click event
+        distractionAudioRef.current.play().then(() => {
+          distractionAudioRef.current.pause();
+          distractionAudioRef.current.currentTime = 0;
+          distractionAudioRef.current.volume = 1; // Restore volume for the actual alert
+        }).catch((err) => {
+          console.log("Audio unlock failed:", err);
+        });
+      }
+
       setFocusTime(0)
       setDistractedTime(0)
 
