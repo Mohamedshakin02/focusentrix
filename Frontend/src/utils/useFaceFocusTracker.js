@@ -24,7 +24,7 @@ export default function useFaceFocusTracker(webcamRef) {
     // Stores current alert message for UI
     const [alert, setAlert] = useState("Initializing...")
 
-    
+
     // Initializes MediaPipe FaceLandmarker model
     useEffect(() => {
         const init = async () => {
@@ -43,6 +43,7 @@ export default function useFaceFocusTracker(webcamRef) {
                         runningMode: "VIDEO",
                         numFaces: 1,
                         outputFaceBlendshapes: true,
+                        outputFaceLandmarks: true,
                     }
                 )
 
@@ -77,28 +78,30 @@ export default function useFaceFocusTracker(webcamRef) {
     }
 
 
-    // Runs real-time face focus detection loop
+    // Runs continuous real-time face detection loop
     useEffect(() => {
         if (status !== "ready") return
 
         let running = true
 
+        // Main detection function that runs every frame
         const detect = () => {
             const video = webcamRef?.current?.video
             const model = faceLandmarkerRef.current
 
-            if (!webcamRef) return
-            
-            if (!running) return
+            if (!webcamRef || !running) return
 
+            // Wait until video and model are ready
             if (!video || video.readyState < 2 || !model) {
                 animationRef.current = requestAnimationFrame(detect)
                 return
             }
 
+            // Run face detection on current video frame
             const result = model.detectForVideo(video, performance.now())
 
-            if (!result.faceBlendshapes?.length) {
+            // If no face is detected, mark user as distracted
+            if (!result.faceBlendshapes?.length || !result.faceLandmarks?.length) {
                 setIsFocused(false)
                 setAlert("No Face Detected")
                 animationRef.current = requestAnimationFrame(detect)
@@ -106,55 +109,71 @@ export default function useFaceFocusTracker(webcamRef) {
             }
 
             const blend = result.faceBlendshapes[0].categories
+            const landmarks = result.faceLandmarks[0]
 
             // Gets individual facial feature score
-            const get = (name) =>
-                blend.find((b) => b.categoryName === name)?.score || 0
+            const get = (name) => blend.find((b) => b.categoryName === name)?.score || 0
 
-            const blink =
-                get("eyeBlinkLeft") + get("eyeBlinkRight")
+            // Eye movement and blink detection values
+            const blink = get("eyeBlinkLeft") + get("eyeBlinkRight")
+            const lookDown = get("eyeLookDownLeft") + get("eyeLookDownRight")
+            const lookUp = get("eyeLookUpLeft") + get("eyeLookUpRight")
 
-            const lookDown =
-                get("eyeLookDownLeft") + get("eyeLookDownRight")
-
-            const lookUp =
-                get("eyeLookUpLeft") + get("eyeLookUpRight")
-
-            const gazeX =
-                (get("eyeLookOutLeft") - get("eyeLookInLeft")) +
+            // Calculates horizontal eye movement (left/right gaze)
+            const gazeX = (get("eyeLookOutLeft") - get("eyeLookInLeft")) +
                 (get("eyeLookInRight") - get("eyeLookOutRight"))
 
+            // Gets eye corner landmarks for head direction detection
+            const leftEyeCorner = landmarks[33]   
+            const rightEyeCorner = landmarks[263] 
+
+            // Calculates normalized eye distance for stability
+            const eyeDistance = Math.sqrt(
+                Math.pow(rightEyeCorner.x - leftEyeCorner.x, 2) +
+                Math.pow(rightEyeCorner.y - leftEyeCorner.y, 2)
+            )
+
+            // Estimates head rotation (yaw) using depth difference
+            const headYaw = (leftEyeCorner.z - rightEyeCorner.z) / eyeDistance
+
+            // Combines eye movement and head movement for final gaze
+            const absoluteGazeX = gazeX + (headYaw * 2.0)
+
+            // Measures current frame brightness
             const brightness = getBrightness(video)
 
             let focused = true
             let alertMsg = "All Good"
 
-            // Detect low lighting condition
+
+            // Checks if lighting is too low
             if (brightness < 35) {
                 focused = false
                 alertMsg = "Low lighting"
 
-            // Detect if eyes are closed
+            // Checks if eyes are closed
             } else if (blink > 0.75) {
                 focused = false
                 alertMsg = "Eyes closed"
 
-            // Detect looking down
+            // Checks if user is looking down
             } else if (lookDown > 0.6) {
                 focused = false
                 alertMsg = "Looking down"
 
-            // Detect looking up
+            // Checks if user is looking up
             } else if (lookUp > 0.6) {
                 focused = false
                 alertMsg = "Looking up"
-
-            // Detect looking away
-            } else if (Math.abs(gazeX) > 0.7) {
+            
+            // Checks if user is looking away from screen
+            } else if (Math.abs(absoluteGazeX) > 0.6) {
                 focused = false
                 alertMsg = "Looking away"
             }
 
+
+            // Updates focus state and alert message
             setIsFocused(focused)
             setAlert(alertMsg)
 
@@ -162,10 +181,9 @@ export default function useFaceFocusTracker(webcamRef) {
         }
 
 
-        // Starts detection loop when video is ready
+        // Starts detection when webcam is ready
         const start = () => {
             const video = webcamRef.current?.video
-
             if (video) {
                 detect()
             } else {
@@ -175,14 +193,15 @@ export default function useFaceFocusTracker(webcamRef) {
 
         start()
 
-        
-        // Cleans up animation loop on unmount
+
+        // Cleanup function to stop detection loop when component unmounts
         return () => {
             running = false
             cancelAnimationFrame(animationRef.current)
         }
     }, [status, webcamRef])
 
-    // Cleans up animation loop on unmount
+
+    // Returns tracking status, focus state, and alert message
     return { status, isFocused, alert }
 }
