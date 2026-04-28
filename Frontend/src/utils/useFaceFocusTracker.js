@@ -3,16 +3,29 @@ import { FaceLandmarker, FilesetResolver } from "@mediapipe/tasks-vision"
 
 export default function useFaceFocusTracker(webcamRef) {
 
+    // Stores the loaded FaceLandmarker model so we can reuse it without reloading
     const faceLandmarkerRef = useRef(null)
+
+    // Stores the loop ID so we can stop the face detection loop later
     const animationRef = useRef(null)
+
+    // Tracks previous focus state (focused / distracted)
     const lastState = useRef("focused")
+
+    // Tracks time of last state change
     const lastChangeTime = useRef(Date.now())
 
+    // Tracks loading/ready/error status of model
     const [status, setStatus] = useState("loading")
+
+    // Tracks whether user is currently focused
     const [isFocused, setIsFocused] = useState(true)
+
+    // Stores current alert message for UI
     const [alert, setAlert] = useState("Initializing...")
 
-    // initial setup of mediapipe face landmarker model
+    
+    // Initializes MediaPipe FaceLandmarker model
     useEffect(() => {
         const init = async () => {
             try {
@@ -43,7 +56,7 @@ export default function useFaceFocusTracker(webcamRef) {
         init()
     }, [])
 
-    // brightness detection 
+    // Calculates frame brightness from webcam feed
     const getBrightness = (video) => {
         const canvas = document.createElement("canvas")
         const ctx = canvas.getContext("2d")
@@ -63,7 +76,8 @@ export default function useFaceFocusTracker(webcamRef) {
         return total / (frame.data.length / 4)
     }
 
-    //  focus detection logic
+
+    // Runs real-time face focus detection loop
     useEffect(() => {
         if (status !== "ready") return
 
@@ -92,6 +106,8 @@ export default function useFaceFocusTracker(webcamRef) {
             }
 
             const blend = result.faceBlendshapes[0].categories
+
+            // Gets individual facial feature score
             const get = (name) =>
                 blend.find((b) => b.categoryName === name)?.score || 0
 
@@ -113,27 +129,27 @@ export default function useFaceFocusTracker(webcamRef) {
             let focused = true
             let alertMsg = "All Good"
 
-            // 1. lighting issue
+            // Detect low lighting condition
             if (brightness < 35) {
                 focused = false
                 alertMsg = "Low lighting"
 
-                // 2. eyes closed
+            // Detect if eyes are closed
             } else if (blink > 0.75) {
                 focused = false
                 alertMsg = "Eyes closed"
 
-                // 3. looking down
+            // Detect looking down
             } else if (lookDown > 0.6) {
                 focused = false
                 alertMsg = "Looking down"
 
-                // 4. looking up
+            // Detect looking up
             } else if (lookUp > 0.6) {
                 focused = false
                 alertMsg = "Looking up"
 
-                // 5. looking away
+            // Detect looking away
             } else if (Math.abs(gazeX) > 0.7) {
                 focused = false
                 alertMsg = "Looking away"
@@ -145,6 +161,8 @@ export default function useFaceFocusTracker(webcamRef) {
             animationRef.current = requestAnimationFrame(detect)
         }
 
+
+        // Starts detection loop when video is ready
         const start = () => {
             const video = webcamRef.current?.video
 
@@ -157,11 +175,14 @@ export default function useFaceFocusTracker(webcamRef) {
 
         start()
 
+        
+        // Cleans up animation loop on unmount
         return () => {
             running = false
             cancelAnimationFrame(animationRef.current)
         }
     }, [status, webcamRef])
 
+    // Cleans up animation loop on unmount
     return { status, isFocused, alert }
 }
