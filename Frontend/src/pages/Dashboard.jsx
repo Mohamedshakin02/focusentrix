@@ -1024,7 +1024,7 @@ export default function Dashboard() {
             grid gap-4 mb-4 items-start
 
             grid-cols-2              /* mobile */
-            md:grid-cols-2           /* tablet */
+            md:grid-cols-3           /* tablet */
             lg:grid-cols-[1fr_1fr_1fr_1fr_224px] /* laptop */
           ">
 
