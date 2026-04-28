@@ -2,8 +2,8 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
-import sessionRoutes from "./routes/session.js";
-import streakRoutes from "./routes/streak.js";
+import sessionRoutes from "./routes/sessionRoutes.js";
+import streakRoutes from "./routes/streakRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
 
 const app = express();
