@@ -72,7 +72,7 @@ export default function Pricing() {
       monthlyPrice: '$0',
       yearlyPrice: '$0',
       period: 'forever',
-      features: ['Basic focus metrics', 'Session timer', 'Session history', 'Distraction alerts', 'Focus analytics'],
+      features: ['Basic focus metrics', 'Session timer', 'Focus goals', 'Focus analytics', 'Streak features', 'Music Tracks'],
       cta: 'Get started',
       highlighted: false,
     },
@@ -81,18 +81,9 @@ export default function Pricing() {
       monthlyPrice: '$12',
       yearlyPrice: '$10',
       period: 'per month',
-      features: ['Everything in Free', 'Unlimited sessions', 'Camera monitoring', 'Detailed analytics', 'Focus goals', 'Priority support', 'Streak features'],
+      features: ['Everything in the Free plan', 'Unlimited sessions', 'Camera monitoring', 'Distraction alerts', 'Priority support',],
       cta: 'Upgrade to Pro',
       highlighted: true, //this plan gets the most popular badge with the purple ring
-    },
-    {
-      plan: 'Enterprise',
-      monthlyPrice: '$29',
-      yearlyPrice: '$23',
-      period: 'per month',
-      features: ['Everything in Pro', 'Up to 10 members', 'Team dashboard', 'Admin controls', 'Priority support', 'Custom reports'],
-      cta: 'Contact sales',
-      highlighted: false,
     },
   ]
 
@@ -160,7 +151,7 @@ export default function Pricing() {
             </div>
 
             {/* pricing cards rendered from the planes array*/}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
               {plans.map((p, i) => (
                 <PricingCard
                   key={i}
