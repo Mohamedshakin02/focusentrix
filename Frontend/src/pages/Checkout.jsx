@@ -134,7 +134,7 @@ export default function Checkout() {
                     <div className="max-w-6xl mx-auto bg-[#0e0b1e] border border-[#1e1535] rounded-3xl px-6 sm:px-10 py-8 flex flex-col gap-6">
 
                         {/*form header */}
-                        <div className="flex flex-col md:flex-row gap-6 md:gap-0 items-start justify-between mb-4 md:mb-0">
+                        <div className="flex flex-col md:flex-row gap-6 md:gap-0 items-start justify-between mb-2 md:mb-0">
                             <div className="flex items-center gap-4">
                                 <div className="bg-[#1e1040] border border-[#3d2060] rounded-xl p-3">
                                     <User className="text-[#9b59f5] w-5 h-5" />
@@ -231,9 +231,9 @@ export default function Checkout() {
                         </div>
 
                         {/*plan summary */}
-                        <div className="bg-[#13102a] border border-[#2a1a40] rounded-2xl px-6 py-5 flex items-center justify-between">
+                        <div className="bg-[#13102a] border border-[#2a1a40] rounded-2xl px-6 py-5 flex flex-col md:flex-row items-center justify-between">
                             <div className="flex items-center gap-4">
-                                <div className="w-10 h-10 rounded-xl bg-[#1e1040] border border-[#3d2060] flex items-center justify-center flex-shrink-0">
+                                <div className="w-12 h-12 rounded-full bg-[#1e1040] border border-[#3d2060] flex items-center justify-center flex-shrink-0">
                                     <Package className="text-[#9b59f5] w-4 h-4" />
                                 </div>
                                 <div>
@@ -244,9 +244,9 @@ export default function Checkout() {
                                     <p className="text-[#8a7aaa] text-xs mt-0.5">Everything you need to stay focused and productive.</p>
                                 </div>
                             </div>
-                            <div className="text-right flex-shrink-0">
-                                <p className="text-[#8a7aaa] text-xs">Total</p>
-                                <p className="text-white font-black text-2xl">$12 <span className="text-[#8a7aaa] text-sm font-normal">/ month</span></p>
+                            <div className="text-right flex-shrink-0 mt-4 md:mt-0 relative">
+                                <p className="text-[#8a7aaa] text-xs absolute top-0.5 right-0 md:static">Total</p>
+                                <p className="text-white font-black text-2xl mt-3 md:mt-0">$12 <span className="text-[#8a7aaa] text-sm font-normal">/ month</span></p>
                             </div>
                         </div>
 
@@ -279,7 +279,7 @@ export default function Checkout() {
                 </section>
 
                 {/* badges below the form*/}
-                <section className="w-full px-4 sm:px-6 lg:px-20 pb-20">
+                <section className="w-full px-4 pb-20">
                     <div className="max-w-6xl mx-auto bg-[#0e0b1e] border border-[#1e1535] rounded-2xl py-8">
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-7">
                             {trustBadges.map(({ icon: Icon, title, desc }, i) => (
