@@ -87,7 +87,7 @@ export default function FAQs() {
     },
     {
       question: 'Is it free to use?',
-      answer: 'Yes, Focusentrix offers a free plan with core features. Upgrade to Pro or Team for unlimited sessions, detailed analytics, and more.',
+      answer: 'Yes, Focusentrix offers a free plan with core features. Upgrade to Pro for live camera monitoring and more.',
     },
     {
       question: 'Why should I use Focusentrix?',
