@@ -24,6 +24,7 @@ export default function useFaceFocusTracker(webcamRef) {
     // Stores current alert message for UI
     const [alert, setAlert] = useState("Initializing...")
 
+    // initial setup of mediapipe face landmarker model
 
     // Initializes MediaPipe FaceLandmarker model
     useEffect(() => {
@@ -57,6 +58,7 @@ export default function useFaceFocusTracker(webcamRef) {
         init()
     }, [])
 
+    // brightness detection 
     // Calculates frame brightness from webcam feed
     const getBrightness = (video) => {
         const canvas = document.createElement("canvas")
@@ -77,8 +79,9 @@ export default function useFaceFocusTracker(webcamRef) {
         return total / (frame.data.length / 4)
     }
 
+    //  focus detection logic
 
-    // Runs continuous real-time face detection loop
+    // Runs real-time face focus detection loop
     useEffect(() => {
         if (status !== "ready") return
 
@@ -89,18 +92,18 @@ export default function useFaceFocusTracker(webcamRef) {
             const video = webcamRef?.current?.video
             const model = faceLandmarkerRef.current
 
-            if (!webcamRef || !running) return
+            if (!webcamRef) return
 
-            // Wait until video and model are ready
+            if (!running) return
+
             if (!video || video.readyState < 2 || !model) {
                 animationRef.current = requestAnimationFrame(detect)
                 return
             }
 
-            // Run face detection on current video frame
             const result = model.detectForVideo(video, performance.now())
 
-            // If no face is detected, mark user as distracted
+            // Run face detection on current video frame
             if (!result.faceBlendshapes?.length || !result.faceLandmarks?.length) {
                 setIsFocused(false)
                 setAlert("No Face Detected")
@@ -112,7 +115,8 @@ export default function useFaceFocusTracker(webcamRef) {
             const landmarks = result.faceLandmarks[0]
 
             // Gets individual facial feature score
-            const get = (name) => blend.find((b) => b.categoryName === name)?.score || 0
+            const get = (name) =>
+                blend.find((b) => b.categoryName === name)?.score || 0
 
             // Eye movement and blink detection values
             const blink = get("eyeBlinkLeft") + get("eyeBlinkRight")
@@ -120,18 +124,20 @@ export default function useFaceFocusTracker(webcamRef) {
             const lookUp = get("eyeLookUpLeft") + get("eyeLookUpRight")
 
             // Calculates horizontal eye movement (left/right gaze)
-            const gazeX = (get("eyeLookOutLeft") - get("eyeLookInLeft")) +
+            const gazeX =
+                (get("eyeLookOutLeft") - get("eyeLookInLeft")) +
                 (get("eyeLookInRight") - get("eyeLookOutRight"))
 
-            // Gets eye corner landmarks for head direction detection
-            const leftEyeCorner = landmarks[33]   
-            const rightEyeCorner = landmarks[263] 
+            /// Gets eye corner landmarks for head direction detection
+            const leftEyeCorner = landmarks[33]
+            const rightEyeCorner = landmarks[263]
 
             // Calculates normalized eye distance for stability
             const eyeDistance = Math.sqrt(
                 Math.pow(rightEyeCorner.x - leftEyeCorner.x, 2) +
                 Math.pow(rightEyeCorner.y - leftEyeCorner.y, 2)
             )
+
 
             // Estimates head rotation (yaw) using depth difference
             const headYaw = (leftEyeCorner.z - rightEyeCorner.z) / eyeDistance
@@ -145,35 +151,33 @@ export default function useFaceFocusTracker(webcamRef) {
             let focused = true
             let alertMsg = "All Good"
 
-
             // Checks if lighting is too low
             if (brightness < 35) {
                 focused = false
                 alertMsg = "Low lighting"
 
             // Checks if eyes are closed
-            } else if (blink > 0.75) {
+            } else if (blink > 0.85) {
                 focused = false
                 alertMsg = "Eyes closed"
 
-            // Checks if user is looking down
-            } else if (lookDown > 0.6) {
+             // Checks if user is looking up
+            } else if (lookDown > 0.99) {
                 focused = false
                 alertMsg = "Looking down"
 
-            // Checks if user is looking up
-            } else if (lookUp > 0.6) {
+            // Checks if user is looking away from screen
+            } else if (lookUp > 0.7) {
                 focused = false
                 alertMsg = "Looking up"
-            
-            // Checks if user is looking away from screen
-            } else if (Math.abs(absoluteGazeX) > 0.6) {
+
+            // Checks if user is looking left or right
+            } else if (Math.abs(absoluteGazeX) > 0.8) {
+               
                 focused = false
                 alertMsg = "Looking away"
             }
 
-
-            // Updates focus state and alert message
             setIsFocused(focused)
             setAlert(alertMsg)
 
@@ -184,6 +188,7 @@ export default function useFaceFocusTracker(webcamRef) {
         // Starts detection when webcam is ready
         const start = () => {
             const video = webcamRef.current?.video
+
             if (video) {
                 detect()
             } else {
@@ -200,7 +205,6 @@ export default function useFaceFocusTracker(webcamRef) {
             cancelAnimationFrame(animationRef.current)
         }
     }, [status, webcamRef])
-
 
     // Returns tracking status, focus state, and alert message
     return { status, isFocused, alert }
