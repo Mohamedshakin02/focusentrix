@@ -13,6 +13,8 @@ import ScrollToTop from './components/ScrollToTop';
 import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
+import Checkout from './pages/Checkout'
+
 
 
 function App() {
@@ -30,7 +32,7 @@ function App() {
             element={
               <PublicRoute>
                 <Home />
-            </PublicRoute>
+              </PublicRoute>
             }
           />
 
@@ -52,40 +54,40 @@ function App() {
             }
           />
 
-          <Route 
-          path="/faqs" 
-          element={
-          <PublicRoute>
-            <FAQs />
-          </PublicRoute>
-          } 
+          <Route
+            path="/faqs"
+            element={
+              <PublicRoute>
+                <FAQs />
+              </PublicRoute>
+            }
           />
 
-          <Route 
-          path="/about" 
-          element={
-          <PublicRoute>
-            <AboutUs />
-         </PublicRoute>
-          } 
+          <Route
+            path="/about"
+            element={
+              <PublicRoute>
+                <AboutUs />
+              </PublicRoute>
+            }
           />
 
-          <Route 
-          path="/contact" 
-          element={
-          <PublicRoute>
-            <Contact />
-          </PublicRoute>
-          } 
+          <Route
+            path="/contact"
+            element={
+              <PublicRoute>
+                <Contact />
+              </PublicRoute>
+            }
           />
 
-          <Route 
-          path="/auth" 
-          element={
-          <PublicRoute>
-            <Auth />
-          </PublicRoute>
-          } 
+          <Route
+            path="/auth"
+            element={
+              <PublicRoute>
+                <Auth />
+              </PublicRoute>
+            }
           />
 
           <Route
@@ -94,6 +96,14 @@ function App() {
               <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/checkout"
+            element={
+              <PublicRoute>
+                <Checkout />
+              </PublicRoute>
             }
           />
 
