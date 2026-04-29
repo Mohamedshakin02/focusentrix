@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { FaceLandmarker, FilesetResolver } from "@mediapipe/tasks-vision"
 
-export default function useFaceFocusTracker(webcamRef) {
+export default function useFaceFocusTracker(webcamRef, isEnabled) {
 
     // Stores the loaded FaceLandmarker model so we can reuse it without reloading
     const faceLandmarkerRef = useRef(null)
@@ -24,10 +24,14 @@ export default function useFaceFocusTracker(webcamRef) {
     // Stores current alert message for UI
     const [alert, setAlert] = useState("Initializing...")
 
-    // initial setup of mediapipe face landmarker model
 
-    // Initializes MediaPipe FaceLandmarker model
+    // Initializes MediaPipe FaceLandmarker model only if isEnabled is true
     useEffect(() => {
+        if (!isEnabled) {
+            setStatus("disabled");
+            return;
+        }
+
         const init = async () => {
             try {
                 const vision = await FilesetResolver.forVisionTasks(
@@ -56,7 +60,7 @@ export default function useFaceFocusTracker(webcamRef) {
         }
 
         init()
-    }, [])
+    }, [isEnabled]) // Re-run if user upgrades to Pro
 
     // brightness detection 
     // Calculates frame brightness from webcam feed
@@ -83,7 +87,9 @@ export default function useFaceFocusTracker(webcamRef) {
 
     // Runs real-time face focus detection loop
     useEffect(() => {
-        if (status !== "ready") return
+
+        // Early exit if disabled or model not ready
+        if (!isEnabled || status !== "ready") return
 
         let running = true
 
@@ -204,7 +210,7 @@ export default function useFaceFocusTracker(webcamRef) {
             running = false
             cancelAnimationFrame(animationRef.current)
         }
-    }, [status, webcamRef])
+    }, [status, webcamRef, isEnabled]) // Re-run if isEnabled changes
 
     // Returns tracking status, focus state, and alert message
     return { status, isFocused, alert }

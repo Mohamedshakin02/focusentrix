@@ -171,17 +171,17 @@ export default function Dashboard() {
 
 
   // ======================
-  // CUSTOM HOOK (focus tracking logic)
-  // ======================
-  const { status, isFocused, alert } = useFaceFocusTracker(webcamRef)
-
-
-  // ======================
   // USER & AUTH STATE
   // ======================
   const username = localStorage.getItem("username") || "User"
   const navigate = useNavigate()
   const [loggingOut, setLoggingOut] = useState(false)
+  const isPro = localStorage.getItem("isPro") === "true"
+
+  // ======================
+  // CUSTOM HOOK (focus tracking logic)
+  // ======================
+  const { status, isFocused, alert } = useFaceFocusTracker(webcamRef, isPro)
 
 
   // ======================
@@ -279,11 +279,11 @@ export default function Dashboard() {
   // ======================
   const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
   const today = new Date()
-  const currentDay = today.getDay() 
+  const currentDay = today.getDay()
 
   const mondayIndex = currentDay === 0 ? 6 : currentDay - 1
 
-  
+
   const monday = new Date(today)
   monday.setDate(today.getDate() - mondayIndex)
 
@@ -533,13 +533,19 @@ export default function Dashboard() {
 
       sessionCompletedRef.current = false;
 
-      const permission = await checkCameraPermission()
-
+      // ONLY check camera if user is Pro
+    if (isPro) {
+      const permission = await checkCameraPermission();
       if (permission === "denied") {
-        setCameraStatus("denied")
-        CustomizedToast.error("Turn on camera access to start session")
-        return
+        setCameraStatus("denied");
+        CustomizedToast.error("Turn on camera access to start session");
+        return;
       }
+      setCameraStatus("active");
+    } else {
+      // If free user, just set camera to idle/none
+      setCameraStatus("idle");
+    }
 
       setFocusTime(0)
       setDistractedTime(0)
@@ -655,6 +661,8 @@ export default function Dashboard() {
 
   // Checks camera permission on mount and updates camera status accordingly
   useEffect(() => {
+    if (!isPro) return; // Bypass for free users
+
     const checkPermission = async () => {
       try {
         const permission = await navigator.permissions.query({ name: "camera" })
@@ -667,12 +675,12 @@ export default function Dashboard() {
     }
 
     checkPermission()
-  }, [])
+  }, [isPro])
 
 
   // Starts camera stream when session starts and stops when session ends
   useEffect(() => {
-    if (sessionState !== "running") return;
+    if (sessionState !== "running" || !isPro) return;
 
     const startCamera = async () => {
       try {
@@ -688,7 +696,7 @@ export default function Dashboard() {
     return () => {
       stopCamera()
     }
-  }, [sessionState])
+  }, [sessionState, isPro])
 
 
   // Sets video element for face focus tracker once camera is active
@@ -1008,8 +1016,20 @@ export default function Dashboard() {
           {/* welcome row */}
           <div className="mb-6 flex items-start justify-between gap-6">
             <div>
-              <h1 className="text-2xl font-black flex items-center gap-3">Hello, {username} <Handshake className="w-5 h-5 text-[#8c57cb] hidden sm:block" /></h1>
-              <p className="text-[#5a4a7a] text-sm font-semibold mt-0.5">
+              <h1 className="text-2xl font-black flex items-center gap-3 mb-1 md:mb-0">Hello, {username}
+                {isPro && (
+                  <span className="bg-[#8c57cb] text-white text-xs px-2 py-0.5 rounded-full font-bold hidden md:inline-flex">
+                    PRO
+                  </span>
+                )}
+                <Handshake className="w-5 h-5 text-[#8c57cb] hidden sm:block" /></h1>
+              {isPro && (
+                <span className="bg-[#8c57cb] text-white text-xs px-2 py-0.5 rounded-full font-bold md:hidden">
+                  PRO
+                </span>
+              )}
+
+              <p className="text-[#5a4a7a] text-sm font-semibold mt-5 md:mt-0.5">
                 {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
               </p>
             </div>
@@ -1028,7 +1048,7 @@ export default function Dashboard() {
             lg:grid-cols-[1fr_1fr_1fr_1fr_224px] /* laptop */
           ">
 
-            <StatCard
+            {isPro && (<StatCard
               label="Focus score"
               value={
                 sessionState === "running"
@@ -1042,15 +1062,24 @@ export default function Dashboard() {
                   ? "Live tracking"
                   : "Last session"
               }
-            />
-            <StatCard label="Sessions today" value={sessionsToday} sub="Today’s completed sessions" />
-            <StatCard label="Total focus time" value={formatFocusTime(todayFocusTime)} sub="Today" />
-            <StatCard
-              label="Recent Alerts"
-              value={recentAlert}
-              icon={<AlertTriangle className="w-4 h-4" />}
-              iconColor="text-orange-400"
-            />
+            />)}
+
+            {isPro && (
+              <StatCard label="Sessions today" value={sessionsToday} sub="Today’s completed sessions" />
+            )}
+
+            {isPro && (
+              <StatCard label="Total focus time" value={formatFocusTime(todayFocusTime)} sub="Today" />
+            )}
+
+            {isPro && (
+              <StatCard
+                label="Recent Alerts"
+                value={recentAlert}
+                icon={<AlertTriangle className="w-4 h-4" />}
+                iconColor="text-orange-400"
+              />
+            )}
 
             {/* pomodoro timer */}
             <div className="bg-[#0e0b1e] border border-[#1e1535] rounded-2xl px-6 py-5 flex flex-col items-center gap-3 relative
@@ -1125,7 +1154,7 @@ export default function Dashboard() {
             </div>
 
             {/* camera monitoring*/}
-            <div className="
+            {isPro && (<div className="
                 bg-[#0e0b1e] border border-[#1e1535] rounded-2xl overflow-hidden
 
                 col-span-2        /* mobile */
@@ -1193,6 +1222,7 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
+            )}
 
           </div>
 
