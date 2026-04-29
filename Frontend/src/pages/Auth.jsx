@@ -49,6 +49,9 @@ export default function Auth() {
       localStorage.setItem("username", res.data.user.name)
       localStorage.setItem("userId", res.data.user._id)
 
+      // check if already pro
+      localStorage.setItem("isPro", res.data.user.isPro ? "true" : "false")
+
       CustomizedToast.success("Login successful")
 
       setLoginForm({ email: "", password: "" })
@@ -95,7 +98,9 @@ export default function Auth() {
       navigate("/dashboard")
 
     } catch (err) {
-      CustomizedToast.error("Signup failed")
+      const errorMsg = err.response?.data?.message || "Signup failed";
+
+      CustomizedToast.error(errorMsg);
     } finally {
       setLoading(false)
     }
@@ -115,6 +120,8 @@ export default function Auth() {
       localStorage.setItem("token", res.data.token)
       localStorage.setItem("username", res.data.user.name)
       localStorage.setItem("userId", res.data.user._id)
+
+      localStorage.setItem("isPro", res.data.user.isPro ? "true" : "false")
 
       CustomizedToast.success("Google login successful")
 
