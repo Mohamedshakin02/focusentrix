@@ -177,6 +177,7 @@ export default function Dashboard() {
   const navigate = useNavigate()
   const [loggingOut, setLoggingOut] = useState(false)
   const isPro = localStorage.getItem("isPro") === "true"
+  const [pageLoading, setPageLoading] = useState(true)
 
   // ======================
   // CUSTOM HOOK (focus tracking logic)
@@ -399,26 +400,41 @@ export default function Dashboard() {
   // const toggleTask = (id) => setTasks(tasks.map(t => t.id === id ? { ...t, done: !t.done } : t))
   // const deleteTask = (id) => setTasks(tasks.filter(t => t.id !== id))
 
-  // fetch tasks
+
+  // Fetches all initial dashboard data (tasks, sessions, streak) in parallel and controls page loading state
   useEffect(() => {
-    const fetchTasks = async () => {
+    const fetchInitialData = async () => {
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        setPageLoading(false);
+        return;
+      }
+
       try {
-        const userId = localStorage.getItem("userId");
+        // Run all requests in parallel 
+        const [tasksRes, sessionsRes, streakRes] = await Promise.all([
+          axios.get(`https://focusentrix-backend.onrender.com/api/tasks/${userId}`),
+          axios.get(`https://focusentrix-backend.onrender.com/api/session/today/${userId}`),
+          axios.get(`https://focusentrix-backend.onrender.com/api/streak/${userId}`)
+        ]);
 
-        const res = await axios.get(
-          `https://focusentrix-backend.onrender.com/api/tasks/${userId}`
-        );
-
-        setTasks(res.data);
+        setTasks(tasksRes.data);
+        setSessionsToday(sessionsRes.data.count);
+        setTodayFocusTime(sessionsRes.data.focusTime);
+        setStreak(streakRes.data);
       } catch (err) {
-        console.log("Failed to fetch tasks");
+        console.error("Dashboard Data Load Error:", err);
+      } finally {
+        // Ensures loading screen is disappeared after data is fetched or if there's an error
+        setPageLoading(false);
       }
     };
 
-    fetchTasks();
-  }, []);
+    fetchInitialData();
+  }, []); 
 
-  // add task
+
+  // add tasks on todo list and save to MongoDB
   const addTask = async () => {
     if (!newTask.trim()) return;
 
@@ -438,7 +454,7 @@ export default function Dashboard() {
   };
 
 
-  // Toggles task completion status in MongoDB and updates UI
+  // Toggles task completion status updates on todo list in MongoDB
   const toggleTask = async (id) => {
     try {
       const res = await axios.put(`https://focusentrix-backend.onrender.com/api/tasks/${id}`);
@@ -449,7 +465,7 @@ export default function Dashboard() {
     }
   };
 
-  // Deletes task from MongoDB and updates UI
+  // Deletes task on todo list from MongoDB and updates UI
   const deleteTask = async (id) => {
     try {
       await axios.delete(`https://focusentrix-backend.onrender.com/api/tasks/${id}`);
@@ -534,18 +550,18 @@ export default function Dashboard() {
       sessionCompletedRef.current = false;
 
       // ONLY check camera if user is Pro
-    if (isPro) {
-      const permission = await checkCameraPermission();
-      if (permission === "denied") {
-        setCameraStatus("denied");
-        CustomizedToast.error("Turn on camera access to start session");
-        return;
+      if (isPro) {
+        const permission = await checkCameraPermission();
+        if (permission === "denied") {
+          setCameraStatus("denied");
+          CustomizedToast.error("Turn on camera access to start session");
+          return;
+        }
+        setCameraStatus("active");
+      } else {
+        // If free user, just set camera to idle/none
+        setCameraStatus("idle");
       }
-      setCameraStatus("active");
-    } else {
-      // If free user, just set camera to idle/none
-      setCameraStatus("idle");
-    }
 
       setFocusTime(0)
       setDistractedTime(0)
@@ -680,6 +696,8 @@ export default function Dashboard() {
 
   // Starts camera stream when session starts and stops when session ends
   useEffect(() => {
+
+    // Only start camera if session is running and user is Pro (free users bypass camera)
     if (sessionState !== "running" || !isPro) return;
 
     const startCamera = async () => {
@@ -712,47 +730,6 @@ export default function Dashboard() {
   }, [cameraStatus])
 
 
-
-  // Fetches today's session count for the logged-in user from MongoDB
-  useEffect(() => {
-    const fetchSessions = async () => {
-      try {
-        const userId = localStorage.getItem("userId")
-
-        const res = await axios.get(
-          `https://focusentrix-backend.onrender.com/api/session/today/${userId}`
-        )
-
-        setSessionsToday(res.data.count)
-        setTodayFocusTime(res.data.focusTime)
-      } catch (err) {
-        console.log("Failed to fetch sessions today")
-        setSessionsToday(0)
-        setTodayFocusTime(0)
-      }
-    }
-
-    fetchSessions()
-  }, [])
-
-  // Fetches current streak data for the logged-in user from MongoDB
-  useEffect(() => {
-    const fetchStreak = async () => {
-      try {
-        const userId = localStorage.getItem("userId")
-
-        const res = await axios.get(
-          `https://focusentrix-backend.onrender.com/api/streak/${userId}`
-        )
-
-        setStreak(res.data)
-      } catch (err) {
-        console.log("Failed to fetch streak")
-      }
-    }
-
-    fetchStreak()
-  }, [])
 
   // shows toast and browser notifications and plays alert sound based on the alert and focus status from the face focus tracker
   useEffect(() => {
@@ -948,9 +925,6 @@ export default function Dashboard() {
 
 
 
-
-
-
   // Cleanup timer
   useEffect(() => () => stopTimer(), [])
 
@@ -982,8 +956,19 @@ export default function Dashboard() {
   }, [musicPlaying])
 
 
+  // Show loading screen while fetching initial data
+  if (pageLoading) {
+    return (
+      <div className="fixed inset-0 bg-black/80 flex flex-col items-center justify-center z-[9999]">
+        <div className="w-12 h-12 border-4 border-[#9b59f5] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    )
+  }
+
+
   return (
     <>
+
 
       {/* Show loading screen when logging out*/}
       {loggingOut && (
@@ -1017,6 +1002,8 @@ export default function Dashboard() {
           <div className="mb-6 flex items-start justify-between gap-6">
             <div>
               <h1 className="text-2xl font-black flex items-center gap-3 mb-1 md:mb-0">Hello, {username}
+
+                {/* Shows PRO badge if user is Pro on desktop and tablet, move to next line on mobile */}
                 {isPro && (
                   <span className="bg-[#8c57cb] text-white text-xs px-2 py-0.5 rounded-full font-bold hidden md:inline-flex">
                     PRO
@@ -1048,6 +1035,7 @@ export default function Dashboard() {
             lg:grid-cols-[1fr_1fr_1fr_1fr_224px] /* laptop */
           ">
 
+            {/* Shows different stat cards based on Pro status, with responsive layout adjustments */}
             {isPro && (<StatCard
               label="Focus score"
               value={
@@ -1081,8 +1069,81 @@ export default function Dashboard() {
               />
             )}
 
-            {/* pomodoro timer */}
-            <div className="bg-[#0e0b1e] border border-[#1e1535] rounded-2xl px-6 py-5 flex flex-col items-center gap-3 relative
+            {/* pomodoro timer layout for free users with tablet and mobile version */}
+            {!isPro && (<div className="bg-[#0e0b1e] border border-[#1e1535] rounded-2xl px-6 py-5 flex flex-col items-center gap-3 relative
+             col-span-2 md:col-span-3 
+             row-span-2 md:row-span-2 lg:hidden
+             ">
+
+              <button
+                onClick={() => setShowConfig(!showConfig)}
+                className="absolute top-5 right-3 text-[#5a4a7a] hover:text-[#9b59f5] transition-colors duration-200"
+              >
+                <Settings className="w-4 h-4" />
+              </button>
+
+              <div className="flex items-center gap-2 mr-3">
+                <Timer className="text-[#9b59f5] w-4 h-4 mb-0.5" />
+                <p className="text-[#5a4a7a] text-[12px] font-bold uppercase tracking-widest">Pomodoro Timer</p>
+              </div>
+              <p className="text-[#8a7aaa] text-[9px] font-medium uppercase tracking-widest">{phaseLabel}</p>
+
+              {showConfig && (
+                <div className="w-full bg-[#13102a] border border-[#2a1a40] rounded-xl p-4 flex flex-col gap-3 text-left">
+                  <p className="text-white text-xs font-bold mb-1">Configure Session</p>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[#5a4a7a] text-[10px] uppercase tracking-widest">Sessions</label>
+                    <input type="number" min="1" max="10" value={totalPhases}
+                      onChange={e => setTotalPhases(Number(e.target.value))}
+                      className="bg-[#0e0b1e] border border-[#2a1a40] rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-[#9b59f5] transition-colors duration-200" />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[#5a4a7a] text-[10px] uppercase tracking-widest">Session (min)</label>
+                    <input type="number" min="1" max="120" value={customMinutes}
+                      onChange={e => { const v = Number(e.target.value); setCustomMinutes(v); if (sessionState === 'idle') setTimeLeft(v * 60) }}
+                      className="bg-[#0e0b1e] border border-[#2a1a40] rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-[#9b59f5] transition-colors duration-200" />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[#5a4a7a] text-[10px] uppercase tracking-widest">Break (min)</label>
+                    <input type="number" min="1" max="30" value={breakMinutes}
+                      onChange={e => setBreakMinutes(Number(e.target.value))}
+                      className="bg-[#0e0b1e] border border-[#2a1a40] rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-[#9b59f5] transition-colors duration-200" />
+                  </div>
+                  <button onClick={() => setShowConfig(false)}
+                    className="w-full bg-[#9b59f5] hover:bg-[#7c3de0] text-white text-xs font-semibold py-2 rounded-lg transition-colors duration-200">
+                    Save
+                  </button>
+                </div>
+              )}
+
+              <div className="relative w-28 h-28 flex items-center justify-center">
+                <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 128 128">
+                  <circle cx="64" cy="64" r={radius} fill="none" stroke="#1e1535" strokeWidth="6" />
+                  <circle cx="64" cy="64" r={radius} fill="none"
+                    stroke={sessionState === 'break' ? '#22c55e' : '#9b59f5'}
+                    strokeWidth="6" strokeDasharray={circumference} strokeDashoffset={dashOffset}
+                    strokeLinecap="round" style={{ transition: 'stroke-dashoffset 1s linear' }} />
+                </svg>
+                <span className="text-white text-xl font-black relative z-10">{formatTime(timeLeft)}</span>
+              </div>
+
+              <button onClick={handleMainButton}
+                className={`w-full py-2 rounded-lg text-xs font-semibold transition-colors duration-200
+                  ${sessionState === 'running'
+                    ? 'bg-[#1e1535] border border-[#3d2060] text-white hover:border-[#9b59f5]'
+                    : 'bg-[#9b59f5] hover:bg-[#7c3de0] text-white'}`}>
+                {mainButtonLabel}
+              </button>
+
+              <button onClick={handleEndSession} disabled={sessionState === 'idle'}
+                className="w-full py-2 rounded-lg text-xs font-semibold border border-red-900 text-red-400 hover:bg-red-900/20 transition-colors duration-200 disabled:opacity-30 disabled:cursor-not-allowed">
+                End Session
+              </button>
+            </div>
+            )}
+
+            {/* pomodoro timer layout for pro version with all devices */}
+            {isPro && (<div className="bg-[#0e0b1e] border border-[#1e1535] rounded-2xl px-6 py-5 flex flex-col items-center gap-3 relative
              col-span-2 md:col-span-3 lg:col-span-1
              row-span-2 md:row-span-2 lg:row-span-2
              ">
@@ -1152,8 +1213,9 @@ export default function Dashboard() {
                 End Session
               </button>
             </div>
+            )}
 
-            {/* camera monitoring*/}
+            {/* camera monitoring for pro users */}
             {isPro && (<div className="
                 bg-[#0e0b1e] border border-[#1e1535] rounded-2xl overflow-hidden
 
@@ -1292,6 +1354,78 @@ export default function Dashboard() {
                 md:col-span-1
                 lg:col-span-1
               ">
+
+              {/* pomodoro timer layout for free users with desktop version */}
+              {!isPro && (<div className="bg-[#0e0b1e] border border-[#1e1535] rounded-2xl px-6 py-5 flex flex-col items-center gap-3 relative
+               hidden lg:flex lg:col-span-1 lg:row-span-2
+             ">
+
+                <button
+                  onClick={() => setShowConfig(!showConfig)}
+                  className="absolute top-5 right-3 text-[#5a4a7a] hover:text-[#9b59f5] transition-colors duration-200"
+                >
+                  <Settings className="w-4 h-4" />
+                </button>
+
+                <div className="flex items-center gap-2 mr-3">
+                  <Timer className="text-[#9b59f5] w-4 h-4 mb-0.5" />
+                  <p className="text-[#5a4a7a] text-[12px] font-bold uppercase tracking-widest">Pomodoro Timer</p>
+                </div>
+                <p className="text-[#8a7aaa] text-[9px] font-medium uppercase tracking-widest">{phaseLabel}</p>
+
+                {showConfig && (
+                  <div className="w-full bg-[#13102a] border border-[#2a1a40] rounded-xl p-4 flex flex-col gap-3 text-left">
+                    <p className="text-white text-xs font-bold mb-1">Configure Session</p>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[#5a4a7a] text-[10px] uppercase tracking-widest">Sessions</label>
+                      <input type="number" min="1" max="10" value={totalPhases}
+                        onChange={e => setTotalPhases(Number(e.target.value))}
+                        className="bg-[#0e0b1e] border border-[#2a1a40] rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-[#9b59f5] transition-colors duration-200" />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[#5a4a7a] text-[10px] uppercase tracking-widest">Session (min)</label>
+                      <input type="number" min="1" max="120" value={customMinutes}
+                        onChange={e => { const v = Number(e.target.value); setCustomMinutes(v); if (sessionState === 'idle') setTimeLeft(v * 60) }}
+                        className="bg-[#0e0b1e] border border-[#2a1a40] rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-[#9b59f5] transition-colors duration-200" />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[#5a4a7a] text-[10px] uppercase tracking-widest">Break (min)</label>
+                      <input type="number" min="1" max="30" value={breakMinutes}
+                        onChange={e => setBreakMinutes(Number(e.target.value))}
+                        className="bg-[#0e0b1e] border border-[#2a1a40] rounded-lg px-3 py-1.5 text-white text-sm focus:outline-none focus:border-[#9b59f5] transition-colors duration-200" />
+                    </div>
+                    <button onClick={() => setShowConfig(false)}
+                      className="w-full bg-[#9b59f5] hover:bg-[#7c3de0] text-white text-xs font-semibold py-2 rounded-lg transition-colors duration-200">
+                      Save
+                    </button>
+                  </div>
+                )}
+
+                <div className="relative w-28 h-28 flex items-center justify-center">
+                  <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 128 128">
+                    <circle cx="64" cy="64" r={radius} fill="none" stroke="#1e1535" strokeWidth="6" />
+                    <circle cx="64" cy="64" r={radius} fill="none"
+                      stroke={sessionState === 'break' ? '#22c55e' : '#9b59f5'}
+                      strokeWidth="6" strokeDasharray={circumference} strokeDashoffset={dashOffset}
+                      strokeLinecap="round" style={{ transition: 'stroke-dashoffset 1s linear' }} />
+                  </svg>
+                  <span className="text-white text-xl font-black relative z-10">{formatTime(timeLeft)}</span>
+                </div>
+
+                <button onClick={handleMainButton}
+                  className={`w-full py-2 rounded-lg text-xs font-semibold transition-colors duration-200
+                  ${sessionState === 'running'
+                      ? 'bg-[#1e1535] border border-[#3d2060] text-white hover:border-[#9b59f5]'
+                      : 'bg-[#9b59f5] hover:bg-[#7c3de0] text-white'}`}>
+                  {mainButtonLabel}
+                </button>
+
+                <button onClick={handleEndSession} disabled={sessionState === 'idle'}
+                  className="w-full py-2 rounded-lg text-xs font-semibold border border-red-900 text-red-400 hover:bg-red-900/20 transition-colors duration-200 disabled:opacity-30 disabled:cursor-not-allowed">
+                  End Session
+                </button>
+              </div>
+              )}
 
               {/* background music */}
               <div className="bg-[#0e0b1e] border border-[#1e1535] rounded-2xl px-5 py-5 flex flex-col gap-4">
