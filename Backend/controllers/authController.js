@@ -129,6 +129,14 @@ export const proSignup = async (req, res) => {
           message: "You are already a Pro user. Please login on the Auth page." 
         });
       }
+
+      // If user has a password, they MUST provide the correct one to upgrade
+      if (user.password && password) {
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+          return res.status(401).json({ message: "Incorrect password for this account. Use your existing password to upgrade." });
+        }
+      }
       
       // Upgrade existing free user to Pro
       user.isPro = true;
