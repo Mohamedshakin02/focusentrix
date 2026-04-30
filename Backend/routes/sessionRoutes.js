@@ -1,12 +1,14 @@
 import express from "express";
 import Session from "../models/Session.js";
 
+// Creates Express router
 const router = express.Router();
 
 // helper to get today's date
 const getToday = () => new Date().toISOString().split("T")[0];
 
-/* increase session count */
+
+// Route to increment session count and focus time for the current day
 router.post("/increment", async (req, res) => {
   try {
     const { userId, focusTime } = req.body
@@ -28,7 +30,9 @@ router.post("/increment", async (req, res) => {
     res.status(500).json({ error: err.message })
   }
 })
-/* get today's sessions */
+
+
+// Route to get today's session count and focus time for a user
 router.get("/today/:userId", async (req, res) => {
   const { userId } = req.params;
   const date = getToday();

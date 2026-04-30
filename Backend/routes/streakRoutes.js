@@ -1,8 +1,12 @@
 import express from "express";
 import Streak from "../models/Streak.js";
 
+
+// Creates Express router
 const router = express.Router();
 
+
+// Route to get current streak info for a user
 router.get("/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
@@ -23,6 +27,8 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
+
+// Route to update streak info for a user
 router.post("/update", async (req, res) => {
   try {
     const { userId } = req.body;

@@ -4,11 +4,12 @@ import { generateToken } from "../utils/generateToken.js";
 import { OAuth2Client } from "google-auth-library";
 import Task from "../models/Task.js";
 
+
+// Creates a Google OAuth2 client using the Google Client ID from environment variables
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-/**
- * HELPER: Initialize default tasks for new users
- */
+
+// Initialize default tasks for new users
 const createDefaultTasks = async (userId) => {
   const defaultTasks = [
     { label: 'Finding color palette' },
@@ -28,7 +29,8 @@ const createDefaultTasks = async (userId) => {
   );
 };
 
-// --- REGISTER (FREE) ---
+
+//  register (free version) ---
 export const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -57,7 +59,8 @@ export const signup = async (req, res) => {
   }
 };
 
-// --- LOGIN ---
+
+// login (free + pro) ---
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -81,7 +84,8 @@ export const login = async (req, res) => {
   }
 };
 
-// --- GOOGLE LOGIN (Standard) ---
+
+// Google Login (free + pro) ---
 export const googleLogin = async (req, res) => {
   try {
     const { credential } = req.body;
@@ -116,7 +120,8 @@ export const googleLogin = async (req, res) => {
   }
 };
 
-// --- PRO SIGNUP / UPGRADE (Checkout Page) ---
+
+// Pro Upgrade (free -> pro, or new pro user) ---
 export const proSignup = async (req, res) => {
   try {
     const { name, email, password, googleId } = req.body;

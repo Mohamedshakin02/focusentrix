@@ -1,9 +1,12 @@
 import express from "express";
 import User from "../models/User.js";
 
+
+// Creates Express router
 const router = express.Router();
 
-// upgrade to pro
+
+// Route to upgrade user to Pro
 router.post("/upgrade", async (req, res) => {
   try {
     const { userId } = req.body;
@@ -28,6 +31,8 @@ router.post("/upgrade", async (req, res) => {
   }
 });
 
+
+// Route to get user info
 router.get("/:userId", async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);

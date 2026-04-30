@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// Defines the schema for user streaks, tracking consecutive active days and streak counts
 const streakSchema = new mongoose.Schema({
   userId: {
     type: String,

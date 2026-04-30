@@ -1,6 +1,6 @@
-// models/Task.js
 import mongoose from "mongoose";
 
+// Defines the schema for user tasks, allowing users to create and manage their focus tasks
 const taskSchema = new mongoose.Schema({
   userId: String,
   label: String,
