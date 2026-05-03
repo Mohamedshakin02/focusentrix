@@ -114,13 +114,13 @@ function DashboardFooter({ username, handleLogout }) {
                   <rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" />
                 </svg>
               </a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer"
+              <a href="https://www.youtube.com/@FocusentrixCreativeStudio" target="_blank" rel="noopener noreferrer"
                 className="bg-[#1e1535] hover:bg-[#9b59f5] border border-[#3d2060] hover:border-[#9b59f5] rounded-lg p-2 transition-colors duration-200">
                 <svg className="text-white w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M23 7s-.3-2-1.2-2.7c-1.1-1.2-2.4-1.2-3-1.3C16.6 3 12 3 12 3s-4.6 0-6.8.1c-.6.1-1.9.1-3 1.3C1.3 5 1 7 1 7S.7 9.1.7 11.3v2c0 2.1.3 4.3.3 4.3s.3 2 1.2 2.7c1.1 1.2 2.6 1.1 3.3 1.2C7.6 21.7 12 21.7 12 21.7s4.6 0 6.8-.2c.6-.1 1.9-.1 3-1.3.9-.7 1.2-2.7 1.2-2.7s.3-2.1.3-4.3v-2C23.3 9.1 23 7 23 7zM9.7 15.5v-7l8.1 3.5-8.1 3.5z" />
                 </svg>
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"
+              <a href="https://www.instagram.com/focusentrixcs?igsh=MTVwbHc1cm1hcmEzYg==" target="_blank" rel="noopener noreferrer"
                 className="bg-[#1e1535] hover:bg-[#9b59f5] border border-[#3d2060] hover:border-[#9b59f5] rounded-lg p-2 transition-colors duration-200">
                 <svg className="text-white w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />

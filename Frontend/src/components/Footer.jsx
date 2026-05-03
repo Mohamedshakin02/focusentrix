@@ -70,7 +70,7 @@ export default function Footer() {
 
               {/* add youTube link here*/}
               <a
-                href="https://youtube.com"
+                href="https://www.youtube.com/@FocusentrixCreativeStudio"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-[#1e1535] hover:bg-[#9b59f5] border border-[#3d2060] hover:border-[#9b59f5] rounded-lg p-2 transition-colors duration-200"
@@ -82,7 +82,7 @@ export default function Footer() {
 
               {/*add instagram link here*/}
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/focusentrixcs?igsh=MTVwbHc1cm1hcmEzYg=="
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-[#1e1535] hover:bg-[#9b59f5] border border-[#3d2060] hover:border-[#9b59f5] rounded-lg p-2 transition-colors duration-200"
