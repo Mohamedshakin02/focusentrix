@@ -56,7 +56,7 @@ export default function Footer() {
 
               {/*add linkedin link here*/}
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/in/focusentrix-creative-studio-800967407"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-[#1e1535] hover:bg-[#9b59f5] border border-[#3d2060] hover:border-[#9b59f5] rounded-lg p-2 transition-colors duration-200"

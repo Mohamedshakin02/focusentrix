@@ -106,7 +106,7 @@ export default function Contact() {
                   <p className="text-[#5a4a7a] text-xs font-semibold uppercase tracking-widest">Follow Us</p>
                   <div className="flex items-center gap-3">
                     {/* linkedin*/}
-                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"
+                    <a href="https://www.linkedin.com/in/focusentrix-creative-studio-800967407" target="_blank" rel="noopener noreferrer"
                       className="w-10 h-10 rounded-lg border border-[#2a1a40] hover:border-[#9b59f5] flex items-center justify-center transition-colors duration-200">
                       <svg className="text-white w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
@@ -251,7 +251,7 @@ export default function Contact() {
                 <p className="text-[#5a4a7a] text-xs font-semibold uppercase tracking-widest">Follow Us</p>
                 <div className="flex items-center gap-3">
                   {/* linkedin*/}
-                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"
+                  <a href="https://www.linkedin.com/in/focusentrix-creative-studio-800967407" target="_blank" rel="noopener noreferrer"
                     className="w-10 h-10 rounded-lg border border-[#2a1a40] hover:border-[#9b59f5] flex items-center justify-center transition-colors duration-200">
                     <svg className="text-white w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
