@@ -43,10 +43,10 @@ export default function AboutUs() {
   const team = [
     { name: 'Mohamed Elmustafa', role: 'Founder and Developer' },
     { name: 'Mohamed Shakin', role: 'Developer and Designer' },
+    { name: 'Mohid Wasseem', role: 'Designer and Marketing' },
     { name: 'Maryam Manzoor', role: 'Marketing' },
     { name: 'Najam Tahir', role: 'Designer' },
     { name: 'Anshara', role: 'Marketing' },
-    { name: 'Mohid Wasseem', role: 'Designer' },
   ]
 
   //market insights
