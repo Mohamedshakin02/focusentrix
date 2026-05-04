@@ -172,7 +172,7 @@ export default function Home() {
   // features we offer. Can add more data and it will adjust as needed
   const offers = [
     { icon: Webcam, title: 'Real-time camera monitoring', description: 'Detects focus loss during sessions using live camera analysis.' },
-    { icon: Bell, title: 'Instant distraction alerts', description: 'Audio and visual alerts snap you back to focus before you lose momentum.' },
+    { icon: Bell, title: 'Distraction alerts', description: 'Audio and visual alerts snap you back to focus before you lose momentum.' },
     { icon: BarChart2, title: 'Focus analytics', description: 'Track your focus score, session history, and distraction patterns over time.' },
     { icon: Target, title: 'Session goal setting', description: 'Set focus goals for each session and track your streaks and achievements.' },
     { icon: CheckSquare, title: 'Habit tracking', description: 'Build better daily focus habits with weekly reports and progress insights.' },
@@ -193,7 +193,7 @@ export default function Home() {
       monthlyPrice: '$0',
       yearlyPrice: '$0',
       period: 'forever',
-      features: ['Basic focus metrics', 'Session timer', 'Focus goals', 'Focus analytics', 'Streak features', 'Music Tracks'],
+      features: ['Session timer', 'Focus goals', 'Streak features', 'Music Tracks'],
       cta: 'Get started',
       highlighted: false,
     },
@@ -202,7 +202,7 @@ export default function Home() {
       monthlyPrice: '$12',
       yearlyPrice: '$10',
       period: 'per month',
-      features: ['Everything in the Free plan', 'Unlimited sessions', 'Camera monitoring', 'Distraction alerts', 'Priority support',],
+      features: ['Everything in the Free plan', 'focus metrics', 'Unlimited sessions', 'Camera monitoring', 'Distraction alerts', 'Priority support'],
       cta: 'Upgrade to Pro',
       highlighted: true, //this plan gets the most popular badge with the purple ring
     },
@@ -284,7 +284,7 @@ export default function Home() {
                 </div>
 
                 <div className="absolute top-0 right-0 translate-x-1/3 -translate-y-1/4">
-                  <HeroFeatureCard icon={Bell} title="Instant Smart Alerts" />
+                  <HeroFeatureCard icon={Bell} title="Smart Alerts" />
                 </div>
 
                 <div className="absolute bottom-0 left-0 -translate-x-1/3 translate-y-1/4">

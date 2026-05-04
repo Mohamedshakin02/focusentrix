@@ -217,7 +217,7 @@ export default function Features() {
     },
     {
       icon: Bell,
-      title: 'Instant distraction alerts',
+      title: 'Distraction alerts',
       description: 'Audio and visual alerts snap you back to focus before you lose momentum.',
       widget: <BellWidget />,
     },

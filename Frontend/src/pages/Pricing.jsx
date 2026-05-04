@@ -72,7 +72,7 @@ export default function Pricing() {
       monthlyPrice: '$0',
       yearlyPrice: '$0',
       period: 'forever',
-      features: ['Basic focus metrics', 'Session timer', 'Focus goals', 'Focus analytics', 'Streak features', 'Music Tracks'],
+      features: ['Session timer', 'Focus goals', 'Streak features', 'Music Tracks'],
       cta: 'Get started',
       highlighted: false,
     },
@@ -81,7 +81,7 @@ export default function Pricing() {
       monthlyPrice: '$12',
       yearlyPrice: '$10',
       period: 'per month',
-      features: ['Everything in the Free plan', 'Unlimited sessions', 'Camera monitoring', 'Distraction alerts', 'Priority support',],
+      features: ['Everything in the Free plan', 'focus metrics', 'Unlimited sessions', 'Camera monitoring', 'Distraction alerts', 'Priority support'],
       cta: 'Upgrade to Pro',
       highlighted: true, //this plan gets the most popular badge with the purple ring
     },

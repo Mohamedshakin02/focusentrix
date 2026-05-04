@@ -67,19 +67,24 @@ export default function FAQs() {
     },
     {
       question: 'How does the focus detection work?',
-      answer: 'Focusentrix uses your device camera to analyse your face and gaze in real time. When it detects you are distracted or looking away, it instantly sends you an alert to bring you back on track.',
+      answer: 'Focusentrix uses your device camera to analyse your face and gaze in real time. When it detects you are distracted or looking away for more than 30 seconds, it sends you an alert to bring you back on track.',
     },
     {
       question: 'Do I need to install anything?',
       answer: 'No installation is required. Focusentrix runs entirely in your browser. Just sign up, allow camera access, and start your first session.',
     },
+
+    {question: 'Do I need to keep my tab open?',
+      answer: 'Yes. If you switch to another tab, your camera may stop working and tracking will pause. For the best experience, we recommend using a second screen while using the app'
+    },
+
     {
       question: 'Will it work in various lighting conditions?',
       answer: 'Yes. Focusentrix is designed to work in a range of lighting environments. For best results, ensure your face is reasonably well lit from the front.',
     },
     {
       question: 'What happens if I look away?',
-      answer: 'You will receive an instant audio and visual alert to snap you back into focus. The distraction is also logged so you can review your patterns later.',
+      answer: 'If it detectes you looking away/distracted for more than 30 seconds you will get an alert and notiftication ',
     },
     {
       question: 'Does it record my video?',
