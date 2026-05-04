@@ -107,7 +107,7 @@ function DashboardFooter({ username, handleLogout }) {
               <p className="text-[#8a7aaa] text-md mt-2">Follow Focusentrix on social media.</p>
             </div>
             <div className="flex items-center gap-2">
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"
+              <a href="https://www.linkedin.com/in/focusentrix-creative-studio-800967407" target="_blank" rel="noopener noreferrer"
                 className="bg-[#1e1535] hover:bg-[#9b59f5] border border-[#3d2060] hover:border-[#9b59f5] rounded-lg p-2 transition-colors duration-200">
                 <svg className="text-white w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
@@ -128,6 +128,17 @@ function DashboardFooter({ username, handleLogout }) {
                   <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
                 </svg>
               </a>
+              <a
+                href="https://x.com/focusentrix"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[#1e1535] hover:bg-[#9b59f5] border border-[#3d2060] hover:border-[#9b59f5] rounded-lg p-2 transition-colors duration-200">
+                <svg className="text-white w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.261 5.636 5.903-5.636zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+              </a>
+
+
             </div>
           </div>
         </div>
@@ -431,7 +442,7 @@ export default function Dashboard() {
     };
 
     fetchInitialData();
-  }, []); 
+  }, []);
 
 
   // add tasks on todo list and save to MongoDB
