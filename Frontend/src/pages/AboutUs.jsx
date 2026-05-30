@@ -157,8 +157,7 @@ export default function AboutUs() {
             {/* Vision Card*/}
             <div className="order-2 lg:order-3">
               <MissionCard icon={Eye} title="Our Vision">
-                To help every student, developer, and creator do their deepest work by building a platform
-                that fights distraction intelligently and gives you the data to understand your own focus patterns.
+                To become a leading focus and productivity platform that helps people build better concentration habits and achieve their goals in a distraction-filled digital world.
               </MissionCard>
             </div>
 
